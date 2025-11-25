@@ -1,9 +1,7 @@
 <!doctype html>
-
-
-    
-    
-    Bauvare - Moda en Blanco y Negro
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* ESTILOS GENERALES */
         * {
@@ -11,6 +9,10 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #000; /* FONDO NEGRO PARA TODA LA PÁGINA */
         }
         
         .bauvare-container {
@@ -549,28 +551,37 @@
             color: #ccc;
         }
         
-        /* RESPONSIVE */
+        /* RESPONSIVE - MEJORADO PARA MÓVILES */
         @media (max-width: 768px) {
+            body {
+                font-size: 14px; /* Tamaño de fuente base más pequeño para móviles */
+            }
+            
+            .bauvare-container {
+                padding: 10px; /* Menos padding en móviles */
+            }
+            
             .contenedor-intro {
                 flex-direction: column;
-                gap: 40px;
+                gap: 30px;
             }
 
             .logo-bauvare {
-                width: 180px;
-                height: 180px;
+                width: 150px;
+                height: 150px;
             }
 
             .imagen-tienda {
-                height: 300px;
+                height: 250px;
             }
 
             .intro-bauvare h1 {
-                font-size: 2.2rem;
+                font-size: 1.8rem;
             }
             
             .titulo-catalogo {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
+                margin-bottom: 30px;
             }
             
             .modal-cuerpo {
@@ -587,6 +598,53 @@
             
             .productos-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .filtros {
+                gap: 10px;
+            }
+            
+            .filtro-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .producto-info {
+                padding: 20px;
+            }
+            
+            .producto-titulo {
+                font-size: 1.2rem;
+            }
+            
+            .precio-actual {
+                font-size: 1.3rem;
+            }
+            
+            .modal-contenido {
+                margin: 20px auto;
+            }
+            
+            .modal-imagenes, .modal-info {
+                padding: 20px;
+            }
+            
+            .modal-titulo {
+                font-size: 1.5rem;
+            }
+            
+            .modal-precio-actual {
+                font-size: 1.5rem;
+            }
+            
+            .footer {
+                padding: 30px 20px;
+            }
+            
+            .contacto-info {
+                flex-direction: column;
+                gap: 15px;
             }
         }
         
@@ -594,31 +652,38 @@
             .filtros {
                 flex-direction: column;
                 align-items: center;
+                gap: 8px;
             }
             
             .filtro-btn {
-                width: 80%;
+                width: 90%;
+                padding: 12px;
             }
             
             .productos-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .intro-bauvare {
-                padding: 40px 20px;
+                padding: 30px 15px;
             }
 
             .logo-bauvare {
-                width: 160px;
-                height: 160px;
+                width: 130px;
+                height: 130px;
             }
 
             .imagen-tienda {
-                height: 250px;
+                height: 200px;
             }
 
             .intro-bauvare h1 {
-                font-size: 2rem;
+                font-size: 1.6rem;
+            }
+            
+            .intro-bauvare p {
+                font-size: 1rem;
             }
             
             .imagen-principal {
@@ -626,12 +691,29 @@
             }
             
             .modal-info {
-                padding: 20px;
+                padding: 15px;
+            }
+            
+            .modal-titulo {
+                font-size: 1.3rem;
+            }
+            
+            .modal-precio-actual {
+                font-size: 1.3rem;
+            }
+            
+            .producto-imagen {
+                height: 300px;
+            }
+            
+            .btn-ver-detalles, .btn-whatsapp {
+                padding: 12px;
+                font-size: 0.9rem;
             }
         }
     </style>
-
-
+</head>
+<body>
     <div class="bauvare-container">
         <!-- INTRODUCCIÓN BAUVARE -->
         <section class="intro-bauvare">
@@ -1088,8 +1170,8 @@
                 mensaje += `Talle: ${talleSeleccionado}%0A`;
             }
             
-            mensaje += `%0A${producto.imagen}%0A%0A`; // Agregar imagen al mensaje
-            mensaje += `¿Podrían ayudarme con mi pedido?`;
+            // ELIMINADO: No se envía la URL de la imagen
+            mensaje += `%0A¿Podrían ayudarme con mi pedido?`;
             
             const btnWhatsApp = document.getElementById('btn-whatsapp');
             btnWhatsApp.href = `https://wa.me/+51926677046?text=${mensaje}`;
@@ -1125,5 +1207,5 @@
             });
         });
     </script>
-
-</!doctype>
+</body>
+</html>
