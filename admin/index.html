@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #000;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .menu button {
+            padding: 10px 20px;
+            background: #000;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .menu button:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>PANEL DE ADMINISTRACIÓN</h1>
+        <button onclick="logout()">Cerrar Sesión</button>
+    </div>
+    
+    <div class="menu">
+        <button onclick="showSection('dashboard')">Dashboard</button>
+        <button onclick="showSection('stock')">Gestión de Stock</button>
+        <button onclick="showSection('ventas')">Registrar Ventas</button>
+    </div>
+    
+    <div id="dashboard">
+        <h2>Bienvenido al Panel de Control</h2>
+        <p>Selecciona una sección del menú para comenzar.</p>
+    </div>
+
+    <script>
+        // Verificar login
+        if(localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        function showSection(section) {
+            document.getElementById('dashboard').innerHTML = '<h2>' + section + '</h2><p>Contenido de ' + section + '</p>';
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
