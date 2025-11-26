@@ -3,68 +3,788 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control</title>
+    <title>Panel de Control - Bauvare</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .header {
-            background: #000;
-            color: white;
-            padding: 20px;
-            margin-bottom: 20px;
+        
+        body {
+            background: #f8f9fa;
+            color: #333;
         }
-        .menu {
+        
+        .admin-header {
+            background: #000000;
+            color: #ffffff;
+            padding: 20px;
+            border-bottom: 3px solid #000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .admin-nav {
+            background: #333333;
+            padding: 15px 0;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-button {
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #000;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        
+        .nav-button:hover, .nav-button.active {
+            background: #000000;
+            color: #ffffff;
+        }
+        
+        .dashboard {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border: 1px solid #000;
+            margin-top: 20px;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #ffffff;
+            padding: 25px;
+            border: 1px solid #000;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #000;
+            margin: 10px 0;
+        }
+        
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .producto-admin-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .form-group {
             margin-bottom: 20px;
         }
-        .menu button {
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #000;
+            background: white;
+        }
+        
+        .btn {
             padding: 10px 20px;
             background: #000;
             color: white;
             border: none;
             cursor: pointer;
+            margin: 5px;
         }
-        .menu button:hover {
+        
+        .btn:hover {
             background: #333;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        table, th, td {
+            border: 1px solid #000;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #000;
+            color: white;
+        }
+        
+        .btn-logout {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .btn-logout:hover {
+            background: #b71c1c;
+        }
+        
+        .stock-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .stock-control input {
+            width: 80px;
+            text-align: center;
+        }
+        
+        .venta-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .boleta {
+            background: white;
+            padding: 20px;
+            border: 2px solid #000;
+            max-width: 300px;
+            margin: 20px auto;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>PANEL DE ADMINISTRACIÓN</h1>
-        <button onclick="logout()">Cerrar Sesión</button>
+    <div class="admin-header">
+        <div class="header-content">
+            <h1>🛠️ PANEL DE CONTROL BAUVARE</h1>
+            <button class="btn-logout" id="logoutBtn">CERRAR SESIÓN</button>
+        </div>
     </div>
     
-    <div class="menu">
-        <button onclick="showSection('dashboard')">Dashboard</button>
-        <button onclick="showSection('stock')">Gestión de Stock</button>
-        <button onclick="showSection('ventas')">Registrar Ventas</button>
+    <div class="admin-nav">
+        <div class="nav-content">
+            <button class="nav-button active" onclick="showSection('dashboard')">DASHBOARD</button>
+            <button class="nav-button" onclick="showSection('stock')">GESTIÓN DE STOCK</button>
+            <button class="nav-button" onclick="showSection('agregar-producto')">AGREGAR PRODUCTOS</button>
+            <button class="nav-button" onclick="showSection('ventas')">REGISTRAR VENTAS</button>
+            <button class="nav-button" onclick="showSection('estadisticas')">ESTADÍSTICAS</button>
+            <button class="nav-button" onclick="showSection('reportes')">REPORTES EXCEL</button>
+        </div>
     </div>
-    
-    <div id="dashboard">
-        <h2>Bienvenido al Panel de Control</h2>
-        <p>Selecciona una sección del menú para comenzar.</p>
+
+    <div class="dashboard">
+        <!-- DASHBOARD PRINCIPAL -->
+        <div id="dashboard-section" class="section active">
+            <h2>📊 DASHBOARD PRINCIPAL</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>PRODUCTOS EN INVENTARIO</h3>
+                    <div class="stat-number" id="totalProducts">0</div>
+                    <p>Productos activos</p>
+                </div>
+                <div class="stat-card">
+                    <h3>VENTAS DEL MES</h3>
+                    <div class="stat-number" id="monthSales">0</div>
+                    <p>Transacciones</p>
+                </div>
+                <div class="stat-card">
+                    <h3>INGRESOS TOTALES</h3>
+                    <div class="stat-number" id="totalIncome">S/ 0</div>
+                    <p>Acumulado mensual</p>
+                </div>
+                <div class="stat-card">
+                    <h3>STOCK BAJO</h3>
+                    <div class="stat-number" id="lowStock">0</div>
+                    <p>Necesitan reposición</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GESTIÓN DE STOCK -->
+        <div id="stock-section" class="section">
+            <h2>📦 GESTIÓN DE STOCK</h2>
+            <div class="productos-grid" id="stock-grid">
+                <!-- Los productos se cargan dinámicamente -->
+            </div>
+        </div>
+
+        <!-- AGREGAR PRODUCTOS -->
+        <div id="agregar-producto-section" class="section">
+            <h2>➕ AGREGAR NUEVO PRODUCTO</h2>
+            <form id="form-agregar-producto">
+                <div class="form-group">
+                    <label>Nombre del Producto:</label>
+                    <input type="text" id="producto-nombre" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <select id="producto-categoria" required>
+                        <option value="camisetas">POLOS</option>
+                        <option value="pantalones">PANTALONES</option>
+                        <option value="abrigos">ABRIGOS</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Precio Actual:</label>
+                    <input type="number" id="producto-precio" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Precio Anterior (opcional):</label>
+                    <input type="number" id="producto-precio-anterior" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label>Stock Inicial:</label>
+                    <input type="number" id="producto-stock" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>URL de Imagen Principal:</label>
+                    <input type="url" id="producto-imagen" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descripción/Características (una por línea):</label>
+                    <textarea id="producto-descripcion" rows="5"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">AGREGAR PRODUCTO</button>
+            </form>
+        </div>
+
+        <!-- REGISTRAR VENTAS -->
+        <div id="ventas-section" class="section">
+            <h2>💰 REGISTRAR VENTA</h2>
+            <div class="productos-grid" id="ventas-grid">
+                <!-- Productos para vender -->
+            </div>
+            <div id="carrito-venta" style="display: none;">
+                <h3>🛒 CARRITO DE VENTA</h3>
+                <div id="items-carrito"></div>
+                <div class="form-group">
+                    <label>Descuento (%):</label>
+                    <input type="number" id="descuento-venta" value="0" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Total: <span id="total-venta">S/ 0</span></label>
+                </div>
+                <button class="btn btn-success" onclick="finalizarVenta()">FINALIZAR VENTA</button>
+            </div>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div id="estadisticas-section" class="section">
+            <h2>📈 ESTADÍSTICAS Y MOVIMIENTOS</h2>
+            <div id="estadisticas-contenido">
+                <!-- Estadísticas se cargan dinámicamente -->
+            </div>
+        </div>
+
+        <!-- REPORTES EXCEL -->
+        <div id="reportes-section" class="section">
+            <h2>📊 REPORTES Y EXPORTACIÓN</h2>
+            <button class="btn" onclick="generarReporteMensual()">📥 GENERAR REPORTE MENSUAL</button>
+            <button class="btn" onclick="exportarExcel()">📊 EXPORTAR A EXCEL</button>
+            <div id="reporte-contenido"></div>
+        </div>
     </div>
 
     <script>
-        // Verificar login
+        // VERIFICAR LOGIN
         if(localStorage.getItem('adminLoggedIn') !== 'true') {
             window.location.href = 'login.html';
         }
 
-        function showSection(section) {
-            document.getElementById('dashboard').innerHTML = '<h2>' + section + '</h2><p>Contenido de ' + section + '</p>';
+        // DATOS GLOBALES
+        let productos = JSON.parse(localStorage.getItem('bauvareProductos')) || {};
+        let ventas = JSON.parse(localStorage.getItem('bauvareVentas')) || [];
+        let carritoVenta = [];
+
+        // NAVEGACIÓN
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(sectionName + '-section').classList.add('active');
+            event.target.classList.add('active');
+            
+            // Cargar datos específicos de cada sección
+            if(sectionName === 'stock') cargarGestionStock();
+            if(sectionName === 'ventas') cargarVentas();
+            if(sectionName === 'estadisticas') cargarEstadisticas();
+            if(sectionName === 'dashboard') cargarDashboard();
         }
 
-        function logout() {
+        // CARGAR DATOS INICIALES DESDE TU CATÁLOGO
+        function cargarProductosIniciales() {
+            if(Object.keys(productos).length === 0) {
+                // Si no hay productos en localStorage, cargar los de tu catálogo
+                productos = {
+                    1: {
+                        id: 1,
+                        titulo: "Polo Negro Elegante",
+                        precio: "S/25",
+                        precioAnterior: "S/30.00",
+                        descuento: "-15%",
+                        categoria: "camisetas",
+                        imagen: "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
+                        stock: 50,
+                        activo: true,
+                        caracteristicas: [
+                            "Tejido de alta calidad con caída perfecta",
+                            "Corte elegante que favorece la silueta",
+                            "Material transpirable y cómodo"
+                        ]
+                    },
+                    2: {
+                        id: 2,
+                        titulo: "Camiseta Clásica Bauvare",
+                        precio: "$24.99",
+                        precioAnterior: "$29.99",
+                        descuento: "-17%",
+                        categoria: "camisetas",
+                        imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        stock: 30,
+                        activo: true,
+                        caracteristicas: [
+                            "100% algodón premium de alta calidad",
+                            "Corte regular para máximo comfort"
+                        ]
+                    },
+                    3: {
+                        id: 3,
+                        titulo: "Pantalón Elegante Slim",
+                        precio: "$59.99",
+                        categoria: "pantalones",
+                        imagen: "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        stock: 20,
+                        activo: true,
+                        caracteristicas: [
+                            "Corte slim fit moderno y elegante",
+                            "Tejido elástico para mayor comodidad"
+                        ]
+                    },
+                    4: {
+                        id: 4,
+                        titulo: "Abrigo Clásico Bauvare",
+                        precio: "$99.99",
+                        precioAnterior: "$119.99",
+                        descuento: "-17%",
+                        categoria: "abrigos",
+                        imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        stock: 15,
+                        activo: true,
+                        caracteristicas: [
+                            "Abrigo de invierno con forro interior suave",
+                            "Material resistente al agua y al viento"
+                        ]
+                    }
+                };
+                guardarProductos();
+            }
+        }
+
+        // GUARDAR PRODUCTOS
+        function guardarProductos() {
+            localStorage.setItem('bauvareProductos', JSON.stringify(productos));
+            // También actualizar el catálogo principal
+            localStorage.setItem('productos', JSON.stringify(productos));
+        }
+
+        // CARGAR DASHBOARD
+        function cargarDashboard() {
+            const totalProducts = Object.keys(productos).length;
+            const monthSales = ventas.filter(v => {
+                const ventaDate = new Date(v.fecha);
+                const now = new Date();
+                return ventaDate.getMonth() === now.getMonth() && 
+                       ventaDate.getFullYear() === now.getFullYear();
+            }).length;
+            
+            const totalIncome = ventas.reduce((sum, venta) => sum + venta.total, 0);
+            const lowStock = Object.values(productos).filter(p => p.stock < 10).length;
+
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('monthSales').textContent = monthSales;
+            document.getElementById('totalIncome').textContent = `S/ ${totalIncome}`;
+            document.getElementById('lowStock').textContent = lowStock;
+        }
+
+        // CARGAR GESTIÓN DE STOCK
+        function cargarGestionStock() {
+            const grid = document.getElementById('stock-grid');
+            grid.innerHTML = '';
+            
+            Object.values(productos).forEach(producto => {
+                const card = document.createElement('div');
+                card.className = 'producto-admin-card';
+                card.innerHTML = `
+                    <h4>${producto.titulo}</h4>
+                    <p>Precio: ${producto.precio}</p>
+                    <p>Stock actual: <strong>${producto.stock}</strong></p>
+                    <div class="stock-control">
+                        <button class="btn btn-warning" onclick="cambiarStock(${producto.id}, -1)">-1</button>
+                        <input type="number" id="stock-${producto.id}" value="${producto.stock}">
+                        <button class="btn btn-success" onclick="cambiarStock(${producto.id}, 1)">+1</button>
+                        <button class="btn" onclick="actualizarStock(${producto.id})">Actualizar</button>
+                    </div>
+                    <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">Eliminar</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // FUNCIONES DE STOCK
+        function cambiarStock(productoId, cambio) {
+            const input = document.getElementById(`stock-${productoId}`);
+            let nuevoStock = parseInt(input.value) + cambio;
+            if(nuevoStock < 0) nuevoStock = 0;
+            input.value = nuevoStock;
+        }
+
+        function actualizarStock(productoId) {
+            const input = document.getElementById(`stock-${productoId}`);
+            productos[productoId].stock = parseInt(input.value);
+            guardarProductos();
+            alert('Stock actualizado correctamente');
+        }
+
+        function eliminarProducto(productoId) {
+            if(confirm('¿Estás seguro de eliminar este producto?')) {
+                delete productos[productoId];
+                guardarProductos();
+                cargarGestionStock();
+            }
+        }
+
+        // AGREGAR NUEVO PRODUCTO
+        document.getElementById('form-agregar-producto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nuevoId = Math.max(...Object.keys(productos).map(Number)) + 1;
+            const caracteristicas = document.getElementById('producto-descripcion').value.split('\n').filter(line => line.trim());
+            
+            productos[nuevoId] = {
+                id: nuevoId,
+                titulo: document.getElementById('producto-nombre').value,
+                categoria: document.getElementById('producto-categoria').value,
+                precio: `S/${document.getElementById('producto-precio').value}`,
+                precioAnterior: document.getElementById('producto-precio-anterior').value ? `S/${document.getElementById('producto-precio-anterior').value}` : "",
+                stock: parseInt(document.getElementById('producto-stock').value),
+                imagen: document.getElementById('producto-imagen').value,
+                activo: true,
+                caracteristicas: caracteristicas
+            };
+            
+            guardarProductos();
+            this.reset();
+            alert('Producto agregado correctamente');
+        });
+
+        // CARGAR VENTAS
+        function cargarVentas() {
+            const grid = document.getElementById('ventas-grid');
+            grid.innerHTML = '';
+            
+            Object.values(productos).forEach(producto => {
+                if(producto.stock > 0) {
+                    const card = document.createElement('div');
+                    card.className = 'producto-admin-card';
+                    card.innerHTML = `
+                        <h4>${producto.titulo}</h4>
+                        <p>Precio: ${producto.precio}</p>
+                        <p>Stock: ${producto.stock}</p>
+                        <button class="btn btn-success" onclick="agregarAlCarrito(${producto.id})">Agregar a Venta</button>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        // FUNCIONES DE VENTAS
+        function agregarAlCarrito(productoId) {
+            const producto = productos[productoId];
+            const precioNumerico = parseFloat(producto.precio.replace('S/', '').replace('$', ''));
+            
+            carritoVenta.push({
+                ...producto,
+                precioNumerico: precioNumerico,
+                cantidad: 1
+            });
+            
+            actualizarCarrito();
+            document.getElementById('carrito-venta').style.display = 'block';
+        }
+
+        function actualizarCarrito() {
+            const container = document.getElementById('items-carrito');
+            container.innerHTML = '';
+            
+            let total = 0;
+            carritoVenta.forEach((item, index) => {
+                const subtotal = item.precioNumerico * item.cantidad;
+                total += subtotal;
+                
+                const div = document.createElement('div');
+                div.className = 'venta-item';
+                div.innerHTML = `
+                    <span>${item.titulo} x${item.cantidad}</span>
+                    <span>S/ ${subtotal}</span>
+                    <button class="btn btn-danger" onclick="removerDelCarrito(${index})">X</button>
+                `;
+                container.appendChild(div);
+            });
+            
+            // Aplicar descuento
+            const descuento = parseInt(document.getElementById('descuento-venta').value) || 0;
+            total = total * (1 - descuento / 100);
+            
+            document.getElementById('total-venta').textContent = `S/ ${total.toFixed(2)}`;
+        }
+
+        function removerDelCarrito(index) {
+            carritoVenta.splice(index, 1);
+            actualizarCarrito();
+            if(carritoVenta.length === 0) {
+                document.getElementById('carrito-venta').style.display = 'none';
+            }
+        }
+
+        function finalizarVenta() {
+            if(carritoVenta.length === 0) {
+                alert('No hay productos en el carrito');
+                return;
+            }
+            
+            const descuento = parseInt(document.getElementById('descuento-venta').value) || 0;
+            let total = carritoVenta.reduce((sum, item) => sum + (item.precioNumerico * item.cantidad), 0);
+            total = total * (1 - descuento / 100);
+            
+            // Actualizar stock
+            carritoVenta.forEach(item => {
+                productos[item.id].stock -= item.cantidad;
+                if(productos[item.id].stock < 0) productos[item.id].stock = 0;
+            });
+            
+            // Registrar venta
+            const nuevaVenta = {
+                id: Date.now(),
+                fecha: new Date().toISOString(),
+                items: [...carritoVenta],
+                descuento: descuento,
+                total: total,
+                tipo: 'contado'
+            };
+            
+            ventas.push(nuevaVenta);
+            localStorage.setItem('bauvareVentas', JSON.stringify(ventas));
+            guardarProductos();
+            
+            // Generar boleta
+            generarBoleta(nuevaVenta);
+            
+            // Limpiar carrito
+            carritoVenta = [];
+            document.getElementById('carrito-venta').style.display = 'none';
+            document.getElementById('descuento-venta').value = 0;
+            
+            alert('Venta registrada correctamente');
+        }
+
+        function generarBoleta(venta) {
+            // Esta función genera una imagen de boleta (simulada)
+            const boleta = `
+                <div class="boleta">
+                    <h3>BAUVARE - COMPROBANTE</h3>
+                    <p>Fecha: ${new Date(venta.fecha).toLocaleDateString()}</p>
+                    <hr>
+                    ${venta.items.map(item => `
+                        <p>${item.titulo} x${item.cantidad} - S/ ${(item.precioNumerico * item.cantidad).toFixed(2)}</p>
+                    `).join('')}
+                    <hr>
+                    <p>Descuento: ${venta.descuento}%</p>
+                    <h4>TOTAL: S/ ${venta.total.toFixed(2)}</h4>
+                    <p>¡Gracias por su compra!</p>
+                </div>
+            `;
+            
+            // Aquí podrías implementar la generación de imagen real
+            alert('Boleta generada (en una implementación real, se generaría como imagen)');
+            console.log('Boleta:', boleta);
+        }
+
+        // CARGAR ESTADÍSTICAS
+        function cargarEstadisticas() {
+            const container = document.getElementById('estadisticas-contenido');
+            
+            const ventasMes = ventas.filter(v => {
+                const ventaDate = new Date(v.fecha);
+                const now = new Date();
+                return ventaDate.getMonth() === now.getMonth() && 
+                       ventaDate.getFullYear() === now.getFullYear();
+            });
+            
+            const totalVentas = ventasMes.reduce((sum, v) => sum + v.total, 0);
+            const productoMasVendido = encontrarProductoMasVendido();
+            
+            container.innerHTML = `
+                <h3>📊 ESTADÍSTICAS DEL MES</h3>
+                <p>Total de ventas: S/ ${totalVentas.toFixed(2)}</p>
+                <p>Cantidad de transacciones: ${ventasMes.length}</p>
+                <p>Producto más vendido: ${productoMasVendido}</p>
+                
+                <h3>📋 HISTORIAL DE VENTAS</h3>
+                <table>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                    </tr>
+                    ${ventasMes.map(venta => `
+                        <tr>
+                            <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                            <td>${venta.items.map(item => `${item.titulo} (x${item.cantidad})`).join(', ')}</td>
+                            <td>S/ ${venta.total.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+        }
+
+        function encontrarProductoMasVendido() {
+            const ventasMes = ventas.filter(v => {
+                const ventaDate = new Date(v.fecha);
+                const now = new Date();
+                return ventaDate.getMonth() === now.getMonth() && 
+                       ventaDate.getFullYear() === now.getFullYear();
+            });
+            
+            const productosVendidos = {};
+            ventasMes.forEach(venta => {
+                venta.items.forEach(item => {
+                    productosVendidos[item.titulo] = (productosVendidos[item.titulo] || 0) + item.cantidad;
+                });
+            });
+            
+            const masVendido = Object.entries(productosVendidos).sort((a, b) => b[1] - a[1])[0];
+            return masVendido ? `${masVendido[0]} (${masVendido[1]} unidades)` : 'No hay ventas este mes';
+        }
+
+        // REPORTES EXCEL
+        function generarReporteMensual() {
+            const ventasMes = ventas.filter(v => {
+                const ventaDate = new Date(v.fecha);
+                const now = new Date();
+                return ventaDate.getMonth() === now.getMonth() && 
+                       ventaDate.getFullYear() === now.getFullYear();
+            });
+            
+            const reporte = `
+                <h3>📋 REPORTE MENSUAL</h3>
+                <p>Total ventas: S/ ${ventasMes.reduce((sum, v) => sum + v.total, 0).toFixed(2)}</p>
+                <p>Total transacciones: ${ventasMes.length}</p>
+                <p>Fecha de generación: ${new Date().toLocaleDateString()}</p>
+            `;
+            
+            document.getElementById('reporte-contenido').innerHTML = reporte;
+            alert('Reporte generado (en una implementación real, se exportaría a Excel)');
+        }
+
+        function exportarExcel() {
+            // Simulación de exportación a Excel
+            const data = ventas.map(venta => ({
+                Fecha: new Date(venta.fecha).toLocaleDateString(),
+                Productos: venta.items.map(item => `${item.titulo} x${item.cantidad}`).join(', '),
+                Descuento: `${venta.descuento}%`,
+                Total: `S/ ${venta.total.toFixed(2)}`
+            }));
+            
+            console.log('Datos para Excel:', data);
+            alert('Datos preparados para exportar a Excel (en una implementación real, se descargaría un archivo .xlsx)');
+        }
+
+        // CERRAR SESIÓN
+        document.getElementById('logoutBtn').addEventListener('click', function() {
             localStorage.removeItem('adminLoggedIn');
             window.location.href = 'login.html';
-        }
+        });
+
+        // INICIALIZAR
+        cargarProductosIniciales();
+        cargarDashboard();
     </script>
 </body>
 </html>
