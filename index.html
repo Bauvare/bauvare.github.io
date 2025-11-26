@@ -750,7 +750,7 @@
             
             <!-- GRID DE PRODUCTOS -->
             <div class="productos-grid" id="productos-container">
-                <!-- Los productos se cargan dinámicamente desde JavaScript -->
+                <!-- Los productos se cargan automáticamente aquí -->
             </div>
         </section>
         
@@ -870,8 +870,8 @@
                 2: {
                     id: 2,
                     titulo: "Camiseta Clásica Bauvare",
-                    precio: "$24.99",
-                    precioAnterior: "$29.99",
+                    precio: "S/24.99",
+                    precioAnterior: "S/29.99",
                     descuento: "-17%",
                     categoria: "camisetas",
                     imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
@@ -898,7 +898,7 @@
                 3: {
                     id: 3,
                     titulo: "Pantalón Elegante Slim",
-                    precio: "$59.99",
+                    precio: "S/59.99",
                     precioAnterior: "",
                     descuento: "",
                     categoria: "pantalones",
@@ -925,8 +925,8 @@
                 4: {
                     id: 4,
                     titulo: "Abrigo Clásico Bauvare",
-                    precio: "$99.99",
-                    precioAnterior: "$119.99",
+                    precio: "S/99.99",
+                    precioAnterior: "S/119.99",
                     descuento: "-17%",
                     categoria: "abrigos",
                     imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
@@ -960,6 +960,11 @@
         // CARGAR PRODUCTOS EN LA PÁGINA
         function cargarProductos() {
             const container = document.getElementById('productos-container');
+            if (!container) {
+                console.error('No se encontró el contenedor de productos');
+                return;
+            }
+            
             container.innerHTML = '';
             
             Object.values(productos).forEach(producto => {
@@ -995,30 +1000,32 @@
                     container.appendChild(card);
                 }
             });
+            
+            console.log('Productos cargados:', Object.keys(productos).length);
         }
 
-        // FUNCIONALIDADES DEL CATÁLOGO
-        
-        // Filtrado por categoría
-        document.querySelectorAll('.filtro-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filtro-btn').forEach(b => {
-                    b.classList.remove('activo');
-                });
-                this.classList.add('activo');
-                
-                const categoria = this.getAttribute('data-categoria');
-                const productosCards = document.querySelectorAll('.producto-card');
-                
-                productosCards.forEach(producto => {
-                    if (categoria === 'todos' || producto.getAttribute('data-categoria') === categoria) {
-                        producto.style.display = 'block';
-                    } else {
-                        producto.style.display = 'none';
-                    }
+        // INICIALIZAR FILTROS
+        function inicializarFiltros() {
+            document.querySelectorAll('.filtro-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filtro-btn').forEach(b => {
+                        b.classList.remove('activo');
+                    });
+                    this.classList.add('activo');
+                    
+                    const categoria = this.getAttribute('data-categoria');
+                    const productosCards = document.querySelectorAll('.producto-card');
+                    
+                    productosCards.forEach(producto => {
+                        if (categoria === 'todos' || producto.getAttribute('data-categoria') === categoria) {
+                            producto.style.display = 'block';
+                        } else {
+                            producto.style.display = 'none';
+                        }
+                    });
                 });
             });
-        });
+        }
 
         // Mostrar modal de detalles
         function mostrarDetalles(productoId) {
@@ -1178,11 +1185,16 @@
                 console.log('🔄 Actualizando productos desde admin...');
                 productos = productosActualizados;
                 cargarProductos();
+                inicializarFiltros();
             }
         }, 3000);
 
-        // INICIALIZAR
-        cargarProductos();
+        // INICIALIZAR CUANDO LA PÁGINA CARGA
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página cargada, iniciando...');
+            cargarProductos();
+            inicializarFiltros();
+        });
     </script>
 </body>
 </html>
