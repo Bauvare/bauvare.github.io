@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bauvare - Tienda de Ropa</title>
     <style>
         /* ESTILOS GENERALES */
         * {
@@ -13,47 +12,87 @@
         }
         
         body {
-            background: #000;
-            color: white;
+            background: #000; /* FONDO NEGRO PARA TODA LA PÁGINA */
         }
         
         .bauvare-container {
             background: #1a1a1a;
+            color: white;
             padding: 20px;
+            border-radius: 10px;
             max-width: 1200px;
             margin: 0 auto;
         }
         
-        /* INTRODUCCIÓN */
+        /* INTRODUCCIÓN BAUVARE */
         .intro-bauvare {
             padding: 60px 20px;
             background: #2d2d2d;
+            color: white;
             border-radius: 10px;
             margin-bottom: 40px;
-            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
+        .contenedor-intro {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .logo-section {
+            flex: 1;
+            text-align: center;
+        }
+        
         .logo-bauvare {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             margin: 0 auto 20px;
-            background: #333;
+            background: linear-gradient(135deg, #333 0%, #555 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 15px;
+            border: 3px solid #555;
         }
         
         .logo-bauvare img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 50%;
+        }
+
+        .imagen-tienda-section {
+            flex: 1.5;
+        }
+
+        .imagen-tienda {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        
+        .intro-texto {
+            text-align: center;
+            margin-top: 40px;
         }
         
         .intro-bauvare h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 20px;
+            color: white;
+            font-weight: 300;
+            letter-spacing: 2px;
         }
         
         .intro-bauvare p {
@@ -90,8 +129,10 @@
         .titulo-catalogo {
             text-align: center;
             margin-bottom: 50px;
+            color: white;
             font-size: 2.2rem;
             font-weight: 300;
+            letter-spacing: 2px;
         }
         
         /* FILTROS */
@@ -133,21 +174,24 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
         
         .producto-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255,255,255,0.1);
         }
         
         .producto-imagen {
             width: 100%;
-            height: 300px;
+            height: 350px;
             object-fit: cover;
+            border-bottom: 1px solid #444;
         }
         
         .producto-info {
-            padding: 20px;
+            padding: 25px;
         }
         
         .producto-categoria {
@@ -156,27 +200,31 @@
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 8px;
+            letter-spacing: 1px;
         }
         
         .producto-titulo {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 500;
         }
         
         .producto-precio {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .precio-actual {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 700;
+            color: white;
         }
         
         .precio-anterior {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #999;
             text-decoration: line-through;
         }
@@ -184,16 +232,68 @@
         .descuento {
             background: white;
             color: #000;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 5px;
             font-size: 0.8rem;
             font-weight: 600;
         }
         
+        .producto-colores {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .color-option {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+        
+        .color-option.seleccionado {
+            border-color: white;
+            transform: scale(1.2);
+        }
+        
+        .producto-talles {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .talle-option {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ccc;
+        }
+        
+        .talle-option:hover, .talle-option.seleccionado {
+            background: white;
+            color: #000;
+            border-color: white;
+        }
+        
         .btn-ver-detalles {
             display: block;
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             background: white;
             color: #000;
             border: none;
@@ -201,23 +301,16 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: 1px;
         }
         
         .btn-ver-detalles:hover {
             background: #ddd;
         }
-
-        .stock-info {
-            margin: 10px 0;
-            font-size: 0.9rem;
-        }
         
-        .sin-stock {
-            color: #ff6b6b;
-            font-weight: bold;
-        }
-        
-        /* MODAL */
+        /* MODAL DE DETALLES */
         .modal {
             display: none;
             position: fixed;
@@ -227,25 +320,39 @@
             height: 100%;
             background: rgba(0,0,0,0.9);
             z-index: 1000;
+            overflow-y: auto;
             padding: 20px;
         }
         
         .modal-contenido {
             background: #2d2d2d;
-            max-width: 800px;
+            max-width: 1000px;
             margin: 40px auto;
             border-radius: 10px;
             overflow: hidden;
-            position: relative;
+            box-shadow: 0 5px 30px rgba(255,255,255,0.1);
+            animation: modalAppear 0.4s ease;
+        }
+        
+        @keyframes modalAppear {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .modal-cerrar {
             position: absolute;
-            top: 15px;
-            right: 20px;
+            top: 20px;
+            right: 30px;
             font-size: 2rem;
             color: white;
             cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 1001;
         }
         
@@ -257,44 +364,137 @@
         .modal-imagenes {
             flex: 1;
             min-width: 300px;
-            padding: 20px;
+            padding: 30px;
         }
         
         .imagen-principal {
             width: 100%;
-            height: 400px;
-            object-fit: contain;
+            height: 400px; /* ALTURA FIJA */
+            object-fit: contain; /* MANTIENE PROPORCIONES */
             border-radius: 10px;
-            background: #3d3d3d;
+            margin-bottom: 15px;
+            background: #3d3d3d; /* FONDO PARA IMÁGENES PEQUEÑAS */
+        }
+        
+        .miniaturas {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .miniatura {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .miniatura:hover, .miniatura.activa {
+            opacity: 1;
+            border-color: white;
         }
         
         .modal-info {
             flex: 1;
             min-width: 300px;
-            padding: 20px;
+            padding: 30px; /* MENOS PADDING */
             background: #3d3d3d;
         }
         
         .modal-titulo {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            font-size: 1.8rem; /* MÁS PEQUEÑO */
+            margin-bottom: 10px; /* MENOS ESPACIO */
+            color: white;
+        }
+        
+        .modal-marca {
+            color: #ccc;
+            font-weight: 600;
+            margin-bottom: 15px; /* MENOS ESPACIO */
+            font-size: 1rem;
         }
         
         .modal-precio {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 20px; /* MENOS ESPACIO */
         }
         
         .modal-precio-actual {
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* MÁS PEQUEÑO */
             font-weight: 700;
+            color: white;
+        }
+        
+        .modal-precio-anterior {
+            font-size: 1.2rem; /* MÁS PEQUEÑO */
+            color: #999;
+            text-decoration: line-through;
+        }
+        
+        .modal-descuento {
+            background: white;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .modal-colores, .modal-talles {
+            margin-bottom: 20px; /* MENOS ESPACIO */
+        }
+        
+        .modal-colores h3, .modal-talles h3 {
+            margin-bottom: 10px; /* MENOS ESPACIO */
+            color: white;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        
+        .seleccion-info {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #ccc;
+            min-height: 18px;
+        }
+        
+        .modal-detalles {
+            margin: 20px 0; /* MENOS ESPACIO */
+        }
+        
+        .modal-detalles h3 {
+            margin-bottom: 10px; /* MENOS ESPACIO */
+            color: white;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        
+        .modal-detalles ul {
+            padding-left: 18px;
+            color: #ccc;
+        }
+        
+        .modal-detalles li {
+            margin-bottom: 6px; /* MENOS ESPACIO */
+            font-size: 0.9rem;
+            line-height: 1.3; /* MENOS ESPACIO ENTRE LÍNEAS */
+        }
+        
+        .botones-accion {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px; /* MENOS ESPACIO */
         }
         
         .btn-whatsapp {
-            display: block;
-            width: 100%;
+            flex: 1;
             padding: 15px;
             background: #25D366;
             color: white;
@@ -302,27 +502,213 @@
             border-radius: 5px;
             font-weight: 600;
             cursor: pointer;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s;
             text-decoration: none;
-            margin-top: 20px;
+            font-size: 1rem;
+        }
+        
+        .btn-whatsapp:hover {
+            background: #128C7E;
         }
         
         /* FOOTER */
         .footer {
             text-align: center;
             padding: 40px;
+            margin-top: 50px;
             background: #111;
+            color: white;
             border-radius: 10px;
         }
         
-        /* RESPONSIVE */
+        .footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+        
+        .footer p {
+            margin-bottom: 25px;
+            color: #ccc;
+        }
+        
+        .contacto-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .contacto-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ccc;
+        }
+        
+        /* RESPONSIVE - MEJORADO PARA MÓVILES */
         @media (max-width: 768px) {
+            body {
+                font-size: 14px; /* Tamaño de fuente base más pequeño para móviles */
+            }
+            
+            .bauvare-container {
+                padding: 10px; /* Menos padding en móviles */
+            }
+            
+            .contenedor-intro {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .logo-bauvare {
+                width: 150px;
+                height: 150px;
+            }
+
+            .imagen-tienda {
+                height: 250px;
+            }
+
+            .intro-bauvare h1 {
+                font-size: 1.8rem;
+            }
+            
+            .titulo-catalogo {
+                font-size: 1.6rem;
+                margin-bottom: 30px;
+            }
+            
             .modal-cuerpo {
+                flex-direction: column;
+            }
+            
+            .imagen-principal {
+                height: 300px; /* MÁS PEQUEÑO EN MÓVIL */
+            }
+            
+            .botones-accion {
                 flex-direction: column;
             }
             
             .productos-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .filtros {
+                gap: 10px;
+            }
+            
+            .filtro-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .producto-info {
+                padding: 20px;
+            }
+            
+            .producto-titulo {
+                font-size: 1.2rem;
+            }
+            
+            .precio-actual {
+                font-size: 1.3rem;
+            }
+            
+            .modal-contenido {
+                margin: 20px auto;
+            }
+            
+            .modal-imagenes, .modal-info {
+                padding: 20px;
+            }
+            
+            .modal-titulo {
+                font-size: 1.5rem;
+            }
+            
+            .modal-precio-actual {
+                font-size: 1.5rem;
+            }
+            
+            .footer {
+                padding: 30px 20px;
+            }
+            
+            .contacto-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .filtros {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .filtro-btn {
+                width: 90%;
+                padding: 12px;
+            }
+            
+            .productos-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .intro-bauvare {
+                padding: 30px 15px;
+            }
+
+            .logo-bauvare {
+                width: 130px;
+                height: 130px;
+            }
+
+            .imagen-tienda {
+                height: 200px;
+            }
+
+            .intro-bauvare h1 {
+                font-size: 1.6rem;
+            }
+            
+            .intro-bauvare p {
+                font-size: 1rem;
+            }
+            
+            .imagen-principal {
+                height: 250px; /* MÁS PEQUEÑO EN MÓVILES PEQUEÑOS */
+            }
+            
+            .modal-info {
+                padding: 15px;
+            }
+            
+            .modal-titulo {
+                font-size: 1.3rem;
+            }
+            
+            .modal-precio-actual {
+                font-size: 1.3rem;
+            }
+            
+            .producto-imagen {
+                height: 300px;
+            }
+            
+            .btn-ver-detalles, .btn-whatsapp {
+                padding: 12px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -331,14 +717,23 @@
     <div class="bauvare-container">
         <!-- INTRODUCCIÓN -->
         <section class="intro-bauvare">
-            <div class="logo-bauvare">
-                <img src="https://i.postimg.cc/8CYHTt97/BAUVAREHD.jpg" alt="Bauvare Logo" />
+            <div class="contenedor-intro">
+                <div class="logo-section">
+                    <div class="logo-bauvare">
+                        <img src="https://i.postimg.cc/8CYHTt97/BAUVAREHD.jpg" alt="Bauvare Logo" />
+                    </div>
+                </div>
+
+                <div class="imagen-tienda-section">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tienda Bauvare" class="imagen-tienda" />
+                </div>
             </div>
-            
-            <h1>BAUVARE</h1>
-            <p>Calidad excepcional a precios increíbles. Demostramos que la buena confección no tiene que costar fortunas.</p>
-            <p>Calidad que se ve, precios que se agradecen</p>
-            <a href="#catalogo" class="btn-descubrir">DESCUBRIR COLECCIÓN</a>
+
+            <div class="intro-texto">
+                <p>Calidad excepcional a precios increíbles. Demostramos que la buena confección no tiene que costar fortunas. Ofrecemos prendas bien elaboradas con materiales duraderos, costuras reforzadas y acabados premium, todo a precios que respetan tu bolsillo</p>
+                <p>Calidad que se ve, precios que se agradecen</p>
+                <a href="#catalogo" class="btn-descubrir">DESCUBRIR COLECCIÓN</a>
+            </div>
         </section>
         
         <!-- CATÁLOGO -->
@@ -363,7 +758,20 @@
         <footer class="footer">
             <h3>BAUVARE</h3>
             <p>Elegancia atemporal en cada prenda. Descubre el estilo que perdura.</p>
-            <p>📱 +51 926677046 | 📍 Gamarra La Trece Avenida 2do piso galeria 110</p>
+            <div class="contacto-info">
+                <div class="contacto-item">
+                    <span>🇵🇪</span>
+                    <span>Marca 100% Peruana</span>
+                </div>
+                <div class="contacto-item">
+                    <span>📱</span>
+                    <span>+51 926677046</span>
+                </div>
+                <div class="contacto-item">
+                    <span>📍</span>
+                    <span>Gamarra La Trece Aveniu 2do piso galeria 110</span>
+                </div>
+            </div>
         </footer>
     </div>
     
@@ -374,16 +782,42 @@
             <div class="modal-cuerpo">
                 <div class="modal-imagenes">
                     <img src="" alt="" class="imagen-principal" id="modal-imagen" />
+                    <div class="miniaturas" id="modal-miniaturas">
+                        <!-- Miniaturas se cargan dinámicamente -->
+                        </div>
                 </div>
                 <div class="modal-info">
                     <h2 class="modal-titulo" id="modal-titulo"></h2>
+                    <div class="modal-marca">BAUVARE</div>
                     <div class="modal-precio">
                         <span class="modal-precio-actual" id="modal-precio"></span>
                         <span class="modal-precio-anterior" id="modal-precio-ant"></span>
                         <span class="descuento" id="modal-descuento"></span>
                     </div>
+                    <!-- SELECTOR DE COLOR -->
+                    <div class="modal-colores">
+                        <h3>🎨 SELECCIONA COLOR:</h3>
+                        <div class="producto-colores" id="modal-colores">
+                            <!-- Colores se cargan dinámicamente -->
+                        </div>
+                        <div class="seleccion-info" id="color-seleccionado"></div>
+                    </div>
+                    <!-- SELECTOR DE TALLE -->
+                    <div class="modal-talles">
+                        <h3>📏 SELECCIONA TALLE:</h3>
+                        <div class="producto-talles" id="modal-talles">
+                            <!-- Talles se cargan dinámicamente -->
+                        </div>
+                        <div class="seleccion-info" id="talle-seleccionado"></div>
+                    </div>
+                    <div class="modal-descripcion">
+                        <h3>⭐ DETALLES DEL PRODUCTO:</h3>
+                        <ul id="modal-descripcion">
+                            <!-- Características se cargan dinámicamente -->
+                        </ul>
+                    </div>
                     <div class="stock-info" id="modal-stock"></div>
-                    <div id="modal-descripcion"></div>
+                    
                     <a href="#" class="btn-whatsapp" id="btn-whatsapp" target="_blank">
                         💬 CONSULTAR POR WHATSAPP
                     </a>
@@ -411,18 +845,30 @@
                     activo: true,
                     caracteristicas: ["Tejido de alta calidad", "Corte elegante", "Material transpirable"]
                 },
-                2: {
-                    id: 2,
-                    titulo: "Camiseta Clásica Bauvare", 
-                    precio: "S/24.99",
-                    precioAnterior: "S/29.99",
-                    descuento: "-17%",
-                    categoria: "camisetas",
-                    imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                    stock: 30,
-                    activo: true,
-                    caracteristicas: ["100% algodón premium", "Corte regular", "Costuras reforzadas"]
-                },
+                2:  {
+                titulo: "Camiseta Clásica Bauvare",
+                precio: "$24.99",
+                precioAnterior: "$29.99",
+                descuento: "-17%",
+                imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                imagenes: [
+                    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                ],
+                colores: [
+                    { nombre: "Blanco", codigo: "#FFFFFF" },
+                    { nombre: "Negro", codigo: "#000000" },
+                    { nombre: "Gris", codigo: "#636e72" }
+                ],
+                talles: ["XS", "S", "M", "L"],
+                caracteristicas: [
+                    "100% algodón premium de alta calidad",
+                    "Corte regular para máximo comfort",
+                    "Costuras reforzadas para mayor durabilidad",
+                    "Ideal para uso diario y capas de estilo",
+                    "Mantiene su forma y color después de múltiples lavados"
+                ]
+            },
                 3: {
                     id: 3,
                     titulo: "Pantalón Elegante Slim",
