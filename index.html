@@ -390,13 +390,14 @@
             border-radius: 5px;
             cursor: pointer;
             opacity: 0.7;
-            transition: opacity 0.3s;
+            transition: all 0.3s ease;
             border: 2px solid transparent;
         }
         
         .miniatura:hover, .miniatura.activa {
             opacity: 1;
             border-color: white;
+            transform: scale(1.05);
         }
         
         .modal-info {
@@ -460,9 +461,10 @@
         
         .seleccion-info {
             margin-top: 8px;
-            font-size: 0.8rem;
-            color: #ccc;
-            min-height: 18px;
+            font-size: 0.9rem;
+            color: #4fc3f7;
+            min-height: 20px;
+            font-weight: 500;
         }
         
         .modal-detalles {
@@ -513,6 +515,34 @@
         
         .btn-whatsapp:hover {
             background: #128C7E;
+        }
+
+        /* ESTILOS MEJORADOS PARA STOCK */
+        .stock-bajo {
+            color: #ffd54f;
+            font-weight: bold;
+            background: rgba(255, 213, 79, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .en-stock {
+            color: #81c784;
+            font-weight: bold;
+            background: rgba(129, 199, 132, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .sin-stock {
+            color: #e57373;
+            font-weight: bold;
+            background: rgba(229, 115, 115, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            margin: 10px 0;
         }
         
         /* FOOTER */
@@ -638,6 +668,15 @@
                 font-size: 1.5rem;
             }
             
+            .miniaturas {
+                gap: 8px;
+            }
+            
+            .miniatura {
+                width: 60px;
+                height: 60px;
+            }
+            
             .footer {
                 padding: 30px 20px;
             }
@@ -709,6 +748,19 @@
             .btn-ver-detalles, .btn-whatsapp {
                 padding: 12px;
                 font-size: 0.9rem;
+            }
+            
+            .miniaturas {
+                gap: 5px;
+            }
+            
+            .miniatura {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .seleccion-info {
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -810,13 +862,13 @@
                         </div>
                         <div class="seleccion-info" id="talle-seleccionado"></div>
                     </div>
-                    <div class="modal-descripcion">
+                    <div class="modal-detalles">
                         <h3>⭐ DETALLES DEL PRODUCTO:</h3>
                         <ul id="modal-descripcion">
                             <!-- Características se cargan dinámicamente -->
                         </ul>
                     </div>
-                    <div class="stock-info" id="modal-stock"></div>
+                    <div id="modal-stock"></div>
                     
                     <a href="#" class="btn-whatsapp" id="btn-whatsapp" target="_blank">
                         💬 CONSULTAR POR WHATSAPP
@@ -841,43 +893,66 @@
                     descuento: "-15%",
                     categoria: "camisetas",
                     imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    imagenes: [
+                        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    ],
+                    colores: [
+                        { nombre: "Negro", codigo: "#000000" },
+                        { nombre: "Gris Oscuro", codigo: "#2d3436" },
+                        { nombre: "Azul Marino", codigo: "#000080" }
+                    ],
+                    talles: ["S", "M", "L", "XL"],
                     stock: 50,
                     activo: true,
-                    caracteristicas: ["Tejido de alta calidad", "Corte elegante", "Material transpirable"]
+                    caracteristicas: ["Tejido de alta calidad", "Corte elegante", "Material transpirable", "Costuras reforzadas"]
                 },
-                2:  {
-                titulo: "Camiseta Clásica Bauvare",
-                precio: "$24.99",
-                precioAnterior: "$29.99",
-                descuento: "-17%",
-                imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                imagenes: [
-                    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                    "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                ],
-                colores: [
-                    { nombre: "Blanco", codigo: "#FFFFFF" },
-                    { nombre: "Negro", codigo: "#000000" },
-                    { nombre: "Gris", codigo: "#636e72" }
-                ],
-                talles: ["XS", "S", "M", "L"],
-                caracteristicas: [
-                    "100% algodón premium de alta calidad",
-                    "Corte regular para máximo comfort",
-                    "Costuras reforzadas para mayor durabilidad",
-                    "Ideal para uso diario y capas de estilo",
-                    "Mantiene su forma y color después de múltiples lavados"
-                ]
-            },
+                2: {
+                    id: 2,
+                    titulo: "Camiseta Clásica Bauvare",
+                    precio: "S/24.99",
+                    precioAnterior: "S/29.99",
+                    descuento: "-17%",
+                    categoria: "camisetas",
+                    imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    imagenes: [
+                        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    ],
+                    colores: [
+                        { nombre: "Blanco", codigo: "#FFFFFF" },
+                        { nombre: "Negro", codigo: "#000000" },
+                        { nombre: "Gris", codigo: "#636e72" }
+                    ],
+                    talles: ["XS", "S", "M", "L"],
+                    stock: 30,
+                    activo: true,
+                    caracteristicas: [
+                        "100% algodón premium de alta calidad",
+                        "Corte regular para máximo comfort",
+                        "Costuras reforzadas para mayor durabilidad",
+                        "Ideal para uso diario y capas de estilo",
+                        "Mantiene su forma y color después de múltiples lavados"
+                    ]
+                },
                 3: {
                     id: 3,
                     titulo: "Pantalón Elegante Slim",
                     precio: "S/59.99",
                     categoria: "pantalones", 
                     imagen: "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    imagenes: [
+                        "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    ],
+                    colores: [
+                        { nombre: "Negro", codigo: "#000000" },
+                        { nombre: "Gris Oscuro", codigo: "#2d3436" }
+                    ],
+                    talles: ["28", "30", "32", "34", "36"],
                     stock: 20,
                     activo: true,
-                    caracteristicas: ["Corte slim fit", "Tejido elástico", "Bolsillos funcionales"]
+                    caracteristicas: ["Corte slim fit", "Tejido elástico", "Bolsillos funcionales", "Material resistente"]
                 },
                 4: {
                     id: 4,
@@ -887,9 +962,19 @@
                     descuento: "-17%",
                     categoria: "abrigos",
                     imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    imagenes: [
+                        "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    ],
+                    colores: [
+                        { nombre: "Negro", codigo: "#000000" },
+                        { nombre: "Camel", codigo: "#c19a6b" },
+                        { nombre: "Gris Oscuro", codigo: "#2d3436" }
+                    ],
+                    talles: ["S", "M", "L", "XL"],
                     stock: 15,
                     activo: true,
-                    caracteristicas: ["Forro interior suave", "Resistente al agua", "Diseño clásico"]
+                    caracteristicas: ["Forro interior suave", "Resistente al agua", "Diseño clásico", "Bolsillos profundos"]
                 }
             };
             localStorage.setItem('productos', JSON.stringify(productos));
@@ -903,7 +988,7 @@
             Object.values(productos).forEach(producto => {
                 if (producto.activo !== false) {
                     const stockText = producto.stock === 0 ? 
-                        '<div class="stock-info sin-stock">AGOTADO</div>' : 
+                        '<div class="sin-stock">AGOTADO</div>' : 
                         `<div class="stock-info">Stock: ${producto.stock}</div>`;
                     
                     const card = document.createElement('div');
@@ -953,43 +1038,96 @@
             });
         });
 
-        // MOSTRAR DETALLES DEL PRODUCTO
+        // MOSTRAR DETALLES DEL PRODUCTO - VERSIÓN MEJORADA
         function mostrarDetalles(productoId) {
             const producto = productos[productoId];
             
+            // Información básica
             document.getElementById('modal-titulo').textContent = producto.titulo;
             document.getElementById('modal-precio').textContent = producto.precio;
             document.getElementById('modal-precio-ant').textContent = producto.precioAnterior || '';
             document.getElementById('modal-descuento').textContent = producto.descuento || '';
-            document.getElementById('modal-imagen').src = producto.imagen;
             
-            // Información de stock
+            // IMÁGENES - Configurar imagen principal y miniaturas
+            const imagenPrincipal = document.getElementById('modal-imagen');
+            const contenedorMiniaturas = document.getElementById('modal-miniaturas');
+            
+            // Usar el array de imágenes si existe, sino usar la imagen principal
+            const imagenes = producto.imagenes || [producto.imagen];
+            imagenPrincipal.src = imagenes[0];
+            
+            // Crear miniaturas
+            contenedorMiniaturas.innerHTML = '';
+            imagenes.forEach((imagen, index) => {
+                const miniatura = document.createElement('img');
+                miniatura.src = imagen;
+                miniatura.alt = `${producto.titulo} - Vista ${index + 1}`;
+                miniatura.className = 'miniatura' + (index === 0 ? ' activa' : '');
+                miniatura.onclick = () => cambiarImagenPrincipal(imagen, index);
+                contenedorMiniaturas.appendChild(miniatura);
+            });
+            
+            // SELECTOR DE COLORES
+            const contenedorColores = document.getElementById('modal-colores');
+            contenedorColores.innerHTML = '';
+            
+            if (producto.colores && producto.colores.length > 0) {
+                producto.colores.forEach((color, index) => {
+                    const colorDiv = document.createElement('div');
+                    colorDiv.className = 'color-option' + (index === 0 ? ' seleccionado' : '');
+                    colorDiv.style.backgroundColor = color.codigo;
+                    colorDiv.title = color.nombre;
+                    colorDiv.onclick = () => seleccionarColor(color.nombre, index);
+                    contenedorColores.appendChild(colorDiv);
+                });
+                document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${producto.colores[0].nombre}`;
+            } else {
+                document.getElementById('color-seleccionado').textContent = 'Sin colores disponibles';
+            }
+            
+            // SELECTOR DE TALLES
+            const contenedorTalles = document.getElementById('modal-talles');
+            contenedorTalles.innerHTML = '';
+            
+            if (producto.talles && producto.talles.length > 0) {
+                producto.talles.forEach((talle, index) => {
+                    const talleDiv = document.createElement('div');
+                    talleDiv.className = 'talle-option' + (index === 0 ? ' seleccionado' : '');
+                    talleDiv.textContent = talle;
+                    talleDiv.onclick = () => seleccionarTalle(talle, index);
+                    contenedorTalles.appendChild(talleDiv);
+                });
+                document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${producto.talles[0]}`;
+            } else {
+                document.getElementById('talle-seleccionado').textContent = 'Sin talles disponibles';
+            }
+            
+            // DESCRIPCIÓN Y CARACTERÍSTICAS
+            const descripcion = document.getElementById('modal-descripcion');
+            descripcion.innerHTML = '';
+            
+            if (producto.caracteristicas && producto.caracteristicas.length > 0) {
+                producto.caracteristicas.forEach(caract => {
+                    const li = document.createElement('li');
+                    li.textContent = caract;
+                    descripcion.appendChild(li);
+                });
+            } else {
+                descripcion.innerHTML = '<li>No hay descripción disponible</li>';
+            }
+            
+            // INFORMACIÓN DE STOCK
             const stockInfo = document.getElementById('modal-stock');
             if (producto.stock === 0) {
                 stockInfo.innerHTML = '<div class="sin-stock">🔴 PRODUCTO AGOTADO</div>';
             } else if (producto.stock < 10) {
-                stockInfo.innerHTML = `<div class="stock-info">🟡 Stock bajo: ${producto.stock} unidades</div>`;
+                stockInfo.innerHTML = `<div class="stock-bajo">🟡 Stock bajo: ${producto.stock} unidades</div>`;
             } else {
-                stockInfo.innerHTML = `<div class="stock-info">🟢 En stock: ${producto.stock} unidades</div>`;
+                stockInfo.innerHTML = `<div class="en-stock">🟢 En stock: ${producto.stock} unidades</div>`;
             }
             
-            // Descripción
-            const descripcion = document.getElementById('modal-descripcion');
-            descripcion.innerHTML = `
-                <h3>Características:</h3>
-                <ul>
-                    ${producto.caracteristicas.map(caract => `<li>${caract}</li>`).join('')}
-                </ul>
-            `;
-            
-            // Botón de WhatsApp
-            const btnWhatsApp = document.getElementById('btn-whatsapp');
-            let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
-            mensaje += `Precio: ${producto.precio}%0A`;
-            mensaje += `Stock: ${producto.stock} unidades%0A`;
-            mensaje += `%0A¿Podrían ayudarme con más información?`;
-            
-            btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
+            // BOTÓN DE WHATSAPP
+            actualizarEnlaceWhatsApp(producto);
             
             if (producto.stock === 0) {
                 btnWhatsApp.style.opacity = '0.5';
@@ -1006,6 +1144,63 @@
             
             // Mostrar modal
             document.getElementById('modal-detalles').style.display = 'block';
+        }
+
+        // FUNCIONES AUXILIARES PARA EL MODAL
+        function cambiarImagenPrincipal(imagenSrc, index) {
+            // Cambiar imagen principal
+            document.getElementById('modal-imagen').src = imagenSrc;
+            
+            // Actualizar miniaturas activas
+            document.querySelectorAll('.miniatura').forEach((miniatura, i) => {
+                miniatura.classList.toggle('activa', i === index);
+            });
+        }
+
+        function seleccionarColor(nombreColor, index) {
+            // Actualizar colores seleccionados
+            document.querySelectorAll('.color-option').forEach((color, i) => {
+                color.classList.toggle('seleccionado', i === index);
+            });
+            
+            // Actualizar texto de color seleccionado
+            document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${nombreColor}`;
+            
+            // Actualizar enlace de WhatsApp
+            const producto = productos[Object.keys(productos).find(id => productos[id].titulo === document.getElementById('modal-titulo').textContent)];
+            actualizarEnlaceWhatsApp(producto);
+        }
+
+        function seleccionarTalle(talle, index) {
+            // Actualizar talles seleccionados
+            document.querySelectorAll('.talle-option').forEach((talleOpt, i) => {
+                talleOpt.classList.toggle('seleccionado', i === index);
+            });
+            
+            // Actualizar texto de talle seleccionado
+            document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${talle}`;
+            
+            // Actualizar enlace de WhatsApp
+            const producto = productos[Object.keys(productos).find(id => productos[id].titulo === document.getElementById('modal-titulo').textContent)];
+            actualizarEnlaceWhatsApp(producto);
+        }
+
+        function actualizarEnlaceWhatsApp(producto) {
+            const btnWhatsApp = document.getElementById('btn-whatsapp');
+            
+            // Obtener color y talle seleccionados actualmente
+            const colorSeleccionado = document.querySelector('.color-option.seleccionado')?.title || 
+                                    (producto.colores && producto.colores[0] ? producto.colores[0].nombre : 'No especificado');
+            const talleSeleccionado = document.querySelector('.talle-option.seleccionado')?.textContent || 
+                                     (producto.talles && producto.talles[0] ? producto.talles[0] : 'No especificado');
+            
+            let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
+            mensaje += `Precio: ${producto.precio}%0A`;
+            mensaje += `Color: ${colorSeleccionado}%0A`;
+            mensaje += `Talle: ${talleSeleccionado}%0A`;
+            mensaje += `%0A¿Podrían ayudarme con más información?`;
+            
+            btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
         }
 
         // CERRAR MODAL
