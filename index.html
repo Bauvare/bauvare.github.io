@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bauvare - Tienda de Ropa</title>
     <style>
         /* ESTILOS GENERALES */
         * {
@@ -12,87 +13,47 @@
         }
         
         body {
-            background: #000; /* FONDO NEGRO PARA TODA LA PÁGINA */
+            background: #000;
+            color: white;
         }
         
         .bauvare-container {
             background: #1a1a1a;
-            color: white;
             padding: 20px;
-            border-radius: 10px;
             max-width: 1200px;
             margin: 0 auto;
         }
         
-        /* INTRODUCCIÓN BAUVARE */
+        /* INTRODUCCIÓN */
         .intro-bauvare {
             padding: 60px 20px;
             background: #2d2d2d;
-            color: white;
             border-radius: 10px;
             margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .contenedor-intro {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .logo-section {
-            flex: 1;
             text-align: center;
         }
-        
+
         .logo-bauvare {
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             margin: 0 auto 20px;
-            background: linear-gradient(135deg, #333 0%, #555 100%);
+            background: #333;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            padding: 15px;
-            border: 3px solid #555;
         }
         
         .logo-bauvare img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 50%;
-        }
-
-        .imagen-tienda-section {
-            flex: 1.5;
-        }
-
-        .imagen-tienda {
-            width: 100%;
-            height: 350px;
             object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-        
-        .intro-texto {
-            text-align: center;
-            margin-top: 40px;
+            border-radius: 50%;
         }
         
         .intro-bauvare h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             margin-bottom: 20px;
-            color: white;
-            font-weight: 300;
-            letter-spacing: 2px;
         }
         
         .intro-bauvare p {
@@ -129,10 +90,8 @@
         .titulo-catalogo {
             text-align: center;
             margin-bottom: 50px;
-            color: white;
             font-size: 2.2rem;
             font-weight: 300;
-            letter-spacing: 2px;
         }
         
         /* FILTROS */
@@ -174,24 +133,21 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
+            transition: transform 0.3s ease;
         }
         
         .producto-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(255,255,255,0.1);
+            transform: translateY(-5px);
         }
         
         .producto-imagen {
             width: 100%;
-            height: 350px;
+            height: 300px;
             object-fit: cover;
-            border-bottom: 1px solid #444;
         }
         
         .producto-info {
-            padding: 25px;
+            padding: 20px;
         }
         
         .producto-categoria {
@@ -200,31 +156,27 @@
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 8px;
-            letter-spacing: 1px;
         }
         
         .producto-titulo {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: white;
-            font-weight: 500;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
         }
         
         .producto-precio {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .precio-actual {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            color: white;
         }
         
         .precio-anterior {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #999;
             text-decoration: line-through;
         }
@@ -232,68 +184,16 @@
         .descuento {
             background: white;
             color: #000;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 5px;
             font-size: 0.8rem;
             font-weight: 600;
         }
         
-        .producto-colores {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .color-option {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s;
-        }
-        
-        .color-option:hover {
-            transform: scale(1.2);
-        }
-        
-        .color-option.seleccionado {
-            border-color: white;
-            transform: scale(1.2);
-        }
-        
-        .producto-talles {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .talle-option {
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #444;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #ccc;
-        }
-        
-        .talle-option:hover, .talle-option.seleccionado {
-            background: white;
-            color: #000;
-            border-color: white;
-        }
-        
         .btn-ver-detalles {
             display: block;
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             background: white;
             color: #000;
             border: none;
@@ -301,33 +201,23 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
-            text-align: center;
-            text-decoration: none;
-            letter-spacing: 1px;
         }
         
         .btn-ver-detalles:hover {
             background: #ddd;
         }
 
-        /* INDICADOR DE STOCK */
         .stock-info {
             margin: 10px 0;
             font-size: 0.9rem;
-            color: #ccc;
         }
         
-        .stock-bajo {
+        .sin-stock {
             color: #ff6b6b;
             font-weight: bold;
         }
         
-        .sin-stock {
-            color: #ff4757;
-            font-weight: bold;
-        }
-        
-        /* MODAL DE DETALLES */
+        /* MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -337,39 +227,25 @@
             height: 100%;
             background: rgba(0,0,0,0.9);
             z-index: 1000;
-            overflow-y: auto;
             padding: 20px;
         }
         
         .modal-contenido {
             background: #2d2d2d;
-            max-width: 1000px;
+            max-width: 800px;
             margin: 40px auto;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 5px 30px rgba(255,255,255,0.1);
-            animation: modalAppear 0.4s ease;
-        }
-        
-        @keyframes modalAppear {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
+            position: relative;
         }
         
         .modal-cerrar {
             position: absolute;
-            top: 20px;
-            right: 30px;
+            top: 15px;
+            right: 20px;
             font-size: 2rem;
             color: white;
             cursor: pointer;
-            background: rgba(0,0,0,0.5);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             z-index: 1001;
         }
         
@@ -381,137 +257,44 @@
         .modal-imagenes {
             flex: 1;
             min-width: 300px;
-            padding: 30px;
+            padding: 20px;
         }
         
         .imagen-principal {
             width: 100%;
-            height: 400px; /* ALTURA FIJA */
-            object-fit: contain; /* MANTIENE PROPORCIONES */
+            height: 400px;
+            object-fit: contain;
             border-radius: 10px;
-            margin-bottom: 15px;
-            background: #3d3d3d; /* FONDO PARA IMÁGENES PEQUEÑAS */
-        }
-        
-        .miniaturas {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .miniatura {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 5px;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-            border: 2px solid transparent;
-        }
-        
-        .miniatura:hover, .miniatura.activa {
-            opacity: 1;
-            border-color: white;
+            background: #3d3d3d;
         }
         
         .modal-info {
             flex: 1;
             min-width: 300px;
-            padding: 30px; /* MENOS PADDING */
+            padding: 20px;
             background: #3d3d3d;
         }
         
         .modal-titulo {
-            font-size: 1.8rem; /* MÁS PEQUEÑO */
-            margin-bottom: 10px; /* MENOS ESPACIO */
-            color: white;
-        }
-        
-        .modal-marca {
-            color: #ccc;
-            font-weight: 600;
-            margin-bottom: 15px; /* MENOS ESPACIO */
-            font-size: 1rem;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
         
         .modal-precio {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 20px; /* MENOS ESPACIO */
+            margin-bottom: 20px;
         }
         
         .modal-precio-actual {
-            font-size: 1.8rem; /* MÁS PEQUEÑO */
+            font-size: 1.5rem;
             font-weight: 700;
-            color: white;
-        }
-        
-        .modal-precio-anterior {
-            font-size: 1.2rem; /* MÁS PEQUEÑO */
-            color: #999;
-            text-decoration: line-through;
-        }
-        
-        .modal-descuento {
-            background: white;
-            color: #000;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        
-        .modal-colores, .modal-talles {
-            margin-bottom: 20px; /* MENOS ESPACIO */
-        }
-        
-        .modal-colores h3, .modal-talles h3 {
-            margin-bottom: 10px; /* MENOS ESPACIO */
-            color: white;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-        
-        .seleccion-info {
-            margin-top: 8px;
-            font-size: 0.8rem;
-            color: #ccc;
-            min-height: 18px;
-        }
-        
-        .modal-detalles {
-            margin: 20px 0; /* MENOS ESPACIO */
-        }
-        
-        .modal-detalles h3 {
-            margin-bottom: 10px; /* MENOS ESPACIO */
-            color: white;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-        
-        .modal-detalles ul {
-            padding-left: 18px;
-            color: #ccc;
-        }
-        
-        .modal-detalles li {
-            margin-bottom: 6px; /* MENOS ESPACIO */
-            font-size: 0.9rem;
-            line-height: 1.3; /* MENOS ESPACIO ENTRE LÍNEAS */
-        }
-        
-        .botones-accion {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px; /* MENOS ESPACIO */
         }
         
         .btn-whatsapp {
-            flex: 1;
+            display: block;
+            width: 100%;
             padding: 15px;
             background: #25D366;
             color: white;
@@ -519,241 +302,46 @@
             border-radius: 5px;
             font-weight: 600;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.3s;
+            text-align: center;
             text-decoration: none;
-            font-size: 1rem;
-        }
-        
-        .btn-whatsapp:hover {
-            background: #128C7E;
+            margin-top: 20px;
         }
         
         /* FOOTER */
         .footer {
             text-align: center;
             padding: 40px;
-            margin-top: 50px;
             background: #111;
-            color: white;
             border-radius: 10px;
         }
         
-        .footer h3 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            font-weight: 400;
-        }
-        
-        .footer p {
-            margin-bottom: 25px;
-            color: #ccc;
-        }
-        
-        .contacto-info {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .contacto-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #ccc;
-        }
-        
-        /* RESPONSIVE - MEJORADO PARA MÓVILES */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            body {
-                font-size: 14px; /* Tamaño de fuente base más pequeño para móviles */
-            }
-            
-            .bauvare-container {
-                padding: 10px; /* Menos padding en móviles */
-            }
-            
-            .contenedor-intro {
-                flex-direction: column;
-                gap: 30px;
-            }
-
-            .logo-bauvare {
-                width: 150px;
-                height: 150px;
-            }
-
-            .imagen-tienda {
-                height: 250px;
-            }
-
-            .intro-bauvare h1 {
-                font-size: 1.8rem;
-            }
-            
-            .titulo-catalogo {
-                font-size: 1.6rem;
-                margin-bottom: 30px;
-            }
-            
             .modal-cuerpo {
-                flex-direction: column;
-            }
-            
-            .imagen-principal {
-                height: 300px; /* MÁS PEQUEÑO EN MÓVIL */
-            }
-            
-            .botones-accion {
                 flex-direction: column;
             }
             
             .productos-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 20px;
-            }
-            
-            .filtros {
-                gap: 10px;
-            }
-            
-            .filtro-btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-            
-            .producto-info {
-                padding: 20px;
-            }
-            
-            .producto-titulo {
-                font-size: 1.2rem;
-            }
-            
-            .precio-actual {
-                font-size: 1.3rem;
-            }
-            
-            .modal-contenido {
-                margin: 20px auto;
-            }
-            
-            .modal-imagenes, .modal-info {
-                padding: 20px;
-            }
-            
-            .modal-titulo {
-                font-size: 1.5rem;
-            }
-            
-            .modal-precio-actual {
-                font-size: 1.5rem;
-            }
-            
-            .footer {
-                padding: 30px 20px;
-            }
-            
-            .contacto-info {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .filtros {
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-            }
-            
-            .filtro-btn {
-                width: 90%;
-                padding: 12px;
-            }
-            
-            .productos-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .intro-bauvare {
-                padding: 30px 15px;
-            }
-
-            .logo-bauvare {
-                width: 130px;
-                height: 130px;
-            }
-
-            .imagen-tienda {
-                height: 200px;
-            }
-
-            .intro-bauvare h1 {
-                font-size: 1.6rem;
-            }
-            
-            .intro-bauvare p {
-                font-size: 1rem;
-            }
-            
-            .imagen-principal {
-                height: 250px; /* MÁS PEQUEÑO EN MÓVILES PEQUEÑOS */
-            }
-            
-            .modal-info {
-                padding: 15px;
-            }
-            
-            .modal-titulo {
-                font-size: 1.3rem;
-            }
-            
-            .modal-precio-actual {
-                font-size: 1.3rem;
-            }
-            
-            .producto-imagen {
-                height: 300px;
-            }
-            
-            .btn-ver-detalles, .btn-whatsapp {
-                padding: 12px;
-                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="bauvare-container">
-        <!-- INTRODUCCIÓN BAUVARE -->
+        <!-- INTRODUCCIÓN -->
         <section class="intro-bauvare">
-            <div class="contenedor-intro">
-                <div class="logo-section">
-                    <div class="logo-bauvare">
-                        <img src="https://i.postimg.cc/8CYHTt97/BAUVAREHD.jpg" alt="Bauvare Logo" />
-                    </div>
-                </div>
-
-                <div class="imagen-tienda-section">
-                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tienda Bauvare" class="imagen-tienda" />
-                </div>
+            <div class="logo-bauvare">
+                <img src="https://i.postimg.cc/8CYHTt97/BAUVAREHD.jpg" alt="Bauvare Logo" />
             </div>
-
-            <div class="intro-texto">
-                <p>Calidad excepcional a precios increíbles. Demostramos que la buena confección no tiene que costar fortunas. Ofrecemos prendas bien elaboradas con materiales duraderos, costuras reforzadas y acabados premium, todo a precios que respetan tu bolsillo</p>
-                <p>Calidad que se ve, precios que se agradecen</p>
-                <a href="#catalogo" class="btn-descubrir">DESCUBRIR COLECCIÓN</a>
-            </div>
+            
+            <h1>BAUVARE</h1>
+            <p>Calidad excepcional a precios increíbles. Demostramos que la buena confección no tiene que costar fortunas.</p>
+            <p>Calidad que se ve, precios que se agradecen</p>
+            <a href="#catalogo" class="btn-descubrir">DESCUBRIR COLECCIÓN</a>
         </section>
         
-        <!-- SECCIÓN CATÁLOGO -->
+        <!-- CATÁLOGO -->
         <section class="seccion-catalogo" id="catalogo">
             <h2 class="titulo-catalogo">COLECCIÓN PRINCIPAL</h2>
             
@@ -765,9 +353,9 @@
                 <button class="filtro-btn" data-categoria="abrigos">ABRIGOS</button>
             </div>
             
-            <!-- GRID DE PRODUCTOS -->
+            <!-- PRODUCTOS -->
             <div class="productos-grid" id="productos-container">
-                <!-- Los productos se cargan dinámicamente desde JavaScript -->
+                <!-- Los productos se cargan automáticamente -->
             </div>
         </section>
         
@@ -775,77 +363,30 @@
         <footer class="footer">
             <h3>BAUVARE</h3>
             <p>Elegancia atemporal en cada prenda. Descubre el estilo que perdura.</p>
-            <div class="contacto-info">
-                <div class="contacto-item">
-                    <span>🇵🇪</span>
-                    <span>Marca 100% Peruana</span>
-                </div>
-                <div class="contacto-item">
-                    <span>📱</span>
-                    <span>+51 926677046</span>
-                </div>
-                <div class="contacto-item">
-                    <span>📍</span>
-                    <span>Gamarra La Trece Aveniu 2do piso galeria 110</span>
-                </div>
-            </div>
+            <p>📱 +51 926677046 | 📍 Gamarra La Trece Avenida 2do piso galeria 110</p>
         </footer>
     </div>
     
-    <!-- MODAL DETALLES -->
+    <!-- MODAL -->
     <div id="modal-detalles" class="modal">
         <div class="modal-contenido">
             <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
             <div class="modal-cuerpo">
                 <div class="modal-imagenes">
                     <img src="" alt="" class="imagen-principal" id="modal-imagen" />
-                    <div class="miniaturas" id="modal-miniaturas">
-                        <!-- Miniaturas se cargan dinámicamente -->
-                    </div>
                 </div>
                 <div class="modal-info">
                     <h2 class="modal-titulo" id="modal-titulo"></h2>
-                    <div class="modal-marca">BAUVARE</div>
                     <div class="modal-precio">
                         <span class="modal-precio-actual" id="modal-precio"></span>
                         <span class="modal-precio-anterior" id="modal-precio-ant"></span>
-                        <span class="modal-descuento" id="modal-descuento"></span>
+                        <span class="descuento" id="modal-descuento"></span>
                     </div>
-                    
-                    <!-- SELECTOR DE COLOR -->
-                    <div class="modal-colores">
-                        <h3>🎨 SELECCIONA COLOR:</h3>
-                        <div class="producto-colores" id="modal-colores">
-                            <!-- Colores se cargan dinámicamente -->
-                        </div>
-                        <div class="seleccion-info" id="color-seleccionado"></div>
-                    </div>
-                    
-                    <!-- SELECTOR DE TALLE -->
-                    <div class="modal-talles">
-                        <h3>📏 SELECCIONA TALLE:</h3>
-                        <div class="producto-talles" id="modal-talles">
-                            <!-- Talles se cargan dinámicamente -->
-                        </div>
-                        <div class="seleccion-info" id="talle-seleccionado"></div>
-                    </div>
-                    
-                    <!-- INFO STOCK -->
                     <div class="stock-info" id="modal-stock"></div>
-                    
-                    <div class="modal-detalles">
-                        <h3>⭐ DETALLES DEL PRODUCTO:</h3>
-                        <ul id="modal-caracteristicas">
-                            <!-- Características se cargan dinámicamente -->
-                        </ul>
-                    </div>
-                    
-                    <!-- SOLO BOTÓN WHATSAPP -->
-                    <div class="botones-accion">
-                        <a href="#" class="btn-whatsapp" id="btn-whatsapp" target="_blank">
-                            💬 PEDIR POR WHATSAPP
-                        </a>
-                    </div>
+                    <div id="modal-descripcion"></div>
+                    <a href="#" class="btn-whatsapp" id="btn-whatsapp" target="_blank">
+                        💬 CONSULTAR POR WHATSAPP
+                    </a>
                 </div>
             </div>
         </div>
@@ -855,139 +396,69 @@
         // CARGAR PRODUCTOS DESDE LOCALSTORAGE
         let productos = JSON.parse(localStorage.getItem('productos')) || {};
 
-        // Si no hay productos, inicializar con datos por defecto
+        // Si no hay productos, cargar datos de ejemplo
         if (Object.keys(productos).length === 0) {
             productos = {
                 1: {
                     id: 1,
                     titulo: "Polo Negro Elegante",
-                    precio: "S/25",
+                    precio: "S/25.00",
                     precioAnterior: "S/30.00",
                     descuento: "-15%",
                     categoria: "camisetas",
-                    imagen: "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
-                    imagenes: [
-                        "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
-                        "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
-                        "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg"
-                    ],
-                    colores: [
-                        { nombre: "Negro", codigo: "#000000" },
-                        { nombre: "Gris Oscuro", codigo: "#2d3436" },
-                        { nombre: "Gris Medio", codigo: "#636e72" }
-                    ],
-                    talles: ["S", "M", "L", "XL"],
+                    imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
                     stock: 50,
                     activo: true,
-                    caracteristicas: [
-                        "Tejido de alta calidad con caída perfecta",
-                        "Corte elegante que favorece la silueta",
-                        "Material transpirable y cómodo",
-                        "Acabados impecables y costuras reforzadas",
-                        "Ideal para uso casual y formal"
-                    ]
+                    caracteristicas: ["Tejido de alta calidad", "Corte elegante", "Material transpirable"]
                 },
                 2: {
                     id: 2,
-                    titulo: "Camiseta Clásica Bauvare",
+                    titulo: "Camiseta Clásica Bauvare", 
                     precio: "S/24.99",
                     precioAnterior: "S/29.99",
                     descuento: "-17%",
                     categoria: "camisetas",
                     imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                    imagenes: [
-                        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                    ],
-                    colores: [
-                        { nombre: "Blanco", codigo: "#FFFFFF" },
-                        { nombre: "Negro", codigo: "#000000" },
-                        { nombre: "Gris", codigo: "#636e72" }
-                    ],
-                    talles: ["XS", "S", "M", "L"],
                     stock: 30,
                     activo: true,
-                    caracteristicas: [
-                        "100% algodón premium de alta calidad",
-                        "Corte regular para máximo comfort",
-                        "Costuras reforzadas para mayor durabilidad",
-                        "Ideal para uso diario y capas de estilo",
-                        "Mantiene su forma y color después de múltiples lavados"
-                    ]
+                    caracteristicas: ["100% algodón premium", "Corte regular", "Costuras reforzadas"]
                 },
                 3: {
                     id: 3,
                     titulo: "Pantalón Elegante Slim",
                     precio: "S/59.99",
-                    precioAnterior: "",
-                    descuento: "",
-                    categoria: "pantalones",
+                    categoria: "pantalones", 
                     imagen: "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                    imagenes: [
-                        "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                    ],
-                    colores: [
-                        { nombre: "Negro", codigo: "#000000" },
-                        { nombre: "Gris Oscuro", codigo: "#2d3436" },
-                        { nombre: "Gris Claro", codigo: "#b2bec3" }
-                    ],
-                    talles: ["28", "30", "32", "34"],
                     stock: 20,
                     activo: true,
-                    caracteristicas: [
-                        "Corte slim fit moderno y elegante",
-                        "Tejido elástico para mayor comodidad",
-                        "Bolsillos funcionales y prácticos",
-                        "Acabado premium en todos los detalles",
-                        "Versátil para uso casual y formal"
-                    ]
+                    caracteristicas: ["Corte slim fit", "Tejido elástico", "Bolsillos funcionales"]
                 },
                 4: {
                     id: 4,
                     titulo: "Abrigo Clásico Bauvare",
-                    precio: "S/99.99",
+                    precio: "S/99.99", 
                     precioAnterior: "S/119.99",
                     descuento: "-17%",
                     categoria: "abrigos",
                     imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                    imagenes: [
-                        "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                    ],
-                    colores: [
-                        { nombre: "Negro", codigo: "#000000" },
-                        { nombre: "Gris Carbón", codigo: "#2d3436" },
-                        { nombre: "Gris Medio", codigo: "#636e72" }
-                    ],
-                    talles: ["S", "M", "L"],
                     stock: 15,
                     activo: true,
-                    caracteristicas: [
-                        "Abrigo de invierno con forro interior suave",
-                        "Material resistente al agua y al viento",
-                        "Diseño clásico atemporal",
-                        "Ideal para temporadas frías",
-                        "Bolsillos espaciosos y funcionales"
-                    ]
+                    caracteristicas: ["Forro interior suave", "Resistente al agua", "Diseño clásico"]
                 }
             };
             localStorage.setItem('productos', JSON.stringify(productos));
         }
 
-        let productoActual = null;
-        let colorSeleccionado = null;
-        let talleSeleccionado = null;
-
-        // FUNCIONALIDADES DEL CATÁLOGO
-        
-        // Cargar productos en la página
+        // CARGAR PRODUCTOS EN LA PÁGINA
         function cargarProductos() {
             const container = document.getElementById('productos-container');
             container.innerHTML = '';
             
             Object.values(productos).forEach(producto => {
-                if (producto.activo) {
-                    const stockClass = producto.stock === 0 ? 'sin-stock' : (producto.stock < 10 ? 'stock-bajo' : '');
-                    const stockText = producto.stock === 0 ? 'AGOTADO' : `Stock: ${producto.stock}`;
+                if (producto.activo !== false) {
+                    const stockText = producto.stock === 0 ? 
+                        '<div class="stock-info sin-stock">AGOTADO</div>' : 
+                        `<div class="stock-info">Stock: ${producto.stock}</div>`;
                     
                     const card = document.createElement('div');
                     card.className = 'producto-card';
@@ -997,23 +468,13 @@
                         <div class="producto-info">
                             <div class="producto-categoria">${producto.categoria.toUpperCase()}</div>
                             <h3 class="producto-titulo">${producto.titulo}</h3>
-                            <div class="stock-info ${stockClass}">${stockText}</div>
+                            ${stockText}
                             <div class="producto-precio">
                                 <span class="precio-actual">${producto.precio}</span>
                                 ${producto.precioAnterior ? `<span class="precio-anterior">${producto.precioAnterior}</span>` : ''}
                                 ${producto.descuento ? `<span class="descuento">${producto.descuento}</span>` : ''}
                             </div>
-                            <div class="producto-colores">
-                                ${producto.colores.map(color => 
-                                    `<div class="color-option" style="background-color: ${color.codigo};" title="${color.nombre}"></div>`
-                                ).join('')}
-                            </div>
-                            <div class="producto-talles">
-                                ${producto.talles.map(talle => 
-                                    `<div class="talle-option">${talle}</div>`
-                                ).join('')}
-                            </div>
-                            <button class="btn-ver-detalles" onclick="mostrarDetalles(${producto.id})" ${producto.stock === 0 ? 'disabled style="opacity: 0.5;"' : ''}>
+                            <button class="btn-ver-detalles" onclick="mostrarDetalles(${producto.id})" ${producto.stock === 0 ? 'disabled style="opacity:0.5"' : ''}>
                                 ${producto.stock === 0 ? 'AGOTADO' : 'VER DETALLES'}
                             </button>
                         </div>
@@ -1023,18 +484,20 @@
             });
         }
 
-        // Filtrado por categoría
+        // FILTRAR PRODUCTOS
         document.querySelectorAll('.filtro-btn').forEach(btn => {
             btn.addEventListener('click', function() {
+                // Quitar clase activa de todos los botones
                 document.querySelectorAll('.filtro-btn').forEach(b => {
                     b.classList.remove('activo');
                 });
+                // Agregar clase activa al botón clickeado
                 this.classList.add('activo');
                 
                 const categoria = this.getAttribute('data-categoria');
-                const productosCards = document.querySelectorAll('.producto-card');
+                const productos = document.querySelectorAll('.producto-card');
                 
-                productosCards.forEach(producto => {
+                productos.forEach(producto => {
                     if (categoria === 'todos' || producto.getAttribute('data-categoria') === categoria) {
                         producto.style.display = 'block';
                     } else {
@@ -1044,157 +507,67 @@
             });
         });
 
-        // Mostrar modal de detalles
+        // MOSTRAR DETALLES DEL PRODUCTO
         function mostrarDetalles(productoId) {
             const producto = productos[productoId];
-            if (producto.stock === 0) return;
             
-            productoActual = productoId;
-            
-            // Limpiar selecciones anteriores
-            colorSeleccionado = null;
-            talleSeleccionado = null;
-            
-            // Actualizar información del modal
             document.getElementById('modal-titulo').textContent = producto.titulo;
             document.getElementById('modal-precio').textContent = producto.precio;
             document.getElementById('modal-precio-ant').textContent = producto.precioAnterior || '';
             document.getElementById('modal-descuento').textContent = producto.descuento || '';
             document.getElementById('modal-imagen').src = producto.imagen;
             
-            // Actualizar stock info
+            // Información de stock
             const stockInfo = document.getElementById('modal-stock');
             if (producto.stock === 0) {
                 stockInfo.innerHTML = '<div class="sin-stock">🔴 PRODUCTO AGOTADO</div>';
             } else if (producto.stock < 10) {
-                stockInfo.innerHTML = `<div class="stock-bajo">🟡 STOCK BAJO: ${producto.stock} unidades</div>`;
+                stockInfo.innerHTML = `<div class="stock-info">🟡 Stock bajo: ${producto.stock} unidades</div>`;
             } else {
-                stockInfo.innerHTML = `<div class="stock-info">🟢 EN STOCK: ${producto.stock} unidades</div>`;
+                stockInfo.innerHTML = `<div class="stock-info">🟢 En stock: ${producto.stock} unidades</div>`;
             }
             
-            // Actualizar miniaturas
-            const miniaturasContainer = document.getElementById('modal-miniaturas');
-            miniaturasContainer.innerHTML = '';
-            producto.imagenes.forEach((imagen, index) => {
-                const miniatura = document.createElement('img');
-                miniatura.src = imagen;
-                miniatura.alt = `Miniatura ${index + 1}`;
-                miniatura.className = 'miniatura' + (index === 0 ? ' activa' : '');
-                miniatura.onclick = () => cambiarImagenPrincipal(imagen, miniatura);
-                miniaturasContainer.appendChild(miniatura);
-            });
+            // Descripción
+            const descripcion = document.getElementById('modal-descripcion');
+            descripcion.innerHTML = `
+                <h3>Características:</h3>
+                <ul>
+                    ${producto.caracteristicas.map(caract => `<li>${caract}</li>`).join('')}
+                </ul>
+            `;
             
-            // Actualizar colores
-            const coloresContainer = document.getElementById('modal-colores');
-            coloresContainer.innerHTML = '';
-            producto.colores.forEach((color, index) => {
-                const colorOption = document.createElement('div');
-                colorOption.className = 'color-option';
-                colorOption.style.backgroundColor = color.codigo;
-                colorOption.title = color.nombre;
-                colorOption.onclick = () => seleccionarColor(color.nombre, colorOption);
-                coloresContainer.appendChild(colorOption);
-            });
-            
-            // Actualizar talles
-            const tallesContainer = document.getElementById('modal-talles');
-            tallesContainer.innerHTML = '';
-            producto.talles.forEach((talle, index) => {
-                const talleOption = document.createElement('div');
-                talleOption.className = 'talle-option';
-                talleOption.textContent = talle;
-                talleOption.onclick = () => seleccionarTalle(talle, talleOption);
-                tallesContainer.appendChild(talleOption);
-            });
-            
-            // Actualizar características
-            const caracteristicasContainer = document.getElementById('modal-caracteristicas');
-            caracteristicasContainer.innerHTML = '';
-            producto.caracteristicas.forEach(caracteristica => {
-                const li = document.createElement('li');
-                li.textContent = caracteristica;
-                caracteristicasContainer.appendChild(li);
-            });
-            
-            // Limpiar selecciones
-            document.getElementById('color-seleccionado').textContent = '';
-            document.getElementById('talle-seleccionado').textContent = '';
-            
-            // Mostrar modal
-            document.getElementById('modal-detalles').style.display = 'block';
-            actualizarBotonWhatsApp();
-        }
-
-        // Cerrar modal
-        function cerrarModal() {
-            document.getElementById('modal-detalles').style.display = 'none';
-        }
-
-        // Cambiar imagen principal
-        function cambiarImagenPrincipal(imagenSrc, miniatura) {
-            document.getElementById('modal-imagen').src = imagenSrc;
-            document.querySelectorAll('.miniatura').forEach(m => m.classList.remove('activa'));
-            miniatura.classList.add('activa');
-        }
-
-        // Seleccionar color
-        function seleccionarColor(color, elemento) {
-            colorSeleccionado = color;
-            document.querySelectorAll('.color-option').forEach(c => c.classList.remove('seleccionado'));
-            elemento.classList.add('seleccionado');
-            document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${color}`;
-            actualizarBotonWhatsApp();
-        }
-
-        // Seleccionar talle
-        function seleccionarTalle(talle, elemento) {
-            talleSeleccionado = talle;
-            document.querySelectorAll('.talle-option').forEach(t => t.classList.remove('seleccionado'));
-            elemento.classList.add('seleccionado');
-            document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${talle}`;
-            actualizarBotonWhatsApp();
-        }
-
-        // Actualizar botón de WhatsApp con la información seleccionada
-        function actualizarBotonWhatsApp() {
-            const producto = productos[productoActual];
+            // Botón de WhatsApp
+            const btnWhatsApp = document.getElementById('btn-whatsapp');
             let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
             mensaje += `Precio: ${producto.precio}%0A`;
+            mensaje += `Stock: ${producto.stock} unidades%0A`;
+            mensaje += `%0A¿Podrían ayudarme con más información?`;
             
-            if (colorSeleccionado) {
-                mensaje += `Color: ${colorSeleccionado}%0A`;
-            }
+            btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
             
-            if (talleSeleccionado) {
-                mensaje += `Talle: ${talleSeleccionado}%0A`;
-            }
-            
-            mensaje += `Stock disponible: ${producto.stock} unidades%0A`;
-            mensaje += `%0A¿Podrían ayudarme con mi pedido?`;
-            
-            const btnWhatsApp = document.getElementById('btn-whatsapp');
-            btnWhatsApp.href = `https://wa.me/+51926677046?text=${mensaje}`;
-            
-            // Deshabilitar botón si no hay selecciones o no hay stock
-            if (!colorSeleccionado || !talleSeleccionado || producto.stock === 0) {
-                btnWhatsApp.style.opacity = '0.6';
+            if (producto.stock === 0) {
+                btnWhatsApp.style.opacity = '0.5';
                 btnWhatsApp.style.cursor = 'not-allowed';
                 btnWhatsApp.onclick = (e) => {
                     e.preventDefault();
-                    if (producto.stock === 0) {
-                        alert('Producto agotado');
-                    } else {
-                        alert('Por favor selecciona color y talle antes de continuar');
-                    }
+                    alert('Producto agotado');
                 };
             } else {
                 btnWhatsApp.style.opacity = '1';
                 btnWhatsApp.style.cursor = 'pointer';
                 btnWhatsApp.onclick = null;
             }
+            
+            // Mostrar modal
+            document.getElementById('modal-detalles').style.display = 'block';
         }
 
-        // Cerrar modal al hacer clic fuera
+        // CERRAR MODAL
+        function cerrarModal() {
+            document.getElementById('modal-detalles').style.display = 'none';
+        }
+
+        // CERRAR MODAL AL HACER CLIC FUERA
         window.onclick = function(event) {
             const modal = document.getElementById('modal-detalles');
             if (event.target === modal) {
@@ -1202,7 +575,7 @@
             }
         }
 
-        // Scroll suave al hacer clic en "Descubrir"
+        // SCROLL SUAVE
         document.querySelector('.btn-descubrir').addEventListener('click', function(e) {
             e.preventDefault();
             document.querySelector('#catalogo').scrollIntoView({
@@ -1210,17 +583,17 @@
             });
         });
 
-        // Sincronización con admin - Verificar cambios cada 3 segundos
+        // SINCRONIZACIÓN CON ADMIN - Verificar cambios cada 3 segundos
         setInterval(() => {
             const productosActualizados = JSON.parse(localStorage.getItem('productos'));
             if (productosActualizados && JSON.stringify(productosActualizados) !== JSON.stringify(productos)) {
-                console.log('Cambios detectados - Actualizando productos...');
+                console.log('🔄 Actualizando productos...');
                 productos = productosActualizados;
                 cargarProductos();
             }
         }, 3000);
 
-        // Inicializar
+        // INICIALIZAR
         cargarProductos();
     </script>
 </body>
