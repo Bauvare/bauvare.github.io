@@ -251,6 +251,11 @@
             color: #28a745;
             font-weight: bold;
         }
+
+        small {
+            color: #666;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -342,6 +347,11 @@
                     <label>Precio Anterior (S/) - opcional:</label>
                     <input type="number" id="producto-precio-anterior" step="0.01" placeholder="Ej: 30.00">
                 </div>
+
+                <div class="form-group">
+                    <label>Descuento (%) - opcional:</label>
+                    <input type="number" id="producto-descuento" min="0" max="100" placeholder="Ej: 15">
+                </div>
                 
                 <div class="form-group">
                     <label>Stock Inicial:</label>
@@ -352,15 +362,23 @@
                     <label>URL de Imagen Principal:</label>
                     <input type="url" id="producto-imagen" required placeholder="https://ejemplo.com/imagen.jpg">
                 </div>
+
+                <div class="form-group">
+                    <label>URLs de Imágenes Adicionales (separadas por coma, máximo 6):</label>
+                    <textarea id="producto-imagenes-adicionales" rows="3" placeholder="https://imagen2.jpg, https://imagen3.jpg, https://imagen4.jpg"></textarea>
+                    <small>Opcional: Agrega hasta 6 imágenes adicionales para mostrar en el detalle del producto</small>
+                </div>
                 
                 <div class="form-group">
                     <label>Colores (separados por coma):</label>
-                    <input type="text" id="producto-colores" required placeholder="Ej: Negro, Gris Oscuro, Gris Medio">
+                    <input type="text" id="producto-colores" required placeholder="Ej: Negro, Blanco, Gris Oscuro, Azul Marino">
+                    <small>Ejemplo: Negro, Blanco, Gris, Azul. Se generarán automáticamente los códigos de color</small>
                 </div>
                 
                 <div class="form-group">
                     <label>Talles (separados por coma):</label>
-                    <input type="text" id="producto-talles" required placeholder="Ej: S, M, L, XL">
+                    <input type="text" id="producto-talles" required placeholder="Ej: S, M, L, XL, XXL">
+                    <small>Ejemplo: S, M, L, XL o 28, 30, 32, 34 para pantalones</small>
                 </div>
                 
                 <div class="form-group">
@@ -570,17 +588,43 @@
             const caracteristicas = document.getElementById('producto-descripcion').value.split('\n').filter(line => line.trim());
             const colores = document.getElementById('producto-colores').value.split(',').map(color => color.trim()).filter(color => color);
             const talles = document.getElementById('producto-talles').value.split(',').map(talle => talle.trim()).filter(talle => talle);
+            const imagenesAdicionales = document.getElementById('producto-imagenes-adicionales').value
+                .split(',')
+                .map(url => url.trim())
+                .filter(url => url);
+            
+            // Combinar imagen principal con imágenes adicionales (máximo 7 imágenes en total)
+            const todasLasImagenes = [
+                document.getElementById('producto-imagen').value, 
+                ...imagenesAdicionales
+            ].slice(0, 7);
+            
+            // Calcular descuento si se proporcionó
+            const precioActual = parseFloat(document.getElementById('producto-precio').value);
+            const precioAnterior = document.getElementById('producto-precio-anterior').value ? 
+                parseFloat(document.getElementById('producto-precio-anterior').value) : null;
+            const descuentoPorcentaje = document.getElementById('producto-descuento').value ? 
+                parseInt(document.getElementById('producto-descuento').value) : null;
+            
+            let descuentoTexto = '';
+            if (descuentoPorcentaje) {
+                descuentoTexto = `-${descuentoPorcentaje}%`;
+            }
             
             const nuevoProducto = {
                 id: nuevoId,
                 titulo: document.getElementById('producto-nombre').value,
                 categoria: document.getElementById('producto-categoria').value,
-                precio: `S/${parseFloat(document.getElementById('producto-precio').value).toFixed(2)}`,
-                precioAnterior: document.getElementById('producto-precio-anterior').value ? `S/${parseFloat(document.getElementById('producto-precio-anterior').value).toFixed(2)}` : "",
+                precio: `S/${precioActual.toFixed(2)}`,
+                precioAnterior: precioAnterior ? `S/${precioAnterior.toFixed(2)}` : "",
+                descuento: descuentoTexto,
                 stock: parseInt(document.getElementById('producto-stock').value),
                 imagen: document.getElementById('producto-imagen').value,
-                imagenes: [document.getElementById('producto-imagen').value],
-                colores: colores.map(color => ({ nombre: color, codigo: obtenerCodigoColor(color) })),
+                imagenes: todasLasImagenes,
+                colores: colores.map(color => ({ 
+                    nombre: color, 
+                    codigo: obtenerCodigoColor(color) 
+                })),
                 talles: talles,
                 activo: true,
                 caracteristicas: caracteristicas
@@ -600,10 +644,22 @@
                 'gris oscuro': '#2d3436',
                 'gris medio': '#636e72',
                 'gris claro': '#b2bec3',
+                'gris': '#808080',
                 'azul': '#0000FF',
+                'azul marino': '#000080',
+                'azul claro': '#87CEEB',
                 'rojo': '#FF0000',
+                'rojo oscuro': '#8B0000',
                 'verde': '#00FF00',
-                'amarillo': '#FFFF00'
+                'verde oscuro': '#006400',
+                'amarillo': '#FFFF00',
+                'naranja': '#FFA500',
+                'rosa': '#FFC0CB',
+                'morado': '#800080',
+                'marron': '#8B4513',
+                'beige': '#F5F5DC',
+                'camel': '#C19A6B',
+                'khaki': '#F0E68C'
             };
             return colores[nombreColor.toLowerCase()] || '#CCCCCC';
         }
