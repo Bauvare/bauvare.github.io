@@ -139,6 +139,7 @@
             border: none;
             cursor: pointer;
             margin: 5px;
+            border-radius: 5px;
         }
         
         .btn:hover {
@@ -156,6 +157,10 @@
         .btn-warning {
             background: #ffc107;
             color: #000;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
         }
         
         table {
@@ -185,6 +190,7 @@
             padding: 10px 20px;
             cursor: pointer;
             font-weight: 500;
+            border-radius: 5px;
         }
         
         .btn-logout:hover {
@@ -205,7 +211,7 @@
         
         .venta-item {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             padding: 10px;
             border-bottom: 1px solid #ddd;
@@ -217,6 +223,33 @@
             border: 2px solid #000;
             max-width: 300px;
             margin: 20px auto;
+            text-align: center;
+        }
+        
+        .carrito-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stock-bajo {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .sin-stock {
+            color: #dc3545;
+            font-weight: bold;
+            background: #ffe6e6;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .en-stock {
+            color: #28a745;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -235,7 +268,7 @@
             <button class="nav-button" onclick="showSection('agregar-producto')">AGREGAR PRODUCTOS</button>
             <button class="nav-button" onclick="showSection('ventas')">REGISTRAR VENTAS</button>
             <button class="nav-button" onclick="showSection('estadisticas')">ESTADÍSTICAS</button>
-            <button class="nav-button" onclick="showSection('reportes')">REPORTES EXCEL</button>
+            <button class="nav-button" onclick="showSection('reportes')">REPORTES</button>
         </div>
     </div>
 
@@ -265,11 +298,17 @@
                     <p>Necesitan reposición</p>
                 </div>
             </div>
+            
+            <h3>📈 ACTIVIDAD RECIENTE</h3>
+            <div id="actividad-reciente">
+                <!-- Actividad se carga dinámicamente -->
+            </div>
         </div>
 
         <!-- GESTIÓN DE STOCK -->
         <div id="stock-section" class="section">
             <h2>📦 GESTIÓN DE STOCK</h2>
+            <p>Gestiona el inventario de tus productos. Actualiza stock y controla disponibilidad.</p>
             <div class="productos-grid" id="stock-grid">
                 <!-- Los productos se cargan dinámicamente -->
             </div>
@@ -281,12 +320,13 @@
             <form id="form-agregar-producto">
                 <div class="form-group">
                     <label>Nombre del Producto:</label>
-                    <input type="text" id="producto-nombre" required>
+                    <input type="text" id="producto-nombre" required placeholder="Ej: Polo Clásico Negro">
                 </div>
                 
                 <div class="form-group">
                     <label>Categoría:</label>
                     <select id="producto-categoria" required>
+                        <option value="">Seleccionar categoría</option>
                         <option value="camisetas">POLOS</option>
                         <option value="pantalones">PANTALONES</option>
                         <option value="abrigos">ABRIGOS</option>
@@ -294,31 +334,41 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Precio Actual:</label>
-                    <input type="number" id="producto-precio" step="0.01" required>
+                    <label>Precio Actual (S/):</label>
+                    <input type="number" id="producto-precio" step="0.01" required placeholder="Ej: 25.00">
                 </div>
                 
                 <div class="form-group">
-                    <label>Precio Anterior (opcional):</label>
-                    <input type="number" id="producto-precio-anterior" step="0.01">
+                    <label>Precio Anterior (S/) - opcional:</label>
+                    <input type="number" id="producto-precio-anterior" step="0.01" placeholder="Ej: 30.00">
                 </div>
                 
                 <div class="form-group">
                     <label>Stock Inicial:</label>
-                    <input type="number" id="producto-stock" required>
+                    <input type="number" id="producto-stock" required placeholder="Ej: 50">
                 </div>
                 
                 <div class="form-group">
                     <label>URL de Imagen Principal:</label>
-                    <input type="url" id="producto-imagen" required>
+                    <input type="url" id="producto-imagen" required placeholder="https://ejemplo.com/imagen.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label>Colores (separados por coma):</label>
+                    <input type="text" id="producto-colores" required placeholder="Ej: Negro, Gris Oscuro, Gris Medio">
+                </div>
+                
+                <div class="form-group">
+                    <label>Talles (separados por coma):</label>
+                    <input type="text" id="producto-talles" required placeholder="Ej: S, M, L, XL">
                 </div>
                 
                 <div class="form-group">
                     <label>Descripción/Características (una por línea):</label>
-                    <textarea id="producto-descripcion" rows="5"></textarea>
+                    <textarea id="producto-descripcion" rows="5" placeholder="Ej: Tejido de alta calidad&#10;Corte elegante&#10;Material transpirable"></textarea>
                 </div>
                 
-                <button type="submit" class="btn btn-success">AGREGAR PRODUCTO</button>
+                <button type="submit" class="btn btn-success">➕ AGREGAR PRODUCTO</button>
             </form>
         </div>
 
@@ -333,12 +383,13 @@
                 <div id="items-carrito"></div>
                 <div class="form-group">
                     <label>Descuento (%):</label>
-                    <input type="number" id="descuento-venta" value="0" min="0" max="100">
+                    <input type="number" id="descuento-venta" value="0" min="0" max="100" onchange="actualizarCarrito()">
                 </div>
                 <div class="form-group">
                     <label>Total: <span id="total-venta">S/ 0</span></label>
                 </div>
-                <button class="btn btn-success" onclick="finalizarVenta()">FINALIZAR VENTA</button>
+                <button class="btn btn-success" onclick="finalizarVenta()">✅ FINALIZAR VENTA</button>
+                <button class="btn btn-danger" onclick="cancelarVenta()">❌ CANCELAR VENTA</button>
             </div>
         </div>
 
@@ -350,11 +401,21 @@
             </div>
         </div>
 
-        <!-- REPORTES EXCEL -->
+        <!-- REPORTES -->
         <div id="reportes-section" class="section">
             <h2>📊 REPORTES Y EXPORTACIÓN</h2>
-            <button class="btn" onclick="generarReporteMensual()">📥 GENERAR REPORTE MENSUAL</button>
-            <button class="btn" onclick="exportarExcel()">📊 EXPORTAR A EXCEL</button>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>REPORTE MENSUAL</h3>
+                    <p>Genera reporte completo del mes actual</p>
+                    <button class="btn btn-info" onclick="generarReporteMensual()">📥 GENERAR REPORTE</button>
+                </div>
+                <div class="stat-card">
+                    <h3>EXPORTAR DATOS</h3>
+                    <p>Exporta datos a formato Excel</p>
+                    <button class="btn btn-info" onclick="exportarExcel()">📊 EXPORTAR EXCEL</button>
+                </div>
+            </div>
             <div id="reporte-contenido"></div>
         </div>
     </div>
@@ -366,7 +427,7 @@
         }
 
         // DATOS GLOBALES
-        let productos = JSON.parse(localStorage.getItem('bauvareProductos')) || {};
+        let productos = JSON.parse(localStorage.getItem('productos')) || {};
         let ventas = JSON.parse(localStorage.getItem('bauvareVentas')) || [];
         let carritoVenta = [];
 
@@ -388,99 +449,54 @@
             if(sectionName === 'dashboard') cargarDashboard();
         }
 
-        // CARGAR DATOS INICIALES DESDE TU CATÁLOGO
-        function cargarProductosIniciales() {
-            if(Object.keys(productos).length === 0) {
-                // Si no hay productos en localStorage, cargar los de tu catálogo
-                productos = {
-                    1: {
-                        id: 1,
-                        titulo: "Polo Negro Elegante",
-                        precio: "S/25",
-                        precioAnterior: "S/30.00",
-                        descuento: "-15%",
-                        categoria: "camisetas",
-                        imagen: "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
-                        stock: 50,
-                        activo: true,
-                        caracteristicas: [
-                            "Tejido de alta calidad con caída perfecta",
-                            "Corte elegante que favorece la silueta",
-                            "Material transpirable y cómodo"
-                        ]
-                    },
-                    2: {
-                        id: 2,
-                        titulo: "Camiseta Clásica Bauvare",
-                        precio: "$24.99",
-                        precioAnterior: "$29.99",
-                        descuento: "-17%",
-                        categoria: "camisetas",
-                        imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                        stock: 30,
-                        activo: true,
-                        caracteristicas: [
-                            "100% algodón premium de alta calidad",
-                            "Corte regular para máximo comfort"
-                        ]
-                    },
-                    3: {
-                        id: 3,
-                        titulo: "Pantalón Elegante Slim",
-                        precio: "$59.99",
-                        categoria: "pantalones",
-                        imagen: "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                        stock: 20,
-                        activo: true,
-                        caracteristicas: [
-                            "Corte slim fit moderno y elegante",
-                            "Tejido elástico para mayor comodidad"
-                        ]
-                    },
-                    4: {
-                        id: 4,
-                        titulo: "Abrigo Clásico Bauvare",
-                        precio: "$99.99",
-                        precioAnterior: "$119.99",
-                        descuento: "-17%",
-                        categoria: "abrigos",
-                        imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                        stock: 15,
-                        activo: true,
-                        caracteristicas: [
-                            "Abrigo de invierno con forro interior suave",
-                            "Material resistente al agua y al viento"
-                        ]
-                    }
-                };
-                guardarProductos();
-            }
-        }
-
-        // GUARDAR PRODUCTOS
-        function guardarProductos() {
-            localStorage.setItem('bauvareProductos', JSON.stringify(productos));
-            // También actualizar el catálogo principal
-            localStorage.setItem('productos', JSON.stringify(productos));
-        }
-
         // CARGAR DASHBOARD
         function cargarDashboard() {
-            const totalProducts = Object.keys(productos).length;
-            const monthSales = ventas.filter(v => {
-                const ventaDate = new Date(v.fecha);
-                const now = new Date();
-                return ventaDate.getMonth() === now.getMonth() && 
-                       ventaDate.getFullYear() === now.getFullYear();
-            }).length;
-            
-            const totalIncome = ventas.reduce((sum, venta) => sum + venta.total, 0);
-            const lowStock = Object.values(productos).filter(p => p.stock < 10).length;
+            const totalProducts = Object.values(productos).filter(p => p.activo).length;
+            const monthSales = ventas.filter(v => esVentaDelMes(v.fecha)).length;
+            const totalIncome = ventas.filter(v => esVentaDelMes(v.fecha)).reduce((sum, v) => sum + v.total, 0);
+            const lowStock = Object.values(productos).filter(p => p.stock < 10 && p.stock > 0).length;
 
             document.getElementById('totalProducts').textContent = totalProducts;
             document.getElementById('monthSales').textContent = monthSales;
-            document.getElementById('totalIncome').textContent = `S/ ${totalIncome}`;
+            document.getElementById('totalIncome').textContent = `S/ ${totalIncome.toFixed(2)}`;
             document.getElementById('lowStock').textContent = lowStock;
+            
+            // Cargar actividad reciente
+            cargarActividadReciente();
+        }
+
+        function esVentaDelMes(fecha) {
+            const ventaDate = new Date(fecha);
+            const now = new Date();
+            return ventaDate.getMonth() === now.getMonth() && 
+                   ventaDate.getFullYear() === now.getFullYear();
+        }
+
+        function cargarActividadReciente() {
+            const container = document.getElementById('actividad-reciente');
+            const ventasRecientes = ventas.slice(-5).reverse();
+            
+            if (ventasRecientes.length === 0) {
+                container.innerHTML = '<p>No hay actividad reciente</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <table>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                    </tr>
+                    ${ventasRecientes.map(venta => `
+                        <tr>
+                            <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                            <td>${venta.items.map(item => `${item.titulo} (x${item.cantidad})`).join(', ')}</td>
+                            <td>S/ ${venta.total.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
         }
 
         // CARGAR GESTIÓN DE STOCK
@@ -489,19 +505,26 @@
             grid.innerHTML = '';
             
             Object.values(productos).forEach(producto => {
+                const stockStatus = producto.stock === 0 ? 'sin-stock' : (producto.stock < 10 ? 'stock-bajo' : 'en-stock');
+                const stockText = producto.stock === 0 ? 'AGOTADO' : `${producto.stock} unidades`;
+                
                 const card = document.createElement('div');
                 card.className = 'producto-admin-card';
                 card.innerHTML = `
                     <h4>${producto.titulo}</h4>
-                    <p>Precio: ${producto.precio}</p>
-                    <p>Stock actual: <strong>${producto.stock}</strong></p>
+                    <p><strong>Categoría:</strong> ${producto.categoria.toUpperCase()}</p>
+                    <p><strong>Precio:</strong> ${producto.precio}</p>
+                    <p><strong>Stock:</strong> <span class="${stockStatus}">${stockText}</span></p>
                     <div class="stock-control">
                         <button class="btn btn-warning" onclick="cambiarStock(${producto.id}, -1)">-1</button>
-                        <input type="number" id="stock-${producto.id}" value="${producto.stock}">
+                        <input type="number" id="stock-${producto.id}" value="${producto.stock}" min="0">
                         <button class="btn btn-success" onclick="cambiarStock(${producto.id}, 1)">+1</button>
-                        <button class="btn" onclick="actualizarStock(${producto.id})">Actualizar</button>
+                        <button class="btn btn-info" onclick="actualizarStock(${producto.id})">🔄 Actualizar</button>
                     </div>
-                    <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">Eliminar</button>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
+                        ${!producto.activo ? `<button class="btn btn-success" onclick="activarProducto(${producto.id})">✅ Activar</button>` : ''}
+                    </div>
                 `;
                 grid.appendChild(card);
             });
@@ -519,40 +542,76 @@
             const input = document.getElementById(`stock-${productoId}`);
             productos[productoId].stock = parseInt(input.value);
             guardarProductos();
-            alert('Stock actualizado correctamente');
+            cargarGestionStock();
+            alert('✅ Stock actualizado correctamente');
         }
 
         function eliminarProducto(productoId) {
-            if(confirm('¿Estás seguro de eliminar este producto?')) {
-                delete productos[productoId];
+            if(confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
+                productos[productoId].activo = false;
                 guardarProductos();
                 cargarGestionStock();
+                alert('✅ Producto eliminado correctamente');
             }
+        }
+
+        function activarProducto(productoId) {
+            productos[productoId].activo = true;
+            guardarProductos();
+            cargarGestionStock();
+            alert('✅ Producto activado correctamente');
         }
 
         // AGREGAR NUEVO PRODUCTO
         document.getElementById('form-agregar-producto').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const nuevoId = Math.max(...Object.keys(productos).map(Number)) + 1;
+            const nuevoId = Object.keys(productos).length > 0 ? Math.max(...Object.keys(productos).map(Number)) + 1 : 1;
             const caracteristicas = document.getElementById('producto-descripcion').value.split('\n').filter(line => line.trim());
+            const colores = document.getElementById('producto-colores').value.split(',').map(color => color.trim()).filter(color => color);
+            const talles = document.getElementById('producto-talles').value.split(',').map(talle => talle.trim()).filter(talle => talle);
             
-            productos[nuevoId] = {
+            const nuevoProducto = {
                 id: nuevoId,
                 titulo: document.getElementById('producto-nombre').value,
                 categoria: document.getElementById('producto-categoria').value,
-                precio: `S/${document.getElementById('producto-precio').value}`,
-                precioAnterior: document.getElementById('producto-precio-anterior').value ? `S/${document.getElementById('producto-precio-anterior').value}` : "",
+                precio: `S/${parseFloat(document.getElementById('producto-precio').value).toFixed(2)}`,
+                precioAnterior: document.getElementById('producto-precio-anterior').value ? `S/${parseFloat(document.getElementById('producto-precio-anterior').value).toFixed(2)}` : "",
                 stock: parseInt(document.getElementById('producto-stock').value),
                 imagen: document.getElementById('producto-imagen').value,
+                imagenes: [document.getElementById('producto-imagen').value],
+                colores: colores.map(color => ({ nombre: color, codigo: obtenerCodigoColor(color) })),
+                talles: talles,
                 activo: true,
                 caracteristicas: caracteristicas
             };
             
+            productos[nuevoId] = nuevoProducto;
             guardarProductos();
             this.reset();
-            alert('Producto agregado correctamente');
+            alert('✅ Producto agregado correctamente');
+            cargarGestionStock();
         });
+
+        function obtenerCodigoColor(nombreColor) {
+            const colores = {
+                'negro': '#000000',
+                'blanco': '#FFFFFF',
+                'gris oscuro': '#2d3436',
+                'gris medio': '#636e72',
+                'gris claro': '#b2bec3',
+                'azul': '#0000FF',
+                'rojo': '#FF0000',
+                'verde': '#00FF00',
+                'amarillo': '#FFFF00'
+            };
+            return colores[nombreColor.toLowerCase()] || '#CCCCCC';
+        }
+
+        // GUARDAR PRODUCTOS (SINCRONIZACIÓN CON PÁGINA PRINCIPAL)
+        function guardarProductos() {
+            localStorage.setItem('productos', JSON.stringify(productos));
+        }
 
         // CARGAR VENTAS
         function cargarVentas() {
@@ -560,14 +619,16 @@
             grid.innerHTML = '';
             
             Object.values(productos).forEach(producto => {
-                if(producto.stock > 0) {
+                if(producto.activo) {
                     const card = document.createElement('div');
                     card.className = 'producto-admin-card';
                     card.innerHTML = `
                         <h4>${producto.titulo}</h4>
-                        <p>Precio: ${producto.precio}</p>
-                        <p>Stock: ${producto.stock}</p>
-                        <button class="btn btn-success" onclick="agregarAlCarrito(${producto.id})">Agregar a Venta</button>
+                        <p><strong>Precio:</strong> ${producto.precio}</p>
+                        <p><strong>Stock:</strong> ${producto.stock} unidades</p>
+                        <button class="btn btn-success" onclick="agregarAlCarrito(${producto.id})" ${producto.stock === 0 ? 'disabled' : ''}>
+                            ${producto.stock === 0 ? 'AGOTADO' : '➕ Agregar a Venta'}
+                        </button>
                     `;
                     grid.appendChild(card);
                 }
@@ -577,13 +638,24 @@
         // FUNCIONES DE VENTAS
         function agregarAlCarrito(productoId) {
             const producto = productos[productoId];
-            const precioNumerico = parseFloat(producto.precio.replace('S/', '').replace('$', ''));
+            const precioNumerico = parseFloat(producto.precio.replace('S/', ''));
             
-            carritoVenta.push({
-                ...producto,
-                precioNumerico: precioNumerico,
-                cantidad: 1
-            });
+            // Verificar si el producto ya está en el carrito
+            const itemExistente = carritoVenta.find(item => item.id === productoId);
+            if (itemExistente) {
+                if (itemExistente.cantidad < producto.stock) {
+                    itemExistente.cantidad++;
+                } else {
+                    alert('❌ No hay suficiente stock disponible');
+                    return;
+                }
+            } else {
+                carritoVenta.push({
+                    ...producto,
+                    precioNumerico: precioNumerico,
+                    cantidad: 1
+                });
+            }
             
             actualizarCarrito();
             document.getElementById('carrito-venta').style.display = 'block';
@@ -599,11 +671,18 @@
                 total += subtotal;
                 
                 const div = document.createElement('div');
-                div.className = 'venta-item';
+                div.className = 'carrito-item';
                 div.innerHTML = `
-                    <span>${item.titulo} x${item.cantidad}</span>
-                    <span>S/ ${subtotal}</span>
-                    <button class="btn btn-danger" onclick="removerDelCarrito(${index})">X</button>
+                    <div>
+                        <strong>${item.titulo}</strong><br>
+                        <small>${item.precio} x ${item.cantidad}</small>
+                    </div>
+                    <div>
+                        <strong>S/ ${subtotal.toFixed(2)}</strong>
+                        <button class="btn btn-warning" onclick="cambiarCantidad(${index}, -1)">-</button>
+                        <button class="btn btn-success" onclick="cambiarCantidad(${index}, 1)">+</button>
+                        <button class="btn btn-danger" onclick="removerDelCarrito(${index})">❌</button>
+                    </div>
                 `;
                 container.appendChild(div);
             });
@@ -615,6 +694,24 @@
             document.getElementById('total-venta').textContent = `S/ ${total.toFixed(2)}`;
         }
 
+        function cambiarCantidad(index, cambio) {
+            const item = carritoVenta[index];
+            const nuevoStock = item.cantidad + cambio;
+            
+            if (nuevoStock < 1) {
+                removerDelCarrito(index);
+                return;
+            }
+            
+            if (nuevoStock > productos[item.id].stock) {
+                alert('❌ No hay suficiente stock disponible');
+                return;
+            }
+            
+            item.cantidad = nuevoStock;
+            actualizarCarrito();
+        }
+
         function removerDelCarrito(index) {
             carritoVenta.splice(index, 1);
             actualizarCarrito();
@@ -623,10 +720,26 @@
             }
         }
 
+        function cancelarVenta() {
+            if(confirm('¿Estás seguro de cancelar la venta?')) {
+                carritoVenta = [];
+                document.getElementById('carrito-venta').style.display = 'none';
+                document.getElementById('descuento-venta').value = 0;
+            }
+        }
+
         function finalizarVenta() {
             if(carritoVenta.length === 0) {
-                alert('No hay productos en el carrito');
+                alert('❌ No hay productos en el carrito');
                 return;
+            }
+            
+            // Verificar stock antes de finalizar
+            for (let item of carritoVenta) {
+                if (item.cantidad > productos[item.id].stock) {
+                    alert(`❌ No hay suficiente stock de ${item.titulo}. Stock disponible: ${productos[item.id].stock}`);
+                    return;
+                }
             }
             
             const descuento = parseInt(document.getElementById('descuento-venta').value) || 0;
@@ -645,94 +758,103 @@
                 fecha: new Date().toISOString(),
                 items: [...carritoVenta],
                 descuento: descuento,
-                total: total,
-                tipo: 'contado'
+                total: total
             };
             
             ventas.push(nuevaVenta);
             localStorage.setItem('bauvareVentas', JSON.stringify(ventas));
             guardarProductos();
             
-            // Generar boleta
-            generarBoleta(nuevaVenta);
+            // Mostrar boleta
+            mostrarBoleta(nuevaVenta);
             
             // Limpiar carrito
             carritoVenta = [];
             document.getElementById('carrito-venta').style.display = 'none';
             document.getElementById('descuento-venta').value = 0;
             
-            alert('Venta registrada correctamente');
+            alert('✅ Venta registrada correctamente');
+            cargarVentas();
         }
 
-        function generarBoleta(venta) {
-            // Esta función genera una imagen de boleta (simulada)
+        function mostrarBoleta(venta) {
             const boleta = `
                 <div class="boleta">
-                    <h3>BAUVARE - COMPROBANTE</h3>
+                    <h3>🏪 BAUVARE</h3>
+                    <p><strong>COMPROBANTE DE VENTA</strong></p>
                     <p>Fecha: ${new Date(venta.fecha).toLocaleDateString()}</p>
+                    <p>Hora: ${new Date(venta.fecha).toLocaleTimeString()}</p>
                     <hr>
                     ${venta.items.map(item => `
                         <p>${item.titulo} x${item.cantidad} - S/ ${(item.precioNumerico * item.cantidad).toFixed(2)}</p>
                     `).join('')}
                     <hr>
                     <p>Descuento: ${venta.descuento}%</p>
-                    <h4>TOTAL: S/ ${venta.total.toFixed(2)}</h4>
+                    <h3>TOTAL: S/ ${venta.total.toFixed(2)}</h3>
+                    <hr>
                     <p>¡Gracias por su compra!</p>
+                    <p>📞 +51 926677046</p>
                 </div>
             `;
             
-            // Aquí podrías implementar la generación de imagen real
-            alert('Boleta generada (en una implementación real, se generaría como imagen)');
-            console.log('Boleta:', boleta);
+            // En una implementación real, aquí generarías una imagen o PDF
+            alert('📄 Boleta generada (En producción se generaría como imagen/PDF)');
+            console.log('BOLETA:', boleta);
         }
 
         // CARGAR ESTADÍSTICAS
         function cargarEstadisticas() {
             const container = document.getElementById('estadisticas-contenido');
             
-            const ventasMes = ventas.filter(v => {
-                const ventaDate = new Date(v.fecha);
-                const now = new Date();
-                return ventaDate.getMonth() === now.getMonth() && 
-                       ventaDate.getFullYear() === now.getFullYear();
-            });
-            
+            const ventasMes = ventas.filter(v => esVentaDelMes(v.fecha));
             const totalVentas = ventasMes.reduce((sum, v) => sum + v.total, 0);
             const productoMasVendido = encontrarProductoMasVendido();
             
             container.innerHTML = `
-                <h3>📊 ESTADÍSTICAS DEL MES</h3>
-                <p>Total de ventas: S/ ${totalVentas.toFixed(2)}</p>
-                <p>Cantidad de transacciones: ${ventasMes.length}</p>
-                <p>Producto más vendido: ${productoMasVendido}</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>VENTAS DEL MES</h3>
+                        <div class="stat-number">${ventasMes.length}</div>
+                        <p>transacciones</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>INGRESOS TOTALES</h3>
+                        <div class="stat-number">S/ ${totalVentas.toFixed(2)}</div>
+                        <p>acumulado</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>PRODUCTO MÁS VENDIDO</h3>
+                        <div class="stat-number" style="font-size: 24px;">${productoMasVendido.nombre || 'N/A'}</div>
+                        <p>${productoMasVendido.cantidad || 0} unidades</p>
+                    </div>
+                </div>
                 
-                <h3>📋 HISTORIAL DE VENTAS</h3>
-                <table>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Productos</th>
-                        <th>Total</th>
-                    </tr>
-                    ${ventasMes.map(venta => `
+                <h3>📋 HISTORIAL DE VENTAS RECIENTES</h3>
+                ${ventasMes.length > 0 ? `
+                    <table>
                         <tr>
-                            <td>${new Date(venta.fecha).toLocaleDateString()}</td>
-                            <td>${venta.items.map(item => `${item.titulo} (x${item.cantidad})`).join(', ')}</td>
-                            <td>S/ ${venta.total.toFixed(2)}</td>
+                            <th>Fecha</th>
+                            <th>Productos</th>
+                            <th>Descuento</th>
+                            <th>Total</th>
                         </tr>
-                    `).join('')}
-                </table>
+                        ${ventasMes.slice(-10).reverse().map(venta => `
+                            <tr>
+                                <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                                <td>${venta.items.map(item => `${item.titulo} (x${item.cantidad})`).join(', ')}</td>
+                                <td>${venta.descuento}%</td>
+                                <td>S/ ${venta.total.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                ` : '<p>No hay ventas este mes</p>'}
             `;
         }
 
         function encontrarProductoMasVendido() {
-            const ventasMes = ventas.filter(v => {
-                const ventaDate = new Date(v.fecha);
-                const now = new Date();
-                return ventaDate.getMonth() === now.getMonth() && 
-                       ventaDate.getFullYear() === now.getFullYear();
-            });
-            
+            const ventasMes = ventas.filter(v => esVentaDelMes(v.fecha));
             const productosVendidos = {};
+            
             ventasMes.forEach(venta => {
                 venta.items.forEach(item => {
                     productosVendidos[item.titulo] = (productosVendidos[item.titulo] || 0) + item.cantidad;
@@ -740,40 +862,67 @@
             });
             
             const masVendido = Object.entries(productosVendidos).sort((a, b) => b[1] - a[1])[0];
-            return masVendido ? `${masVendido[0]} (${masVendido[1]} unidades)` : 'No hay ventas este mes';
+            return masVendido ? { nombre: masVendido[0], cantidad: masVendido[1] } : { nombre: '', cantidad: 0 };
         }
 
-        // REPORTES EXCEL
+        // REPORTES
         function generarReporteMensual() {
-            const ventasMes = ventas.filter(v => {
-                const ventaDate = new Date(v.fecha);
-                const now = new Date();
-                return ventaDate.getMonth() === now.getMonth() && 
-                       ventaDate.getFullYear() === now.getFullYear();
-            });
+            const ventasMes = ventas.filter(v => esVentaDelMes(v.fecha));
+            const totalIngresos = ventasMes.reduce((sum, v) => sum + v.total, 0);
+            const totalProductosVendidos = ventasMes.reduce((sum, v) => sum + v.items.reduce((itemSum, item) => itemSum + item.cantidad, 0), 0);
             
             const reporte = `
-                <h3>📋 REPORTE MENSUAL</h3>
-                <p>Total ventas: S/ ${ventasMes.reduce((sum, v) => sum + v.total, 0).toFixed(2)}</p>
-                <p>Total transacciones: ${ventasMes.length}</p>
-                <p>Fecha de generación: ${new Date().toLocaleDateString()}</p>
+                <h3>📋 REPORTE MENSUAL - ${new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>TOTAL VENTAS</h3>
+                        <div class="stat-number">${ventasMes.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>INGRESOS</h3>
+                        <div class="stat-number">S/ ${totalIngresos.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>PRODUCTOS VENDIDOS</h3>
+                        <div class="stat-number">${totalProductosVendidos}</div>
+                    </div>
+                </div>
+                
+                <h4>📊 DETALLE DE VENTAS</h4>
+                <table>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Productos</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </tr>
+                    ${ventasMes.map(venta => `
+                        <tr>
+                            <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                            <td>${venta.items.map(item => item.titulo).join(', ')}</td>
+                            <td>${venta.items.reduce((sum, item) => sum + item.cantidad, 0)}</td>
+                            <td>S/ ${venta.total.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </table>
             `;
             
             document.getElementById('reporte-contenido').innerHTML = reporte;
-            alert('Reporte generado (en una implementación real, se exportaría a Excel)');
+            alert('✅ Reporte mensual generado');
         }
 
         function exportarExcel() {
             // Simulación de exportación a Excel
-            const data = ventas.map(venta => ({
+            const datosExportar = ventas.map(venta => ({
                 Fecha: new Date(venta.fecha).toLocaleDateString(),
-                Productos: venta.items.map(item => `${item.titulo} x${item.cantidad}`).join(', '),
+                Productos: venta.items.map(item => `${item.titulo} (x${item.cantidad})`).join('; '),
+                'Cantidad Total': venta.items.reduce((sum, item) => sum + item.cantidad, 0),
                 Descuento: `${venta.descuento}%`,
                 Total: `S/ ${venta.total.toFixed(2)}`
             }));
             
-            console.log('Datos para Excel:', data);
-            alert('Datos preparados para exportar a Excel (en una implementación real, se descargaría un archivo .xlsx)');
+            console.log('Datos para exportar a Excel:', datosExportar);
+            alert('📊 Datos preparados para exportar a Excel (En producción se descargaría un archivo .xlsx)');
         }
 
         // CERRAR SESIÓN
@@ -783,7 +932,6 @@
         });
 
         // INICIALIZAR
-        cargarProductosIniciales();
         cargarDashboard();
     </script>
 </body>
