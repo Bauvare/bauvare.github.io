@@ -309,6 +309,23 @@
         .btn-ver-detalles:hover {
             background: #ddd;
         }
+
+        /* INDICADOR DE STOCK */
+        .stock-info {
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .stock-bajo {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .sin-stock {
+            color: #ff4757;
+            font-weight: bold;
+        }
         
         /* MODAL DE DETALLES */
         .modal {
@@ -749,107 +766,8 @@
             </div>
             
             <!-- GRID DE PRODUCTOS -->
-            <div class="productos-grid">
-                <!-- PRODUCTO 1 -->
-                <div class="producto-card" data-categoria="camisetas">
-                    <img src="https://i.postimg.cc/FRnYJ6NX/abrigo.jpg" alt="Polo Negro Elegante" class="producto-imagen" />
-                    <div class="producto-info">
-                        <div class="producto-categoria">POLOS</div>
-                        <h3 class="producto-titulo">Polo Negro Elegante</h3>
-                        <div class="producto-precio">
-                            <span class="precio-actual">S/25</span>
-                            <span class="precio-anterior">S/30.00</span>
-                            <span class="descuento">-15%</span>
-                        </div>
-                        <div class="producto-colores">
-                            <div class="color-option" style="background-color: #000000;" title="Negro"></div>
-                            <div class="color-option" style="background-color: #2d3436;" title="Gris Oscuro"></div>
-                            <div class="color-option" style="background-color: #636e72;" title="Gris Medio"></div>
-                        </div>
-                        <div class="producto-talles">
-                            <div class="talle-option">S</div>
-                            <div class="talle-option">M</div>
-                            <div class="talle-option">L</div>
-                            <div class="talle-option">XL</div>
-                        </div>
-                        <button class="btn-ver-detalles" onclick="mostrarDetalles(1)">VER DETALLES</button>
-                    </div>
-                </div>
-                
-                <!-- PRODUCTO 2 -->
-                <div class="producto-card" data-categoria="camisetas">
-                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=80" alt="Camiseta Clásica" class="producto-imagen" />
-                    <div class="producto-info">
-                        <div class="producto-categoria">Camisetas</div>
-                        <h3 class="producto-titulo">Camiseta Clásica Bauvare</h3>
-                        <div class="producto-precio">
-                            <span class="precio-actual">$24.99</span>
-                            <span class="precio-anterior">$29.99</span>
-                            <span class="descuento">-17%</span>
-                        </div>
-                        <div class="producto-colores">
-                            <div class="color-option" style="background-color: #FFFFFF; border: 1px solid #ddd;" title="Blanco"></div>
-                            <div class="color-option" style="background-color: #000000;" title="Negro"></div>
-                            <div class="color-option" style="background-color: #636e72;" title="Gris"></div>
-                        </div>
-                        <div class="producto-talles">
-                            <div class="talle-option">XS</div>
-                            <div class="talle-option">S</div>
-                            <div class="talle-option">M</div>
-                            <div class="talle-option">L</div>
-                        </div>
-                        <button class="btn-ver-detalles" onclick="mostrarDetalles(2)">VER DETALLES</button>
-                    </div>
-                </div>
-                
-                <!-- PRODUCTO 3 -->
-                <div class="producto-card" data-categoria="pantalones">
-                    <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=80" alt="Pantalón Elegante" class="producto-imagen" />
-                    <div class="producto-info">
-                        <div class="producto-categoria">Pantalones</div>
-                        <h3 class="producto-titulo">Pantalón Elegante Slim</h3>
-                        <div class="producto-precio">
-                            <span class="precio-actual">$59.99</span>
-                        </div>
-                        <div class="producto-colores">
-                            <div class="color-option" style="background-color: #000000;" title="Negro"></div>
-                            <div class="color-option" style="background-color: #2d3436;" title="Gris Oscuro"></div>
-                            <div class="color-option" style="background-color: #b2bec3;" title="Gris Claro"></div>
-                        </div>
-                        <div class="producto-talles">
-                            <div class="talle-option">28</div>
-                            <div class="talle-option">30</div>
-                            <div class="talle-option">32</div>
-                            <div class="talle-option">34</div>
-                        </div>
-                        <button class="btn-ver-detalles" onclick="mostrarDetalles(3)">VER DETALLES</button>
-                    </div>
-                </div>
-                
-                <!-- PRODUCTO 4 -->
-                <div class="producto-card" data-categoria="abrigos">
-                    <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=80" alt="Abrigo Clásico" class="producto-imagen" />
-                    <div class="producto-info">
-                        <div class="producto-categoria">Abrigos</div>
-                        <h3 class="producto-titulo">Abrigo Clásico Bauvare</h3>
-                        <div class="producto-precio">
-                            <span class="precio-actual">$99.99</span>
-                            <span class="precio-anterior">$119.99</span>
-                            <span class="descuento">-17%</span>
-                        </div>
-                        <div class="producto-colores">
-                            <div class="color-option" style="background-color: #000000;" title="Negro"></div>
-                            <div class="color-option" style="background-color: #2d3436;" title="Gris Carbón"></div>
-                            <div class="color-option" style="background-color: #636e72;" title="Gris Medio"></div>
-                        </div>
-                        <div class="producto-talles">
-                            <div class="talle-option">S</div>
-                            <div class="talle-option">M</div>
-                            <div class="talle-option">L</div>
-                        </div>
-                        <button class="btn-ver-detalles" onclick="mostrarDetalles(4)">VER DETALLES</button>
-                    </div>
-                </div>
+            <div class="productos-grid" id="productos-container">
+                <!-- Los productos se cargan dinámicamente desde JavaScript -->
             </div>
         </section>
         
@@ -912,6 +830,9 @@
                         <div class="seleccion-info" id="talle-seleccionado"></div>
                     </div>
                     
+                    <!-- INFO STOCK -->
+                    <div class="stock-info" id="modal-stock"></div>
+                    
                     <div class="modal-detalles">
                         <h3>⭐ DETALLES DEL PRODUCTO:</h3>
                         <ul id="modal-caracteristicas">
@@ -931,104 +852,126 @@
     </div>
 
     <script>
-        // DATOS DE LOS PRODUCTOS
-        const productos = {
-            1: {
-                titulo: "Polo Negro Elegante",
-                precio: "S/25",
-                precioAnterior: "S/30.00",
-                descuento: "-15%",
-                imagen: "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
-                imagenes: [
-                    "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
-                    "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
-                    "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg"
-                ],
-                colores: [
-                    { nombre: "Negro", codigo: "#000000" },
-                    { nombre: "Gris Oscuro", codigo: "#2d3436" },
-                    { nombre: "Gris Medio", codigo: "#636e72" }
-                ],
-                talles: ["S", "M", "L", "XL"],
-                caracteristicas: [
-                    "Tejido de alta calidad con caída perfecta",
-                    "Corte elegante que favorece la silueta",
-                    "Material transpirable y cómodo",
-                    "Acabados impecables y costuras reforzadas",
-                    "Ideal para uso casual y formal"
-                ]
-            },
-            2: {
-                titulo: "Camiseta Clásica Bauvare",
-                precio: "$24.99",
-                precioAnterior: "$29.99",
-                descuento: "-17%",
-                imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                imagenes: [
-                    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                    "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                ],
-                colores: [
-                    { nombre: "Blanco", codigo: "#FFFFFF" },
-                    { nombre: "Negro", codigo: "#000000" },
-                    { nombre: "Gris", codigo: "#636e72" }
-                ],
-                talles: ["XS", "S", "M", "L"],
-                caracteristicas: [
-                    "100% algodón premium de alta calidad",
-                    "Corte regular para máximo comfort",
-                    "Costuras reforzadas para mayor durabilidad",
-                    "Ideal para uso diario y capas de estilo",
-                    "Mantiene su forma y color después de múltiples lavados"
-                ]
-            },
-            3: {
-                titulo: "Pantalón Elegante Slim",
-                precio: "$59.99",
-                precioAnterior: "",
-                descuento: "",
-                imagen: "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                imagenes: [
-                    "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                ],
-                colores: [
-                    { nombre: "Negro", codigo: "#000000" },
-                    { nombre: "Gris Oscuro", codigo: "#2d3436" },
-                    { nombre: "Gris Claro", codigo: "#b2bec3" }
-                ],
-                talles: ["28", "30", "32", "34"],
-                caracteristicas: [
-                    "Corte slim fit moderno y elegante",
-                    "Tejido elástico para mayor comodidad",
-                    "Bolsillos funcionales y prácticos",
-                    "Acabado premium en todos los detalles",
-                    "Versátil para uso casual y formal"
-                ]
-            },
-            4: {
-                titulo: "Abrigo Clásico Bauvare",
-                precio: "$99.99",
-                precioAnterior: "$119.99",
-                descuento: "-17%",
-                imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                imagenes: [
-                    "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                ],
-                colores: [
-                    { nombre: "Negro", codigo: "#000000" },
-                    { nombre: "Gris Carbón", codigo: "#2d3436" },
-                    { nombre: "Gris Medio", codigo: "#636e72" }
-                ],
-                talles: ["S", "M", "L"],
-                caracteristicas: [
-                    "Abrigo de invierno con forro interior suave",
-                    "Material resistente al agua y al viento",
-                    "Diseño clásico atemporal",
-                    "Ideal para temporadas frías",
-                    "Bolsillos espaciosos y funcionales"
-                ]
-            }
-        };
+        // CARGAR PRODUCTOS DESDE LOCALSTORAGE
+        let productos = JSON.parse(localStorage.getItem('productos')) || {};
+
+        // Si no hay productos, inicializar con datos por defecto
+        if (Object.keys(productos).length === 0) {
+            productos = {
+                1: {
+                    id: 1,
+                    titulo: "Polo Negro Elegante",
+                    precio: "S/25",
+                    precioAnterior: "S/30.00",
+                    descuento: "-15%",
+                    categoria: "camisetas",
+                    imagen: "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
+                    imagenes: [
+                        "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
+                        "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg",
+                        "https://i.postimg.cc/FRnYJ6NX/abrigo.jpg"
+                    ],
+                    colores: [
+                        { nombre: "Negro", codigo: "#000000" },
+                        { nombre: "Gris Oscuro", codigo: "#2d3436" },
+                        { nombre: "Gris Medio", codigo: "#636e72" }
+                    ],
+                    talles: ["S", "M", "L", "XL"],
+                    stock: 50,
+                    activo: true,
+                    caracteristicas: [
+                        "Tejido de alta calidad con caída perfecta",
+                        "Corte elegante que favorece la silueta",
+                        "Material transpirable y cómodo",
+                        "Acabados impecables y costuras reforzadas",
+                        "Ideal para uso casual y formal"
+                    ]
+                },
+                2: {
+                    id: 2,
+                    titulo: "Camiseta Clásica Bauvare",
+                    precio: "S/24.99",
+                    precioAnterior: "S/29.99",
+                    descuento: "-17%",
+                    categoria: "camisetas",
+                    imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    imagenes: [
+                        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    ],
+                    colores: [
+                        { nombre: "Blanco", codigo: "#FFFFFF" },
+                        { nombre: "Negro", codigo: "#000000" },
+                        { nombre: "Gris", codigo: "#636e72" }
+                    ],
+                    talles: ["XS", "S", "M", "L"],
+                    stock: 30,
+                    activo: true,
+                    caracteristicas: [
+                        "100% algodón premium de alta calidad",
+                        "Corte regular para máximo comfort",
+                        "Costuras reforzadas para mayor durabilidad",
+                        "Ideal para uso diario y capas de estilo",
+                        "Mantiene su forma y color después de múltiples lavados"
+                    ]
+                },
+                3: {
+                    id: 3,
+                    titulo: "Pantalón Elegante Slim",
+                    precio: "S/59.99",
+                    precioAnterior: "",
+                    descuento: "",
+                    categoria: "pantalones",
+                    imagen: "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    imagenes: [
+                        "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    ],
+                    colores: [
+                        { nombre: "Negro", codigo: "#000000" },
+                        { nombre: "Gris Oscuro", codigo: "#2d3436" },
+                        { nombre: "Gris Claro", codigo: "#b2bec3" }
+                    ],
+                    talles: ["28", "30", "32", "34"],
+                    stock: 20,
+                    activo: true,
+                    caracteristicas: [
+                        "Corte slim fit moderno y elegante",
+                        "Tejido elástico para mayor comodidad",
+                        "Bolsillos funcionales y prácticos",
+                        "Acabado premium en todos los detalles",
+                        "Versátil para uso casual y formal"
+                    ]
+                },
+                4: {
+                    id: 4,
+                    titulo: "Abrigo Clásico Bauvare",
+                    precio: "S/99.99",
+                    precioAnterior: "S/119.99",
+                    descuento: "-17%",
+                    categoria: "abrigos",
+                    imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    imagenes: [
+                        "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    ],
+                    colores: [
+                        { nombre: "Negro", codigo: "#000000" },
+                        { nombre: "Gris Carbón", codigo: "#2d3436" },
+                        { nombre: "Gris Medio", codigo: "#636e72" }
+                    ],
+                    talles: ["S", "M", "L"],
+                    stock: 15,
+                    activo: true,
+                    caracteristicas: [
+                        "Abrigo de invierno con forro interior suave",
+                        "Material resistente al agua y al viento",
+                        "Diseño clásico atemporal",
+                        "Ideal para temporadas frías",
+                        "Bolsillos espaciosos y funcionales"
+                    ]
+                }
+            };
+            localStorage.setItem('productos', JSON.stringify(productos));
+        }
 
         let productoActual = null;
         let colorSeleccionado = null;
@@ -1036,6 +979,50 @@
 
         // FUNCIONALIDADES DEL CATÁLOGO
         
+        // Cargar productos en la página
+        function cargarProductos() {
+            const container = document.getElementById('productos-container');
+            container.innerHTML = '';
+            
+            Object.values(productos).forEach(producto => {
+                if (producto.activo) {
+                    const stockClass = producto.stock === 0 ? 'sin-stock' : (producto.stock < 10 ? 'stock-bajo' : '');
+                    const stockText = producto.stock === 0 ? 'AGOTADO' : `Stock: ${producto.stock}`;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'producto-card';
+                    card.setAttribute('data-categoria', producto.categoria);
+                    card.innerHTML = `
+                        <img src="${producto.imagen}" alt="${producto.titulo}" class="producto-imagen" />
+                        <div class="producto-info">
+                            <div class="producto-categoria">${producto.categoria.toUpperCase()}</div>
+                            <h3 class="producto-titulo">${producto.titulo}</h3>
+                            <div class="stock-info ${stockClass}">${stockText}</div>
+                            <div class="producto-precio">
+                                <span class="precio-actual">${producto.precio}</span>
+                                ${producto.precioAnterior ? `<span class="precio-anterior">${producto.precioAnterior}</span>` : ''}
+                                ${producto.descuento ? `<span class="descuento">${producto.descuento}</span>` : ''}
+                            </div>
+                            <div class="producto-colores">
+                                ${producto.colores.map(color => 
+                                    `<div class="color-option" style="background-color: ${color.codigo};" title="${color.nombre}"></div>`
+                                ).join('')}
+                            </div>
+                            <div class="producto-talles">
+                                ${producto.talles.map(talle => 
+                                    `<div class="talle-option">${talle}</div>`
+                                ).join('')}
+                            </div>
+                            <button class="btn-ver-detalles" onclick="mostrarDetalles(${producto.id})" ${producto.stock === 0 ? 'disabled style="opacity: 0.5;"' : ''}>
+                                ${producto.stock === 0 ? 'AGOTADO' : 'VER DETALLES'}
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+        }
+
         // Filtrado por categoría
         document.querySelectorAll('.filtro-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -1045,9 +1032,9 @@
                 this.classList.add('activo');
                 
                 const categoria = this.getAttribute('data-categoria');
-                const productos = document.querySelectorAll('.producto-card');
+                const productosCards = document.querySelectorAll('.producto-card');
                 
-                productos.forEach(producto => {
+                productosCards.forEach(producto => {
                     if (categoria === 'todos' || producto.getAttribute('data-categoria') === categoria) {
                         producto.style.display = 'block';
                     } else {
@@ -1060,6 +1047,8 @@
         // Mostrar modal de detalles
         function mostrarDetalles(productoId) {
             const producto = productos[productoId];
+            if (producto.stock === 0) return;
+            
             productoActual = productoId;
             
             // Limpiar selecciones anteriores
@@ -1069,9 +1058,19 @@
             // Actualizar información del modal
             document.getElementById('modal-titulo').textContent = producto.titulo;
             document.getElementById('modal-precio').textContent = producto.precio;
-            document.getElementById('modal-precio-ant').textContent = producto.precioAnterior;
-            document.getElementById('modal-descuento').textContent = producto.descuento;
+            document.getElementById('modal-precio-ant').textContent = producto.precioAnterior || '';
+            document.getElementById('modal-descuento').textContent = producto.descuento || '';
             document.getElementById('modal-imagen').src = producto.imagen;
+            
+            // Actualizar stock info
+            const stockInfo = document.getElementById('modal-stock');
+            if (producto.stock === 0) {
+                stockInfo.innerHTML = '<div class="sin-stock">🔴 PRODUCTO AGOTADO</div>';
+            } else if (producto.stock < 10) {
+                stockInfo.innerHTML = `<div class="stock-bajo">🟡 STOCK BAJO: ${producto.stock} unidades</div>`;
+            } else {
+                stockInfo.innerHTML = `<div class="stock-info">🟢 EN STOCK: ${producto.stock} unidades</div>`;
+            }
             
             // Actualizar miniaturas
             const miniaturasContainer = document.getElementById('modal-miniaturas');
@@ -1170,19 +1169,23 @@
                 mensaje += `Talle: ${talleSeleccionado}%0A`;
             }
             
-            // ELIMINADO: No se envía la URL de la imagen
+            mensaje += `Stock disponible: ${producto.stock} unidades%0A`;
             mensaje += `%0A¿Podrían ayudarme con mi pedido?`;
             
             const btnWhatsApp = document.getElementById('btn-whatsapp');
             btnWhatsApp.href = `https://wa.me/+51926677046?text=${mensaje}`;
             
-            // Deshabilitar botón si no hay selecciones
-            if (!colorSeleccionado || !talleSeleccionado) {
+            // Deshabilitar botón si no hay selecciones o no hay stock
+            if (!colorSeleccionado || !talleSeleccionado || producto.stock === 0) {
                 btnWhatsApp.style.opacity = '0.6';
                 btnWhatsApp.style.cursor = 'not-allowed';
                 btnWhatsApp.onclick = (e) => {
                     e.preventDefault();
-                    alert('Por favor selecciona color y talle antes de continuar');
+                    if (producto.stock === 0) {
+                        alert('Producto agotado');
+                    } else {
+                        alert('Por favor selecciona color y talle antes de continuar');
+                    }
                 };
             } else {
                 btnWhatsApp.style.opacity = '1';
@@ -1206,6 +1209,19 @@
                 behavior: 'smooth'
             });
         });
+
+        // Sincronización con admin - Verificar cambios cada 3 segundos
+        setInterval(() => {
+            const productosActualizados = JSON.parse(localStorage.getItem('productos'));
+            if (productosActualizados && JSON.stringify(productosActualizados) !== JSON.stringify(productos)) {
+                console.log('Cambios detectados - Actualizando productos...');
+                productos = productosActualizados;
+                cargarProductos();
+            }
+        }, 3000);
+
+        // Inicializar
+        cargarProductos();
     </script>
 </body>
 </html>
