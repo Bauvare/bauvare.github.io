@@ -563,27 +563,45 @@
         }
 
         // AGREGAR NUEVO PRODUCTO
-        document.getElementById('form-agregar-producto').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const productoNuevo = await prepararDatosProducto();
-            
-            try {
-                const { data, error } = await supabase
-                    .from('productos')
-                    .insert([productoNuevo])
-                    .select();
-                
-                if (error) throw error;
-                
-                alert('✅ Producto agregado correctamente');
-                this.reset();
-                cargarProductos();
-            } catch (error) {
-                console.error('Error agregando producto:', error);
-                alert('❌ Error agregando producto');
-            }
-        });
+        // AGREGAR NUEVO PRODUCTO - VERSIÓN DEBUG
+document.getElementById('form-agregar-producto').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    console.log('🔄 Intentando agregar producto...');
+    
+    const productoNuevo = await prepararDatosProducto();
+    console.log('📦 Datos del producto:', productoNuevo);
+    
+    try {
+        console.log('🔗 Conectando a Supabase...');
+        
+        const { data, error } = await supabase
+            .from('productos')
+            .insert([productoNuevo])
+            .select();
+        
+        if (error) {
+            console.error('❌ ERROR DE SUPABASE:', error);
+            console.log('🔍 Detalles del error:', {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            });
+            alert('❌ Error: ' + error.message + '\n\nRevisa la consola (F12) para más detalles.');
+            return;
+        }
+        
+        console.log('✅ Producto agregado:', data);
+        alert('✅ Producto agregado correctamente');
+        this.reset();
+        cargarProductos();
+        
+    } catch (error) {
+        console.error('💥 ERROR CRÍTICO:', error);
+        alert('💥 Error crítico: ' + error.toString());
+    }
+});
 
         // PREPARAR DATOS DEL PRODUCTO
         async function prepararDatosProducto() {
