@@ -12,12 +12,26 @@
       "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
     ],
     "colores": [
-      {"nombre": "Negro", "codigo": "#000000"},
-      {"nombre": "Blanco", "codigo": "#FFFFFF"},
-      {"nombre": "Gris", "codigo": "#808080"}
+      {
+        "nombre": "Negro",
+        "codigo": "#000000"
+      },
+      {
+        "nombre": "Blanco",
+        "codigo": "#FFFFFF"
+      },
+      {
+        "nombre": "Gris",
+        "codigo": "#808080"
+      }
     ],
-    "talles": ["S", "M", "L", "XL"],
-    "stock": 50,
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "stock": 51,
     "activo": true,
     "caracteristicas": [
       "Tejido de alta calidad",
@@ -38,11 +52,26 @@
       "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
     ],
     "colores": [
-      {"nombre": "Negro", "codigo": "#000000"},
-      {"nombre": "Verde Militar", "codigo": "#78866B"},
-      {"nombre": "Beige", "codigo": "#F5F5DC"}
+      {
+        "nombre": "Negro",
+        "codigo": "#000000"
+      },
+      {
+        "nombre": "Verde Militar",
+        "codigo": "#78866B"
+      },
+      {
+        "nombre": "Beige",
+        "codigo": "#F5F5DC"
+      }
     ],
-    "talles": ["28", "30", "32", "34", "36"],
+    "talles": [
+      "28",
+      "30",
+      "32",
+      "34",
+      "36"
+    ],
     "stock": 25,
     "activo": true,
     "caracteristicas": [
@@ -50,6 +79,36 @@
       "Tela carrugada premium resistente",
       "Múltiples bolsillos funcionales",
       "Ajuste cómodo y moderno"
+    ]
+  },
+  "3": {
+    "id": 3,
+    "titulo": "cargo pararchut",
+    "categoria": "pantalones",
+    "precio": "S/25.00",
+    "precioAnterior": "S/30.00",
+    "stock": 20,
+    "imagen": "https://i.postimg.cc/zXQd5cFh/2.jpg",
+    "imagenes": [
+      "https://i.postimg.cc/zXQd5cFh/2.jpg",
+      "https://i.postimg.cc/zXQd5cFh/2.jpg",
+      "https://i.postimg.cc/zXQd5cFh/2.jpg"
+    ],
+    "colores": [
+      {
+        "nombre": "verde militar",
+        "codigo": "#78866B"
+      }
+    ],
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "activo": true,
+    "caracteristicas": [
+      "pantalones de buena calidad"
     ]
   }
 }
