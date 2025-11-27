@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - Bauvare</title>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuración Supabase
+        const supabaseUrl = 'https://ruadawyzklyiwugxihmq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YWRhd3l6a2x5aXd1Z3hpaG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDA1OTYsImV4cCI6MjA3OTc3NjU5Nn0.I6cvPVo61qx9GG8mUMzwJb3JSzeLXwtObYSh3BPKV3k';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
+    
     <style>
+        /* [MANTÉN TODOS TUS ESTILOS ACTUALES DEL ADMIN] */
         * {
             margin: 0;
             padding: 0;
@@ -209,31 +220,6 @@
             text-align: center;
         }
         
-        .venta-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .boleta {
-            background: white;
-            padding: 20px;
-            border: 2px solid #000;
-            max-width: 300px;
-            margin: 20px auto;
-            text-align: center;
-        }
-        
-        .carrito-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        
         .stock-bajo {
             color: #dc3545;
             font-weight: bold;
@@ -271,9 +257,6 @@
             <button class="nav-button active" onclick="showSection('dashboard')">DASHBOARD</button>
             <button class="nav-button" onclick="showSection('stock')">GESTIÓN DE STOCK</button>
             <button class="nav-button" onclick="showSection('agregar-producto')">AGREGAR PRODUCTOS</button>
-            <button class="nav-button" onclick="showSection('ventas')">REGISTRAR VENTAS</button>
-            <button class="nav-button" onclick="showSection('estadisticas')">ESTADÍSTICAS</button>
-            <button class="nav-button" onclick="showSection('reportes')">REPORTES</button>
         </div>
     </div>
 
@@ -288,32 +271,24 @@
                     <p>Productos activos</p>
                 </div>
                 <div class="stat-card">
-                    <h3>VENTAS DEL MES</h3>
-                    <div class="stat-number" id="monthSales">0</div>
-                    <p>Transacciones</p>
-                </div>
-                <div class="stat-card">
-                    <h3>INGRESOS TOTALES</h3>
-                    <div class="stat-number" id="totalIncome">S/ 0</div>
-                    <p>Acumulado mensual</p>
-                </div>
-                <div class="stat-card">
                     <h3>STOCK BAJO</h3>
                     <div class="stat-number" id="lowStock">0</div>
                     <p>Necesitan reposición</p>
                 </div>
             </div>
             
-            <h3>📈 ACTIVIDAD RECIENTE</h3>
+            <h3>📈 SISTEMA SUPABASE</h3>
             <div id="actividad-reciente">
-                <!-- Actividad se carga dinámicamente -->
+                <p>✅ Conectado a Supabase</p>
+                <p>🔄 Cambios en tiempo real</p>
+                <p>🌐 Todos los dispositivos sincronizados</p>
             </div>
         </div>
 
         <!-- GESTIÓN DE STOCK -->
         <div id="stock-section" class="section">
             <h2>📦 GESTIÓN DE STOCK</h2>
-            <p>Gestiona el inventario de tus productos. Actualiza stock y controla disponibilidad.</p>
+            <p>Gestiona el inventario de tus productos. Los cambios se guardan automáticamente.</p>
             <div class="productos-grid" id="stock-grid">
                 <!-- Los productos se cargan dinámicamente -->
             </div>
@@ -364,21 +339,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label>URLs de Imágenes Adicionales (separadas por coma, máximo 6):</label>
-                    <textarea id="producto-imagenes-adicionales" rows="3" placeholder="https://imagen2.jpg, https://imagen3.jpg, https://imagen4.jpg"></textarea>
-                    <small>Opcional: Agrega hasta 6 imágenes adicionales para mostrar en el detalle del producto</small>
+                    <label>URLs de Imágenes Adicionales (separadas por coma):</label>
+                    <textarea id="producto-imagenes-adicionales" rows="3" placeholder="https://imagen2.jpg, https://imagen3.jpg"></textarea>
+                    <small>Opcional: Agrega imágenes adicionales para el detalle del producto</small>
                 </div>
                 
                 <div class="form-group">
                     <label>Colores (separados por coma):</label>
-                    <input type="text" id="producto-colores" required placeholder="Ej: Negro, Blanco, Gris Oscuro, Azul Marino">
-                    <small>Ejemplo: Negro, Blanco, Gris, Azul. Se generarán automáticamente los códigos de color</small>
+                    <input type="text" id="producto-colores" required placeholder="Ej: Negro, Blanco, Verde Militar">
+                    <small>Ejemplo: Negro, Blanco, Verde Militar, Azul</small>
                 </div>
                 
                 <div class="form-group">
                     <label>Talles (separados por coma):</label>
-                    <input type="text" id="producto-talles" required placeholder="Ej: S, M, L, XL, XXL">
-                    <small>Ejemplo: S, M, L, XL o 28, 30, 32, 34 para pantalones</small>
+                    <input type="text" id="producto-talles" required placeholder="Ej: S, M, L, XL">
+                    <small>Ejemplo: S, M, L, XL o 28, 30, 32 para pantalones</small>
                 </div>
                 
                 <div class="form-group">
@@ -389,350 +364,305 @@
                 <button type="submit" class="btn btn-success">➕ AGREGAR PRODUCTO</button>
             </form>
         </div>
-
-        <!-- REGISTRAR VENTAS -->
-        <div id="ventas-section" class="section">
-            <h2>💰 REGISTRAR VENTA</h2>
-            <div class="productos-grid" id="ventas-grid">
-                <!-- Productos para vender -->
-            </div>
-            <div id="carrito-venta" style="display: none;">
-                <h3>🛒 CARRITO DE VENTA</h3>
-                <div id="items-carrito"></div>
-                <div class="form-group">
-                    <label>Descuento (%):</label>
-                    <input type="number" id="descuento-venta" value="0" min="0" max="100" onchange="actualizarCarrito()">
-                </div>
-                <div class="form-group">
-                    <label>Total: <span id="total-venta">S/ 0</span></label>
-                </div>
-                <button class="btn btn-success" onclick="finalizarVenta()">✅ FINALIZAR VENTA</button>
-                <button class="btn btn-danger" onclick="cancelarVenta()">❌ CANCELAR VENTA</button>
-            </div>
-        </div>
-
-        <!-- ESTADÍSTICAS -->
-        <div id="estadisticas-section" class="section">
-            <h2>📈 ESTADÍSTICAS Y MOVIMIENTOS</h2>
-            <div id="estadisticas-contenido">
-                <!-- Estadísticas se cargan dinámicamente -->
-            </div>
-        </div>
-
-        <!-- REPORTES -->
-        <div id="reportes-section" class="section">
-            <h2>📊 REPORTES Y EXPORTACIÓN</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>REPORTE MENSUAL</h3>
-                    <p>Genera reporte completo del mes actual</p>
-                    <button class="btn btn-info" onclick="generarReporteMensual()">📥 GENERAR REPORTE</button>
-                </div>
-                <div class="stat-card">
-                    <h3>EXPORTAR DATOS</h3>
-                    <p>Exporta datos a formato Excel</p>
-                    <button class="btn btn-info" onclick="exportarExcel()">📊 EXPORTAR EXCEL</button>
-                </div>
-            </div>
-            <div id="reporte-contenido"></div>
-        </div>
     </div>
 
     <script>
-       // VERIFICAR LOGIN
-if(localStorage.getItem('adminLoggedIn') !== 'true') {
-    window.location.href = 'login.html';
-}
+        // VERIFICAR LOGIN
+        if(localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
 
-// CONFIGURACIÓN
-const JSON_URL = 'https://raw.githubusercontent.com/bauvare/bauvare.github.io/main/data/productos.json';
-const GITHUB_TOKEN = ''; // Opcional: para hacer commits automáticos
-let productos = {};
+        // DATOS GLOBALES
+        let productos = {};
 
-// CARGAR PRODUCTOS DESDE JSON
-async function cargarProductos() {
-    try {
-        const response = await fetch(JSON_URL + '?t=' + new Date().getTime());
-        productos = await response.json();
-        console.log('Productos cargados:', productos);
-        return productos;
-    } catch (error) {
-        console.error('Error cargando productos:', error);
-        productos = {};
-        return {};
-    }
-}
+        // CARGAR PRODUCTOS DESDE SUPABASE
+        async function cargarProductos() {
+            try {
+                const { data, error } = await supabase
+                    .from('productos')
+                    .select('*')
+                    .order('id', { ascending: true });
+                
+                if (error) throw error;
+                
+                productos = {};
+                data.forEach(producto => {
+                    productos[producto.id] = producto;
+                });
+                
+                console.log('✅ Productos cargados:', Object.keys(productos).length);
+                return productos;
+            } catch (error) {
+                console.error('❌ Error cargando productos:', error);
+                productos = {};
+                return {};
+            }
+        }
 
-// GUARDAR PRODUCTOS EN JSON (manual - requiere copiar/pegar)
-async function guardarProductos() {
-    const jsonString = JSON.stringify(productos, null, 2);
-    
-    // Crear un área de texto para copiar el JSON
-    const textarea = document.createElement('textarea');
-    textarea.value = jsonString;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-    
-    // Instrucciones para el usuario
-    const instrucciones = `
-✅ JSON COPIADO AL PORTAPAPELES
+        // NAVEGACIÓN
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(sectionName + '-section').classList.add('active');
+            event.target.classList.add('active');
+            
+            if(sectionName === 'stock') cargarGestionStock();
+            if(sectionName === 'dashboard') cargarDashboard();
+        }
 
-AHORA SIGUE ESTOS PASOS:
+        // CARGAR DASHBOARD
+        async function cargarDashboard() {
+            await cargarProductos();
+            const totalProducts = Object.values(productos).filter(p => p.activo).length;
+            const lowStock = Object.values(productos).filter(p => p.stock < 10 && p.stock > 0).length;
 
-1. Ve a: https://github.com/bauvare/bauvare.github.io
-2. Haz clic en: data/productos.json
-3. Haz clic en el ícono ✏️ (Edit)
-4. BORRA todo el contenido actual
-5. PEGA el nuevo JSON (Ctrl+V)
-6. Haz clic en: "Commit changes"
-7. Escribe un mensaje: "Actualizar productos"
-8. Haz clic en: "Commit changes"
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('lowStock').textContent = lowStock;
+        }
 
-¡Los cambios se verán en la página en 1-2 minutos!
-    `;
-    
-    alert(instrucciones);
-}
+        // CARGAR GESTIÓN DE STOCK
+        async function cargarGestionStock() {
+            await cargarProductos();
+            const grid = document.getElementById('stock-grid');
+            grid.innerHTML = '';
+            
+            Object.values(productos).forEach(producto => {
+                const stockStatus = producto.stock === 0 ? 'sin-stock' : (producto.stock < 10 ? 'stock-bajo' : 'en-stock');
+                const stockText = producto.stock === 0 ? 'AGOTADO' : `${producto.stock} unidades`;
+                
+                const card = document.createElement('div');
+                card.className = 'producto-admin-card';
+                card.innerHTML = `
+                    <h4>${producto.titulo}</h4>
+                    <p><strong>Categoría:</strong> ${producto.categoria.toUpperCase()}</p>
+                    <p><strong>Precio:</strong> ${producto.precio}</p>
+                    <p><strong>Stock:</strong> <span class="${stockStatus}">${stockText}</span></p>
+                    <div class="stock-control">
+                        <button class="btn btn-warning" onclick="cambiarStock(${producto.id}, -1)">-1</button>
+                        <input type="number" id="stock-${producto.id}" value="${producto.stock}" min="0">
+                        <button class="btn btn-success" onclick="cambiarStock(${producto.id}, 1)">+1</button>
+                        <button class="btn btn-info" onclick="actualizarStock(${producto.id})">🔄 Actualizar</button>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
+                        <button class="btn" onclick="editarProducto(${producto.id})">✏️ Editar</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
-// NAVEGACIÓN
-function showSection(sectionName) {
-    document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-    });
-    document.querySelectorAll('.nav-button').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.getElementById(sectionName + '-section').classList.add('active');
-    event.target.classList.add('active');
-    
-    if(sectionName === 'stock') cargarGestionStock();
-    if(sectionName === 'dashboard') cargarDashboard();
-}
+        // FUNCIONES DE STOCK
+        function cambiarStock(productoId, cambio) {
+            const input = document.getElementById(`stock-${productoId}`);
+            let nuevoStock = parseInt(input.value) + cambio;
+            if(nuevoStock < 0) nuevoStock = 0;
+            input.value = nuevoStock;
+        }
 
-// CARGAR DASHBOARD
-async function cargarDashboard() {
-    await cargarProductos();
-    const totalProducts = Object.values(productos).filter(p => p.activo).length;
-    const lowStock = Object.values(productos).filter(p => p.stock < 10 && p.stock > 0).length;
+        async function actualizarStock(productoId) {
+            const input = document.getElementById(`stock-${productoId}`);
+            const nuevoStock = parseInt(input.value);
+            
+            try {
+                const { error } = await supabase
+                    .from('productos')
+                    .update({ stock: nuevoStock })
+                    .eq('id', productoId);
+                
+                if (error) throw error;
+                
+                productos[productoId].stock = nuevoStock;
+                alert('✅ Stock actualizado correctamente');
+                cargarGestionStock();
+            } catch (error) {
+                console.error('Error actualizando stock:', error);
+                alert('❌ Error actualizando stock');
+            }
+        }
 
-    document.getElementById('totalProducts').textContent = totalProducts;
-    document.getElementById('lowStock').textContent = lowStock;
-    
-    // Estadísticas simples (sin ventas por ahora)
-    document.getElementById('monthSales').textContent = '0';
-    document.getElementById('totalIncome').textContent = 'S/ 0';
-    
-    cargarActividadReciente();
-}
+        async function eliminarProducto(productoId) {
+            if(confirm('¿Estás seguro de eliminar este producto?')) {
+                try {
+                    const { error } = await supabase
+                        .from('productos')
+                        .update({ activo: false })
+                        .eq('id', productoId);
+                    
+                    if (error) throw error;
+                    
+                    productos[productoId].activo = false;
+                    alert('✅ Producto eliminado correctamente');
+                    cargarGestionStock();
+                } catch (error) {
+                    console.error('Error eliminando producto:', error);
+                    alert('❌ Error eliminando producto');
+                }
+            }
+        }
 
-function cargarActividadReciente() {
-    const container = document.getElementById('actividad-reciente');
-    container.innerHTML = `
-        <p>🔄 Sistema basado en JSON</p>
-        <p>📊 ${Object.keys(productos).length} productos cargados</p>
-        <p>💾 Guarda cambios manualmente en GitHub</p>
-    `;
-}
+        function editarProducto(productoId) {
+            const producto = productos[productoId];
+            
+            // Llenar el formulario con los datos del producto
+            document.getElementById('producto-nombre').value = producto.titulo;
+            document.getElementById('producto-categoria').value = producto.categoria;
+            document.getElementById('producto-precio').value = parseFloat(producto.precio.replace('S/', ''));
+            document.getElementById('producto-precio-anterior').value = producto.precioAnterior ? parseFloat(producto.precioAnterior.replace('S/', '')) : '';
+            document.getElementById('producto-stock').value = producto.stock;
+            document.getElementById('producto-imagen').value = producto.imagen;
+            document.getElementById('producto-imagenes-adicionales').value = producto.imagenes ? producto.imagenes.slice(1).join(', ') : '';
+            document.getElementById('producto-colores').value = producto.colores ? producto.colores.map(c => c.nombre).join(', ') : '';
+            document.getElementById('producto-talles').value = producto.talles ? producto.talles.join(', ') : '';
+            document.getElementById('producto-descripcion').value = producto.caracteristicas ? producto.caracteristicas.join('\n') : '';
+            
+            // Cambiar a la sección de agregar producto
+            showSection('agregar-producto');
+            
+            // Cambiar el botón a "Actualizar"
+            const form = document.getElementById('form-agregar-producto');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.textContent = '🔄 ACTUALIZAR PRODUCTO';
+            submitBtn.onclick = function(e) {
+                e.preventDefault();
+                actualizarProductoExistente(productoId);
+            };
+        }
 
-// CARGAR GESTIÓN DE STOCK
-async function cargarGestionStock() {
-    await cargarProductos();
-    const grid = document.getElementById('stock-grid');
-    grid.innerHTML = '';
-    
-    Object.values(productos).forEach(producto => {
-        const stockStatus = producto.stock === 0 ? 'sin-stock' : (producto.stock < 10 ? 'stock-bajo' : 'en-stock');
-        const stockText = producto.stock === 0 ? 'AGOTADO' : `${producto.stock} unidades`;
-        
-        const card = document.createElement('div');
-        card.className = 'producto-admin-card';
-        card.innerHTML = `
-            <h4>${producto.titulo}</h4>
-            <p><strong>Categoría:</strong> ${producto.categoria.toUpperCase()}</p>
-            <p><strong>Precio:</strong> ${producto.precio}</p>
-            <p><strong>Stock:</strong> <span class="${stockStatus}">${stockText}</span></p>
-            <div class="stock-control">
-                <button class="btn btn-warning" onclick="cambiarStock(${producto.id}, -1)">-1</button>
-                <input type="number" id="stock-${producto.id}" value="${producto.stock}" min="0">
-                <button class="btn btn-success" onclick="cambiarStock(${producto.id}, 1)">+1</button>
-                <button class="btn btn-info" onclick="actualizarStock(${producto.id})">🔄 Actualizar</button>
-            </div>
-            <div style="margin-top: 10px;">
-                <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
-                <button class="btn" onclick="editarProducto(${producto.id})">✏️ Editar</button>
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-}
+        // ACTUALIZAR PRODUCTO EXISTENTE
+        async function actualizarProductoExistente(productoId) {
+            const productoActualizado = await prepararDatosProducto();
+            
+            try {
+                const { error } = await supabase
+                    .from('productos')
+                    .update(productoActualizado)
+                    .eq('id', productoId);
+                
+                if (error) throw error;
+                
+                alert('✅ Producto actualizado correctamente');
+                
+                // Restaurar el formulario
+                document.getElementById('form-agregar-producto').reset();
+                const submitBtn = document.querySelector('#form-agregar-producto button[type="submit"]');
+                submitBtn.textContent = '➕ AGREGAR PRODUCTO';
+                submitBtn.onclick = null;
+                
+                // Recargar datos
+                cargarProductos();
+                showSection('stock');
+            } catch (error) {
+                console.error('Error actualizando producto:', error);
+                alert('❌ Error actualizando producto');
+            }
+        }
 
-// FUNCIONES DE STOCK
-function cambiarStock(productoId, cambio) {
-    const input = document.getElementById(`stock-${productoId}`);
-    let nuevoStock = parseInt(input.value) + cambio;
-    if(nuevoStock < 0) nuevoStock = 0;
-    input.value = nuevoStock;
-}
+        // AGREGAR NUEVO PRODUCTO
+        document.getElementById('form-agregar-producto').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const productoNuevo = await prepararDatosProducto();
+            
+            try {
+                const { data, error } = await supabase
+                    .from('productos')
+                    .insert([productoNuevo])
+                    .select();
+                
+                if (error) throw error;
+                
+                alert('✅ Producto agregado correctamente');
+                this.reset();
+                cargarProductos();
+            } catch (error) {
+                console.error('Error agregando producto:', error);
+                alert('❌ Error agregando producto');
+            }
+        });
 
-function actualizarStock(productoId) {
-    const input = document.getElementById(`stock-${productoId}`);
-    productos[productoId].stock = parseInt(input.value);
-    guardarProductos();
-}
+        // PREPARAR DATOS DEL PRODUCTO
+        async function prepararDatosProducto() {
+            const caracteristicas = document.getElementById('producto-descripcion').value.split('\n').filter(line => line.trim());
+            const colores = document.getElementById('producto-colores').value.split(',').map(color => color.trim()).filter(color => color);
+            const talles = document.getElementById('producto-talles').value.split(',').map(talle => talle.trim()).filter(talle => talle);
+            const imagenesAdicionales = document.getElementById('producto-imagenes-adicionales').value
+                .split(',')
+                .map(url => url.trim())
+                .filter(url => url);
+            
+            const todasLasImagenes = [
+                document.getElementById('producto-imagen').value, 
+                ...imagenesAdicionales
+            ].slice(0, 7);
+            
+            const precioActual = parseFloat(document.getElementById('producto-precio').value);
+            const precioAnterior = document.getElementById('producto-precio-anterior').value ? 
+                parseFloat(document.getElementById('producto-precio-anterior').value) : null;
+            const descuentoPorcentaje = document.getElementById('producto-descuento').value ? 
+                parseInt(document.getElementById('producto-descuento').value) : null;
+            
+            let descuentoTexto = '';
+            if (descuentoPorcentaje) {
+                descuentoTexto = `-${descuentoPorcentaje}%`;
+            }
+            
+            return {
+                titulo: document.getElementById('producto-nombre').value,
+                categoria: document.getElementById('producto-categoria').value,
+                precio: `S/${precioActual.toFixed(2)}`,
+                precioAnterior: precioAnterior ? `S/${precioAnterior.toFixed(2)}` : "",
+                descuento: descuentoTexto,
+                stock: parseInt(document.getElementById('producto-stock').value),
+                imagen: document.getElementById('producto-imagen').value,
+                imagenes: todasLasImagenes,
+                colores: colores.map(color => ({ 
+                    nombre: color, 
+                    codigo: obtenerCodigoColor(color) 
+                })),
+                talles: talles,
+                activo: true,
+                caracteristicas: caracteristicas,
+                created_at: new Date().toISOString()
+            };
+        }
 
-function eliminarProducto(productoId) {
-    if(confirm('¿Estás seguro de eliminar este producto?')) {
-        productos[productoId].activo = false;
-        guardarProductos();
-    }
-}
+        // FUNCIÓN PARA OBTENER CÓDIGOS DE COLOR
+        function obtenerCodigoColor(nombreColor) {
+            const colores = {
+                'blanco': '#FFFFFF',
+                'negro': '#000000',
+                'verde': '#00FF00',
+                'verde militar': '#78866B',
+                'beige': '#F5F5DC',
+                'mostaza': '#FFDB58',
+                'amarillo': '#FFFF00',
+                'azul': '#0000FF',
+                'morado': '#800080',
+                'rojo': '#FF0000',
+                'naranja': '#FFA500',
+                'rosa': '#FFC0CB',
+                'marron': '#8B4513',
+                'gris': '#808080',
+                'azul marino': '#000080',
+                'verde oscuro': '#006400',
+                'rojo oscuro': '#8B0000'
+            };
+            return colores[nombreColor.toLowerCase().trim()] || '#CCCCCC';
+        }
 
-function editarProducto(productoId) {
-    const producto = productos[productoId];
-    
-    // Llenar el formulario con los datos del producto
-    document.getElementById('producto-nombre').value = producto.titulo;
-    document.getElementById('producto-categoria').value = producto.categoria;
-    document.getElementById('producto-precio').value = parseFloat(producto.precio.replace('S/', ''));
-    document.getElementById('producto-precio-anterior').value = producto.precioAnterior ? parseFloat(producto.precioAnterior.replace('S/', '')) : '';
-    document.getElementById('producto-stock').value = producto.stock;
-    document.getElementById('producto-imagen').value = producto.imagen;
-    document.getElementById('producto-imagenes-adicionales').value = producto.imagenes ? producto.imagenes.slice(1).join(', ') : '';
-    document.getElementById('producto-colores').value = producto.colores ? producto.colores.map(c => c.nombre).join(', ') : '';
-    document.getElementById('producto-talles').value = producto.talles ? producto.talles.join(', ') : '';
-    document.getElementById('producto-descripcion').value = producto.caracteristicas ? producto.caracteristicas.join('\n') : '';
-    
-    // Cambiar a la sección de agregar producto
-    showSection('agregar-producto');
-    
-    // Cambiar el botón a "Actualizar"
-    const form = document.getElementById('form-agregar-producto');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    submitBtn.textContent = '🔄 ACTUALIZAR PRODUCTO';
-    submitBtn.onclick = function(e) {
-        e.preventDefault();
-        actualizarProductoExistente(productoId);
-    };
-}
+        // CERRAR SESIÓN
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        });
 
-// ACTUALIZAR PRODUCTO EXISTENTE
-function actualizarProductoExistente(productoId) {
-    const producto = productos[productoId];
-    
-    // Actualizar datos del producto
-    producto.titulo = document.getElementById('producto-nombre').value;
-    producto.categoria = document.getElementById('producto-categoria').value;
-    producto.precio = `S/${parseFloat(document.getElementById('producto-precio').value).toFixed(2)}`;
-    
-    const precioAnterior = document.getElementById('producto-precio-anterior').value;
-    producto.precioAnterior = precioAnterior ? `S/${parseFloat(precioAnterior).toFixed(2)}` : "";
-    
-    producto.stock = parseInt(document.getElementById('producto-stock').value);
-    producto.imagen = document.getElementById('producto-imagen').value;
-    
-    const imagenesAdicionales = document.getElementById('producto-imagenes-adicionales').value
-        .split(',')
-        .map(url => url.trim())
-        .filter(url => url);
-    producto.imagenes = [producto.imagen, ...imagenesAdicionales];
-    
-    const colores = document.getElementById('producto-colores').value.split(',').map(color => color.trim()).filter(color => color);
-    producto.colores = colores.map(color => ({ 
-        nombre: color, 
-        codigo: obtenerCodigoColor(color) 
-    }));
-    
-    producto.talles = document.getElementById('producto-talles').value.split(',').map(talle => talle.trim()).filter(talle => talle);
-    
-    const caracteristicas = document.getElementById('producto-descripcion').value.split('\n').filter(line => line.trim());
-    producto.caracteristicas = caracteristicas;
-    
-    guardarProductos();
-    
-    // Restaurar el formulario
-    document.getElementById('form-agregar-producto').reset();
-    const submitBtn = document.querySelector('#form-agregar-producto button[type="submit"]');
-    submitBtn.textContent = '➕ AGREGAR PRODUCTO';
-    submitBtn.onclick = null;
-    
-    alert('✅ Producto actualizado. Recuerda guardar en GitHub.');
-}
-
-// AGREGAR NUEVO PRODUCTO
-document.getElementById('form-agregar-producto').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const nuevoId = Object.keys(productos).length > 0 ? Math.max(...Object.keys(productos).map(Number)) + 1 : 1;
-    const caracteristicas = document.getElementById('producto-descripcion').value.split('\n').filter(line => line.trim());
-    const colores = document.getElementById('producto-colores').value.split(',').map(color => color.trim()).filter(color => color);
-    const talles = document.getElementById('producto-talles').value.split(',').map(talle => talle.trim()).filter(talle => talle);
-    const imagenesAdicionales = document.getElementById('producto-imagenes-adicionales').value
-        .split(',')
-        .map(url => url.trim())
-        .filter(url => url);
-    
-    const todasLasImagenes = [
-        document.getElementById('producto-imagen').value, 
-        ...imagenesAdicionales
-    ].slice(0, 7);
-    
-    const nuevoProducto = {
-        id: nuevoId,
-        titulo: document.getElementById('producto-nombre').value,
-        categoria: document.getElementById('producto-categoria').value,
-        precio: `S/${parseFloat(document.getElementById('producto-precio').value).toFixed(2)}`,
-        precioAnterior: document.getElementById('producto-precio-anterior').value ? `S/${parseFloat(document.getElementById('producto-precio-anterior').value).toFixed(2)}` : "",
-        stock: parseInt(document.getElementById('producto-stock').value),
-        imagen: document.getElementById('producto-imagen').value,
-        imagenes: todasLasImagenes,
-        colores: colores.map(color => ({ 
-            nombre: color, 
-            codigo: obtenerCodigoColor(color) 
-        })),
-        talles: talles,
-        activo: true,
-        caracteristicas: caracteristicas
-    };
-    
-    productos[nuevoId] = nuevoProducto;
-    guardarProductos();
-    this.reset();
-});
-
-// FUNCIÓN PARA OBTENER CÓDIGOS DE COLOR
-function obtenerCodigoColor(nombreColor) {
-    const colores = {
-        'blanco': '#FFFFFF',
-        'negro': '#000000',
-        'verde': '#00FF00',
-        'verde militar': '#78866B',
-        'beige': '#F5F5DC',
-        'mostaza': '#FFDB58',
-        'amarillo': '#FFFF00',
-        'azul': '#0000FF',
-        'morado': '#800080',
-        'rojo': '#FF0000',
-        'naranja': '#FFA500',
-        'rosa': '#FFC0CB',
-        'marron': '#8B4513',
-        'gris': '#808080',
-        'azul marino': '#000080',
-        'verde oscuro': '#006400',
-        'rojo oscuro': '#8B0000'
-    };
-    return colores[nombreColor.toLowerCase().trim()] || '#CCCCCC';
-}
-
-// CERRAR SESIÓN
-document.getElementById('logoutBtn').addEventListener('click', function() {
-    localStorage.removeItem('adminLoggedIn');
-    window.location.href = 'login.html';
-});
-
-// INICIALIZAR
-cargarDashboard();
+        // INICIALIZAR
+        cargarDashboard();
     </script>
 </body>
 </html>
