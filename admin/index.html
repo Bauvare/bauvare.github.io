@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - Bauvare</title>
     
-    <!-- SUPABASE -->
+    <!-- SUPABASE CONFIGURACIÓN EN HEAD -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <script>
+        // CONFIGURACIÓN SUPABASE - SE CARGA PRIMERO
+        const supabaseUrl = 'https://ruadawyzklyiwugxihmq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YWRhd3l6a2x5aXd1Z3hpaG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDA1OTYsImV4cCI6MjA3OTc3NjU5Nn0.I6cvPVo61qx9GG8mUMzwJb3JSzeLXwtObYSh3BPKV3k';
+        window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        console.log('✅ Supabase configurado en HEAD');
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -361,15 +368,20 @@
 
     <script>
         // =============================================
-        // CONFIGURACIÓN SUPABASE - AL INICIO DEL SCRIPT
+        // CONFIGURACIÓN - USAR VARIABLE GLOBAL DEL HEAD
         // =============================================
-        console.log('🔄 Inicializando Supabase...');
+        console.log('🔄 Inicializando admin...');
         
-        const supabaseUrl = 'https://ruadawyzklyiwugxihmq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YWRhd3l6a2x5aXd1Z3hpaG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDA1OTYsImV4cCI6MjA3OTc3NjU5Nn0.I6cvPVo61qx9GG8mUMzwJb3JSzeLXwtObYSh3BPKV3k';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // Usar la variable global configurada en el HEAD
+        const supabase = window.supabase;
         
-        console.log('✅ Supabase configurado:', typeof supabase);
+        if (!supabase) {
+            console.error('❌ ERROR: Supabase no está configurado');
+            alert('ERROR: No se pudo conectar a la base de datos');
+            throw new Error('Supabase no configurado');
+        }
+        
+        console.log('✅ Supabase listo:', typeof supabase);
 
         // =============================================
         // VERIFICAR LOGIN
@@ -559,7 +571,7 @@
         }
 
         // =============================================
-        // AGREGAR PRODUCTOS - VERSIÓN MANUAL
+        // AGREGAR PRODUCTOS
         // =============================================
 
         // FUNCIÓN MANUAL PARA AGREGAR PRODUCTO
@@ -705,9 +717,8 @@
         // =============================================
         // INICIALIZACIÓN
         // =============================================
-        console.log('🚀 Inicializando admin...');
+        console.log('🚀 Admin inicializado correctamente');
         cargarDashboard();
-        console.log('✅ Admin inicializado correctamente');
     </script>
 </body>
 </html>
