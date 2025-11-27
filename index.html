@@ -764,6 +764,14 @@
             }
         }
     </style>
+     <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuración Supabase
+        const supabaseUrl = 'https://ruadawyzklyiwugxihmq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YWRhd3l6a2x5aXd1Z3hpaG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDA1OTYsImV4cCI6MjA3OTc3NjU5Nn0.I6cvPVo61qx9GG8mUMzwJb3JSzeLXwtObYSh3BPKV3k';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
 </head>
 <body>
     <div class="bauvare-container">
@@ -879,314 +887,329 @@
     </div>
 
     <script>
-        // CARGAR PRODUCTOS DESDE LOCALSTORAGE
-        // URL de tu archivo JSON en GitHub
-const JSON_URL = 'https://raw.githubusercontent.com/bauvare/bauvare.github.io/main/data/productos.json';
-
-// Variable global para productos
-let productos = {};
-
-// CARGAR PRODUCTOS DESDE JSON
-async function cargarProductosDesdeJSON() {
-    try {
-        console.log('🔄 Cargando productos desde JSON...');
-        const response = await fetch(JSON_URL + '?t=' + new Date().getTime());
-        if (!response.ok) throw new Error('Error cargando productos');
-        productos = await response.json();
-        console.log('✅ Productos cargados:', Object.keys(productos).length);
-        return productos;
-    } catch (error) {
-        console.error('❌ Error cargando JSON:', error);
-        // Si hay error, cargar datos de respaldo
-        return cargarProductosRespaldo();
-    }
-}
-
-// DATOS DE RESPALDO (por si falla la carga)
-function cargarProductosRespaldo() {
-    console.log('⚠️ Cargando datos de respaldo...');
-    return {
-        "1": {
-            "id": 1,
-            "titulo": "Polo Negro Elegante",
-            "precio": "S/25.00",
-            "precioAnterior": "S/30.00",
-            "descuento": "-15%",
-            "categoria": "camisetas",
-            "imagen": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "imagenes": [
-                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            ],
-            "colores": [
-                {"nombre": "Negro", "codigo": "#000000"},
-                {"nombre": "Blanco", "codigo": "#FFFFFF"},
-                {"nombre": "Gris", "codigo": "#808080"}
-            ],
-            "talles": ["S", "M", "L", "XL"],
-            "stock": 50,
-            "activo": true,
-            "caracteristicas": [
-                "Tejido de alta calidad",
-                "Corte elegante", 
-                "Material transpirable",
-                "Costuras reforzadas"
-            ]
-        }
-    };
-}
-
-// CARGAR PRODUCTOS EN LA PÁGINA
-async function cargarProductos() {
-    await cargarProductosDesdeJSON();
-    const container = document.getElementById('productos-container');
-    container.innerHTML = '';
-    
-    Object.values(productos).forEach(producto => {
-        if (producto.activo !== false) {
-            const stockText = producto.stock === 0 ? 
-                '<div class="sin-stock">AGOTADO</div>' : 
-                `<div class="stock-info">Stock: ${producto.stock}</div>`;
-            
-            const card = document.createElement('div');
-            card.className = 'producto-card';
-            card.setAttribute('data-categoria', producto.categoria);
-            card.innerHTML = `
-                <img src="${producto.imagen}" alt="${producto.titulo}" class="producto-imagen" />
-                <div class="producto-info">
-                    <div class="producto-categoria">${producto.categoria.toUpperCase()}</div>
-                    <h3 class="producto-titulo">${producto.titulo}</h3>
-                    ${stockText}
-                    <div class="producto-precio">
-                        <span class="precio-actual">${producto.precio}</span>
-                        ${producto.precioAnterior ? `<span class="precio-anterior">${producto.precioAnterior}</span>` : ''}
-                        ${producto.descuento ? `<span class="descuento">${producto.descuento}</span>` : ''}
-                    </div>
-                    <button class="btn-ver-detalles" onclick="mostrarDetalles(${producto.id})" ${producto.stock === 0 ? 'disabled style="opacity:0.5"' : ''}>
-                        ${producto.stock === 0 ? 'AGOTADO' : 'VER DETALLES'}
-                    </button>
-                </div>
-            `;
-            container.appendChild(card);
-        }
-    });
-}
-
-// EL RESTO DE TUS FUNCIONES SE MANTIENEN IGUAL
-// FILTRAR PRODUCTOS
-document.querySelectorAll('.filtro-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.filtro-btn').forEach(b => {
-            b.classList.remove('activo');
-        });
-        this.classList.add('activo');
+      // CÓDIGO JAVASCRIPT ACTUALIZADO CON SUPABASE
         
-        const categoria = this.getAttribute('data-categoria');
-        const productos = document.querySelectorAll('.producto-card');
-        
-        productos.forEach(producto => {
-            if (categoria === 'todos' || producto.getAttribute('data-categoria') === categoria) {
-                producto.style.display = 'block';
-            } else {
-                producto.style.display = 'none';
+        // Variable global para productos
+        let productos = {};
+
+        // CARGAR PRODUCTOS DESDE SUPABASE
+        async function cargarProductosDesdeSupabase() {
+            try {
+                console.log('🔄 Cargando productos desde Supabase...');
+                const { data, error } = await supabase
+                    .from('productos')
+                    .select('*')
+                    .eq('activo', true);
+                
+                if (error) throw error;
+                
+                productos = {};
+                data.forEach(producto => {
+                    productos[producto.id] = producto;
+                });
+                
+                console.log('✅ Productos cargados:', Object.keys(productos).length);
+                return productos;
+            } catch (error) {
+                console.error('❌ Error cargando productos:', error);
+                return cargarProductosRespaldo();
             }
-        });
-    });
-});
+        }
 
-// MOSTRAR DETALLES DEL PRODUCTO
-function mostrarDetalles(productoId) {
-    const producto = productos[productoId];
-    
-    if (!producto) {
-        console.error('❌ Producto no encontrado:', productoId);
-        return;
-    }
-    
-    // Información básica
-    document.getElementById('modal-titulo').textContent = producto.titulo;
-    document.getElementById('modal-precio').textContent = producto.precio;
-    document.getElementById('modal-precio-ant').textContent = producto.precioAnterior || '';
-    document.getElementById('modal-descuento').textContent = producto.descuento || '';
-    
-    // IMÁGENES
-    const imagenPrincipal = document.getElementById('modal-imagen');
-    const contenedorMiniaturas = document.getElementById('modal-miniaturas');
-    
-    const imagenes = producto.imagenes || [producto.imagen];
-    imagenPrincipal.src = imagenes[0];
-    
-    contenedorMiniaturas.innerHTML = '';
-    imagenes.forEach((imagen, index) => {
-        const miniatura = document.createElement('img');
-        miniatura.src = imagen;
-        miniatura.alt = `${producto.titulo} - Vista ${index + 1}`;
-        miniatura.className = 'miniatura' + (index === 0 ? ' activa' : '');
-        miniatura.onclick = () => cambiarImagenPrincipal(imagen, index);
-        contenedorMiniaturas.appendChild(miniatura);
-    });
-    
-    // SELECTOR DE COLORES
-    const contenedorColores = document.getElementById('modal-colores');
-    contenedorColores.innerHTML = '';
-    
-    if (producto.colores && producto.colores.length > 0) {
-        producto.colores.forEach((color, index) => {
-            const colorDiv = document.createElement('div');
-            colorDiv.className = 'color-option' + (index === 0 ? ' seleccionado' : '');
-            colorDiv.style.backgroundColor = color.codigo;
-            colorDiv.title = color.nombre;
-            colorDiv.onclick = () => seleccionarColor(color.nombre, index);
-            contenedorColores.appendChild(colorDiv);
+        // DATOS DE RESPALDO
+        function cargarProductosRespaldo() {
+            console.log('⚠️ Cargando datos de respaldo...');
+            return {
+                "1": {
+                    "id": 1,
+                    "titulo": "Polo Negro Elegante",
+                    "precio": "S/25.00",
+                    "precioAnterior": "S/30.00",
+                    "descuento": "-15%",
+                    "categoria": "camisetas",
+                    "imagen": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    "imagenes": [
+                        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    ],
+                    "colores": [
+                        {"nombre": "Negro", "codigo": "#000000"},
+                        {"nombre": "Blanco", "codigo": "#FFFFFF"},
+                        {"nombre": "Gris", "codigo": "#808080"}
+                    ],
+                    "talles": ["S", "M", "L", "XL"],
+                    "stock": 50,
+                    "activo": true,
+                    "caracteristicas": [
+                        "Tejido de alta calidad",
+                        "Corte elegante",
+                        "Material transpirable",
+                        "Costuras reforzadas"
+                    ]
+                }
+            };
+        }
+ // CARGAR PRODUCTOS EN LA PÁGINA
+        async function cargarProductos() {
+            await cargarProductosDesdeSupabase();
+            const container = document.getElementById('productos-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            Object.values(productos).forEach(producto => {
+                if (producto.activo !== false) {
+                    const stockText = producto.stock === 0 ? 
+                        '<div class="sin-stock">AGOTADO</div>' : 
+                        `<div class="stock-info">Stock: ${producto.stock}</div>`;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'producto-card';
+                    card.setAttribute('data-categoria', producto.categoria);
+                    card.innerHTML = `
+                        <img src="${producto.imagen}" alt="${producto.titulo}" class="producto-imagen" />
+                        <div class="producto-info">
+                            <div class="producto-categoria">${producto.categoria.toUpperCase()}</div>
+                            <h3 class="producto-titulo">${producto.titulo}</h3>
+                            ${stockText}
+                            <div class="producto-precio">
+                                <span class="precio-actual">${producto.precio}</span>
+                                ${producto.precioAnterior ? `<span class="precio-anterior">${producto.precioAnterior}</span>` : ''}
+                                ${producto.descuento ? `<span class="descuento">${producto.descuento}</span>` : ''}
+                            </div>
+                            <button class="btn-ver-detalles" onclick="mostrarDetalles(${producto.id})" ${producto.stock === 0 ? 'disabled style="opacity:0.5"' : ''}>
+                                ${producto.stock === 0 ? 'AGOTADO' : 'VER DETALLES'}
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+        }
+
+        // [EL RESTO DE TUS FUNCIONES SE MANTIENEN IGUAL - mostrarDetalles, filtros, modal, etc.]
+
+        // FILTRAR PRODUCTOS
+        document.querySelectorAll('.filtro-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filtro-btn').forEach(b => {
+                    b.classList.remove('activo');
+                });
+                this.classList.add('activo');
+                
+                const categoria = this.getAttribute('data-categoria');
+                const productos = document.querySelectorAll('.producto-card');
+                
+                productos.forEach(producto => {
+                    if (categoria === 'todos' || producto.getAttribute('data-categoria') === categoria) {
+                        producto.style.display = 'block';
+                    } else {
+                        producto.style.display = 'none';
+                    }
+                });
+            });
         });
-        document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${producto.colores[0].nombre}`;
-    } else {
-        document.getElementById('color-seleccionado').textContent = 'Sin colores disponibles';
-    }
-    
-    // SELECTOR DE TALLES
-    const contenedorTalles = document.getElementById('modal-talles');
-    contenedorTalles.innerHTML = '';
-    
-    if (producto.talles && producto.talles.length > 0) {
-        producto.talles.forEach((talle, index) => {
-            const talleDiv = document.createElement('div');
-            talleDiv.className = 'talle-option' + (index === 0 ? ' seleccionado' : '');
-            talleDiv.textContent = talle;
-            talleDiv.onclick = () => seleccionarTalle(talle, index);
-            contenedorTalles.appendChild(talleDiv);
-        });
-        document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${producto.talles[0]}`;
-    } else {
-        document.getElementById('talle-seleccionado').textContent = 'Sin talles disponibles';
-    }
-    
-    // DESCRIPCIÓN
-    const descripcion = document.getElementById('modal-descripcion');
-    descripcion.innerHTML = '';
-    
-    if (producto.caracteristicas && producto.caracteristicas.length > 0) {
-        producto.caracteristicas.forEach(caract => {
-            const li = document.createElement('li');
-            li.textContent = caract;
-            descripcion.appendChild(li);
-        });
-    } else {
-        descripcion.innerHTML = '<li>No hay descripción disponible</li>';
-    }
-    
-    // STOCK
-    const stockInfo = document.getElementById('modal-stock');
-    if (producto.stock === 0) {
-        stockInfo.innerHTML = '<div class="sin-stock">🔴 PRODUCTO AGOTADO</div>';
-    } else if (producto.stock < 10) {
-        stockInfo.innerHTML = `<div class="stock-bajo">🟡 Stock bajo: ${producto.stock} unidades</div>`;
-    } else {
-        stockInfo.innerHTML = `<div class="en-stock">🟢 En stock: ${producto.stock} unidades</div>`;
-    }
-    
-    // WHATSAPP
-    const btnWhatsApp = document.getElementById('btn-whatsapp');
-    const colorSeleccionado = producto.colores && producto.colores[0] ? producto.colores[0].nombre : 'No especificado';
-    const talleSeleccionado = producto.talles && producto.talles[0] ? producto.talles[0] : 'No especificado';
-    
-    let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
-    mensaje += `Precio: ${producto.precio}%0A`;
-    mensaje += `Color: ${colorSeleccionado}%0A`;
-    mensaje += `Talle: ${talleSeleccionado}%0A`;
-    mensaje += `%0A¿Podrían ayudarme con más información?`;
-    
-    btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
-    
-    if (producto.stock === 0) {
-        btnWhatsApp.style.opacity = '0.5';
-        btnWhatsApp.style.cursor = 'not-allowed';
-        btnWhatsApp.onclick = (e) => {
+
+        // MOSTRAR DETALLES DEL PRODUCTO
+        function mostrarDetalles(productoId) {
+            const producto = productos[productoId];
+            
+            if (!producto) {
+                console.error('❌ Producto no encontrado:', productoId);
+                return;
+            }
+            
+            // Información básica
+            document.getElementById('modal-titulo').textContent = producto.titulo;
+            document.getElementById('modal-precio').textContent = producto.precio;
+            document.getElementById('modal-precio-ant').textContent = producto.precioAnterior || '';
+            document.getElementById('modal-descuento').textContent = producto.descuento || '';
+            
+            // IMÁGENES
+            const imagenPrincipal = document.getElementById('modal-imagen');
+            const contenedorMiniaturas = document.getElementById('modal-miniaturas');
+            
+            const imagenes = producto.imagenes || [producto.imagen];
+            imagenPrincipal.src = imagenes[0];
+            
+            contenedorMiniaturas.innerHTML = '';
+            imagenes.forEach((imagen, index) => {
+                const miniatura = document.createElement('img');
+                miniatura.src = imagen;
+                miniatura.alt = `${producto.titulo} - Vista ${index + 1}`;
+                miniatura.className = 'miniatura' + (index === 0 ? ' activa' : '');
+                miniatura.onclick = () => cambiarImagenPrincipal(imagen, index);
+                contenedorMiniaturas.appendChild(miniatura);
+            });
+             // SELECTOR DE COLORES
+            const contenedorColores = document.getElementById('modal-colores');
+            contenedorColores.innerHTML = '';
+            
+            if (producto.colores && producto.colores.length > 0) {
+                producto.colores.forEach((color, index) => {
+                    const colorDiv = document.createElement('div');
+                    colorDiv.className = 'color-option' + (index === 0 ? ' seleccionado' : '');
+                    colorDiv.style.backgroundColor = color.codigo;
+                    colorDiv.title = color.nombre;
+                    colorDiv.onclick = () => seleccionarColor(color.nombre, index);
+                    contenedorColores.appendChild(colorDiv);
+                });
+                document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${producto.colores[0].nombre}`;
+            } else {
+                document.getElementById('color-seleccionado').textContent = 'Sin colores disponibles';
+            }
+            
+            // SELECTOR DE TALLES
+            const contenedorTalles = document.getElementById('modal-talles');
+            contenedorTalles.innerHTML = '';
+            
+            if (producto.talles && producto.talles.length > 0) {
+                producto.talles.forEach((talle, index) => {
+                    const talleDiv = document.createElement('div');
+                    talleDiv.className = 'talle-option' + (index === 0 ? ' seleccionado' : '');
+                    talleDiv.textContent = talle;
+                    talleDiv.onclick = () => seleccionarTalle(talle, index);
+                    contenedorTalles.appendChild(talleDiv);
+                });
+                document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${producto.talles[0]}`;
+            } else {
+                document.getElementById('talle-seleccionado').textContent = 'Sin talles disponibles';
+            }
+            
+            // DESCRIPCIÓN
+            const descripcion = document.getElementById('modal-descripcion');
+            descripcion.innerHTML = '';
+            
+            if (producto.caracteristicas && producto.caracteristicas.length > 0) {
+                producto.caracteristicas.forEach(caract => {
+                    const li = document.createElement('li');
+                    li.textContent = caract;
+                    descripcion.appendChild(li);
+                });
+            } else {
+                descripcion.innerHTML = '<li>No hay descripción disponible</li>';
+            }
+            
+            // STOCK
+            const stockInfo = document.getElementById('modal-stock');
+            if (producto.stock === 0) {
+                stockInfo.innerHTML = '<div class="sin-stock">🔴 PRODUCTO AGOTADO</div>';
+            } else if (producto.stock < 10) {
+                stockInfo.innerHTML = `<div class="stock-bajo">🟡 Stock bajo: ${producto.stock} unidades</div>`;
+            } else {
+                stockInfo.innerHTML = `<div class="en-stock">🟢 En stock: ${producto.stock} unidades</div>`;
+            }
+            
+            // WHATSAPP
+            const btnWhatsApp = document.getElementById('btn-whatsapp');
+            const colorSeleccionado = producto.colores && producto.colores[0] ? producto.colores[0].nombre : 'No especificado';
+            const talleSeleccionado = producto.talles && producto.talles[0] ? producto.talles[0] : 'No especificado';
+            
+            let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
+            mensaje += `Precio: ${producto.precio}%0A`;
+            mensaje += `Color: ${colorSeleccionado}%0A`;
+            mensaje += `Talle: ${talleSeleccionado}%0A`;
+            mensaje += `%0A¿Podrían ayudarme con más información?`;
+            
+            btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
+            
+            if (producto.stock === 0) {
+                btnWhatsApp.style.opacity = '0.5';
+                btnWhatsApp.style.cursor = 'not-allowed';
+                btnWhatsApp.onclick = (e) => {
+                    e.preventDefault();
+                    alert('Producto agotado');
+                };
+            } else {
+                btnWhatsApp.style.opacity = '1';
+                btnWhatsApp.style.cursor = 'pointer';
+                btnWhatsApp.onclick = null;
+            }
+            
+            // Mostrar modal
+            document.getElementById('modal-detalles').style.display = 'block';
+        }
+
+        // FUNCIONES AUXILIARES
+        function cambiarImagenPrincipal(imagenSrc, index) {
+            document.getElementById('modal-imagen').src = imagenSrc;
+            document.querySelectorAll('.miniatura').forEach((miniatura, i) => {
+                miniatura.classList.toggle('activa', i === index);
+            });
+        }
+
+        function seleccionarColor(nombreColor, index) {
+            document.querySelectorAll('.color-option').forEach((color, i) => {
+                color.classList.toggle('seleccionado', i === index);
+            });
+            document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${nombreColor}`;
+            actualizarEnlaceWhatsApp();
+        }
+
+        function seleccionarTalle(talle, index) {
+            document.querySelectorAll('.talle-option').forEach((talleOpt, i) => {
+                talleOpt.classList.toggle('seleccionado', i === index);
+            });
+            document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${talle}`;
+            actualizarEnlaceWhatsApp();
+        }
+
+        function actualizarEnlaceWhatsApp() {
+            const btnWhatsApp = document.getElementById('btn-whatsapp');
+            const productoTitulo = document.getElementById('modal-titulo').textContent;
+            const productoId = Object.keys(productos).find(id => productos[id].titulo === productoTitulo);
+            const producto = productos[productoId];
+            
+            if (!producto) return;
+            
+            const colorSeleccionado = document.querySelector('.color-option.seleccionado')?.title || 
+                                     (producto.colores && producto.colores[0] ? producto.colores[0].nombre : 'No especificado');
+            const talleSeleccionado = document.querySelector('.talle-option.seleccionado')?.textContent || 
+                                     (producto.talles && producto.talles[0] ? producto.talles[0] : 'No especificado');
+            
+            let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
+            mensaje += `Precio: ${producto.precio}%0A`;
+            mensaje += `Color: ${colorSeleccionado}%0A`;
+            mensaje += `Talle: ${talleSeleccionado}%0A`;
+            mensaje += `%0A¿Podrían ayudarme con más información?`;
+            
+            btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
+        }
+
+        // CERRAR MODAL
+        function cerrarModal() {
+            document.getElementById('modal-detalles').style.display = 'none';
+        }
+ // CERRAR MODAL AL HACER CLIC FUERA
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-detalles');
+            if (event.target === modal) {
+                cerrarModal();
+            }
+        }
+
+        // SCROLL SUAVE
+        document.querySelector('.btn-descubrir')?.addEventListener('click', function(e) {
             e.preventDefault();
-            alert('Producto agotado');
-        };
-    } else {
-        btnWhatsApp.style.opacity = '1';
-        btnWhatsApp.style.cursor = 'pointer';
-        btnWhatsApp.onclick = null;
-    }
-    
-    // Mostrar modal
-    document.getElementById('modal-detalles').style.display = 'block';
-}
+            document.querySelector('#catalogo').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
 
-// FUNCIONES AUXILIARES
-function cambiarImagenPrincipal(imagenSrc, index) {
-    document.getElementById('modal-imagen').src = imagenSrc;
-    document.querySelectorAll('.miniatura').forEach((miniatura, i) => {
-        miniatura.classList.toggle('activa', i === index);
-    });
-}
+        // ESCUCHAR CAMBIOS EN TIEMPO REAL
+        supabase
+            .channel('productos')
+            .on('postgres_changes', 
+                { event: '*', schema: 'public', table: 'productos' }, 
+                () => {
+                    console.log('🔄 Cambios detectados, actualizando...');
+                    cargarProductos();
+                }
+            )
+            .subscribe();
 
-function seleccionarColor(nombreColor, index) {
-    document.querySelectorAll('.color-option').forEach((color, i) => {
-        color.classList.toggle('seleccionado', i === index);
-    });
-    document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${nombreColor}`;
-    actualizarEnlaceWhatsApp();
-}
-
-function seleccionarTalle(talle, index) {
-    document.querySelectorAll('.talle-option').forEach((talleOpt, i) => {
-        talleOpt.classList.toggle('seleccionado', i === index);
-    });
-    document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${talle}`;
-    actualizarEnlaceWhatsApp();
-}
-
-function actualizarEnlaceWhatsApp() {
-    const btnWhatsApp = document.getElementById('btn-whatsapp');
-    const productoTitulo = document.getElementById('modal-titulo').textContent;
-    const productoId = Object.keys(productos).find(id => productos[id].titulo === productoTitulo);
-    const producto = productos[productoId];
-    
-    if (!producto) return;
-    
-    const colorSeleccionado = document.querySelector('.color-option.seleccionado')?.title || 
-                             (producto.colores && producto.colores[0] ? producto.colores[0].nombre : 'No especificado');
-    const talleSeleccionado = document.querySelector('.talle-option.seleccionado')?.textContent || 
-                             (producto.talles && producto.talles[0] ? producto.talles[0] : 'No especificado');
-    
-    let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
-    mensaje += `Precio: ${producto.precio}%0A`;
-    mensaje += `Color: ${colorSeleccionado}%0A`;
-    mensaje += `Talle: ${talleSeleccionado}%0A`;
-    mensaje += `%0A¿Podrían ayudarme con más información?`;
-    
-    btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
-}
-
-// CERRAR MODAL
-function cerrarModal() {
-    document.getElementById('modal-detalles').style.display = 'none';
-}
-
-// CERRAR MODAL AL HACER CLIC FUERA
-window.onclick = function(event) {
-    const modal = document.getElementById('modal-detalles');
-    if (event.target === modal) {
-        cerrarModal();
-    }
-}
-
-// SCROLL SUAVE
-document.querySelector('.btn-descubrir').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.querySelector('#catalogo').scrollIntoView({
-        behavior: 'smooth'
-    });
-});
-
-// INICIALIZAR
-cargarProductos();
-
-// ACTUALIZAR CADA 30 SEGUNDOS (opcional)
-setInterval(cargarProductos, 30000);
+        // INICIALIZAR
+        cargarProductos();
     </script>
 </body>
 </html>
