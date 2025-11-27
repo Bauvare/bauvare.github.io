@@ -1,0 +1,55 @@
+{
+  "1": {
+    "id": 1,
+    "titulo": "Polo Negro Elegante",
+    "precio": "S/25.00",
+    "precioAnterior": "S/30.00",
+    "descuento": "-15%",
+    "categoria": "camisetas",
+    "imagen": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+    ],
+    "colores": [
+      {"nombre": "Negro", "codigo": "#000000"},
+      {"nombre": "Blanco", "codigo": "#FFFFFF"},
+      {"nombre": "Gris", "codigo": "#808080"}
+    ],
+    "talles": ["S", "M", "L", "XL"],
+    "stock": 50,
+    "activo": true,
+    "caracteristicas": [
+      "Tejido de alta calidad",
+      "Corte elegante",
+      "Material transpirable",
+      "Costuras reforzadas"
+    ]
+  },
+  "2": {
+    "id": 2,
+    "titulo": "Pantalón Cargo Parachute",
+    "precio": "S/89.90",
+    "precioAnterior": "",
+    "descuento": "",
+    "categoria": "pantalones",
+    "imagen": "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    "imagenes": [
+      "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+    ],
+    "colores": [
+      {"nombre": "Negro", "codigo": "#000000"},
+      {"nombre": "Verde Militar", "codigo": "#78866B"},
+      {"nombre": "Beige", "codigo": "#F5F5DC"}
+    ],
+    "talles": ["28", "30", "32", "34", "36"],
+    "stock": 25,
+    "activo": true,
+    "caracteristicas": [
+      "Corte parachute estilo militar",
+      "Tela carrugada premium resistente",
+      "Múltiples bolsillos funcionales",
+      "Ajuste cómodo y moderno"
+    ]
+  }
+}
