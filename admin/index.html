@@ -8,10 +8,7 @@
     <!-- SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    </script>
-    
     <style>
-        /* [MANTÉN TODOS TUS ESTILOS ACTUALES DEL ADMIN] */
         * {
             margin: 0;
             padding: 0;
@@ -363,30 +360,46 @@
     </div>
 
     <script>
-
-        // ✅ CONFIGURACIÓN SUPABASE - PEGA ESTO AL FINAL
+        // =============================================
+        // CONFIGURACIÓN SUPABASE
+        // =============================================
+        console.log('🔄 Inicializando Supabase...');
+        
         const supabaseUrl = 'https://ruadawyzklyiwugxihmq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YWRhd3l6a2x5aXd1Z3hpaG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDA1OTYsImV4cCI6MjA3OTc3NjU5Nn0.I6cvPVo61qx9GG8mUMzwJb3JSzeLXwtObYSh3BPKV3k';
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
         
-        console.log('✅ Supabase configurado en admin');
+        console.log('✅ Supabase configurado:', supabase);
+
+        // =============================================
         // VERIFICAR LOGIN
+        // =============================================
         if(localStorage.getItem('adminLoggedIn') !== 'true') {
             window.location.href = 'login.html';
         }
 
-        // DATOS GLOBALES
+        // =============================================
+        // VARIABLES GLOBALES
+        // =============================================
         let productos = {};
+
+        // =============================================
+        // FUNCIONES PRINCIPALES
+        // =============================================
 
         // CARGAR PRODUCTOS DESDE SUPABASE
         async function cargarProductos() {
             try {
+                console.log('📥 Cargando productos desde Supabase...');
                 const { data, error } = await supabase
                     .from('productos')
                     .select('*')
                     .order('id', { ascending: true });
                 
-                if (error) throw error;
+                if (error) {
+                    console.error('❌ Error cargando productos:', error);
+                    throw error;
+                }
                 
                 productos = {};
                 data.forEach(producto => {
@@ -419,16 +432,20 @@
 
         // CARGAR DASHBOARD
         async function cargarDashboard() {
+            console.log('📊 Cargando dashboard...');
             await cargarProductos();
             const totalProducts = Object.values(productos).filter(p => p.activo).length;
             const lowStock = Object.values(productos).filter(p => p.stock < 10 && p.stock > 0).length;
 
             document.getElementById('totalProducts').textContent = totalProducts;
             document.getElementById('lowStock').textContent = lowStock;
+            
+            console.log('✅ Dashboard cargado');
         }
 
         // CARGAR GESTIÓN DE STOCK
         async function cargarGestionStock() {
+            console.log('📦 Cargando gestión de stock...');
             await cargarProductos();
             const grid = document.getElementById('stock-grid');
             grid.innerHTML = '';
@@ -457,9 +474,14 @@
                 `;
                 grid.appendChild(card);
             });
+            
+            console.log('✅ Gestión de stock cargada');
         }
 
+        // =============================================
         // FUNCIONES DE STOCK
+        // =============================================
+
         function cambiarStock(productoId, cambio) {
             const input = document.getElementById(`stock-${productoId}`);
             let nuevoStock = parseInt(input.value) + cambio;
@@ -472,6 +494,7 @@
             const nuevoStock = parseInt(input.value);
             
             try {
+                console.log(`🔄 Actualizando stock producto ${productoId} a ${nuevoStock}`);
                 const { error } = await supabase
                     .from('productos')
                     .update({ stock: nuevoStock })
@@ -484,13 +507,14 @@
                 cargarGestionStock();
             } catch (error) {
                 console.error('Error actualizando stock:', error);
-                alert('❌ Error actualizando stock');
+                alert('❌ Error actualizando stock: ' + error.message);
             }
         }
 
         async function eliminarProducto(productoId) {
             if(confirm('¿Estás seguro de eliminar este producto?')) {
                 try {
+                    console.log(`🗑️ Eliminando producto ${productoId}`);
                     const { error } = await supabase
                         .from('productos')
                         .update({ activo: false })
@@ -503,7 +527,7 @@
                     cargarGestionStock();
                 } catch (error) {
                     console.error('Error eliminando producto:', error);
-                    alert('❌ Error eliminando producto');
+                    alert('❌ Error eliminando producto: ' + error.message);
                 }
             }
         }
@@ -536,11 +560,16 @@
             };
         }
 
+        // =============================================
+        // AGREGAR/ACTUALIZAR PRODUCTOS
+        // =============================================
+
         // ACTUALIZAR PRODUCTO EXISTENTE
         async function actualizarProductoExistente(productoId) {
             const productoActualizado = await prepararDatosProducto();
             
             try {
+                console.log(`🔄 Actualizando producto ${productoId}`, productoActualizado);
                 const { error } = await supabase
                     .from('productos')
                     .update(productoActualizado)
@@ -557,54 +586,45 @@
                 submitBtn.onclick = null;
                 
                 // Recargar datos
-                cargarProductos();
+                await cargarProductos();
                 showSection('stock');
             } catch (error) {
                 console.error('Error actualizando producto:', error);
-                alert('❌ Error actualizando producto');
+                alert('❌ Error actualizando producto: ' + error.message);
             }
         }
 
         // AGREGAR NUEVO PRODUCTO
-        // AGREGAR NUEVO PRODUCTO - VERSIÓN DEBUG
-document.getElementById('form-agregar-producto').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    console.log('🔄 Intentando agregar producto...');
-    
-    const productoNuevo = await prepararDatosProducto();
-    console.log('📦 Datos del producto:', productoNuevo);
-    
-    try {
-        console.log('🔗 Conectando a Supabase...');
-        
-        const { data, error } = await supabase
-            .from('productos')
-            .insert([productoNuevo])
-            .select();
-        
-        if (error) {
-            console.error('❌ ERROR DE SUPABASE:', error);
-            console.log('🔍 Detalles del error:', {
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-                code: error.code
-            });
-            alert('❌ Error: ' + error.message + '\n\nRevisa la consola (F12) para más detalles.');
-            return;
-        }
-        
-        console.log('✅ Producto agregado:', data);
-        alert('✅ Producto agregado correctamente');
-        this.reset();
-        cargarProductos();
-        
-    } catch (error) {
-        console.error('💥 ERROR CRÍTICO:', error);
-        alert('💥 Error crítico: ' + error.toString());
-    }
-});
+        document.getElementById('form-agregar-producto').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            console.log('🎯 EVENTO SUBMIT - Agregando producto');
+            
+            try {
+                const productoNuevo = await prepararDatosProducto();
+                console.log('📦 Producto a guardar:', productoNuevo);
+                
+                const { data, error } = await supabase
+                    .from('productos')
+                    .insert([productoNuevo])
+                    .select();
+                
+                if (error) {
+                    console.error('❌ ERROR SUPABASE:', error);
+                    alert('❌ Error: ' + error.message);
+                    return;
+                }
+                
+                console.log('✅ PRODUCTO AGREGADO:', data);
+                alert('✅ ¡PRODUCTO AGREGADO CORRECTAMENTE!');
+                this.reset();
+                await cargarProductos();
+                
+            } catch (error) {
+                console.error('💥 ERROR INESPERADO:', error);
+                alert('💥 Error inesperado: ' + error.toString());
+            }
+        });
 
         // PREPARAR DATOS DEL PRODUCTO
         async function prepararDatosProducto() {
@@ -652,6 +672,10 @@ document.getElementById('form-agregar-producto').addEventListener('submit', asyn
             };
         }
 
+        // =============================================
+        // FUNCIONES AUXILIARES
+        // =============================================
+
         // FUNCIÓN PARA OBTENER CÓDIGOS DE COLOR
         function obtenerCodigoColor(nombreColor) {
             const colores = {
@@ -682,9 +706,12 @@ document.getElementById('form-agregar-producto').addEventListener('submit', asyn
             window.location.href = 'login.html';
         });
 
-        // INICIALIZAR
+        // =============================================
+        // INICIALIZACIÓN
+        // =============================================
+        console.log('🚀 Inicializando admin...');
         cargarDashboard();
+        console.log('✅ Admin inicializado correctamente');
     </script>
-     
 </body>
 </html>
