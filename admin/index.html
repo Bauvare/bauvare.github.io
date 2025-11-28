@@ -4,17 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - Bauvare</title>
-    
-    <!-- SUPABASE CONFIGURACIÓN EN HEAD -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // CONFIGURACIÓN SUPABASE - SE CARGA PRIMERO
-        const supabaseUrl = 'https://ruadawyzklyiwugxihmq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1YWRhd3l6a2x5aXd1Z3hpaG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDA1OTYsImV4cCI6MjA3OTc3NjU5Nn0.I6cvPVo61qx9GG8mUMzwJb3JSzeLXwtObYSh3BPKV3k';
-        window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
-        console.log('✅ Supabase configurado en HEAD');
-    </script>
-
     <style>
         * {
             margin: 0;
@@ -220,6 +209,31 @@
             text-align: center;
         }
         
+        .venta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .boleta {
+            background: white;
+            padding: 20px;
+            border: 2px solid #000;
+            max-width: 300px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        
+        .carrito-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
         .stock-bajo {
             color: #dc3545;
             font-weight: bold;
@@ -257,6 +271,9 @@
             <button class="nav-button active" onclick="showSection('dashboard')">DASHBOARD</button>
             <button class="nav-button" onclick="showSection('stock')">GESTIÓN DE STOCK</button>
             <button class="nav-button" onclick="showSection('agregar-producto')">AGREGAR PRODUCTOS</button>
+            <button class="nav-button" onclick="showSection('ventas')">REGISTRAR VENTAS</button>
+            <button class="nav-button" onclick="showSection('estadisticas')">ESTADÍSTICAS</button>
+            <button class="nav-button" onclick="showSection('reportes')">REPORTES</button>
         </div>
     </div>
 
@@ -271,24 +288,32 @@
                     <p>Productos activos</p>
                 </div>
                 <div class="stat-card">
+                    <h3>VENTAS DEL MES</h3>
+                    <div class="stat-number" id="monthSales">0</div>
+                    <p>Transacciones</p>
+                </div>
+                <div class="stat-card">
+                    <h3>INGRESOS TOTALES</h3>
+                    <div class="stat-number" id="totalIncome">S/ 0</div>
+                    <p>Acumulado mensual</p>
+                </div>
+                <div class="stat-card">
                     <h3>STOCK BAJO</h3>
                     <div class="stat-number" id="lowStock">0</div>
                     <p>Necesitan reposición</p>
                 </div>
             </div>
             
-            <h3>📈 SISTEMA SUPABASE</h3>
+            <h3>📈 ACTIVIDAD RECIENTE</h3>
             <div id="actividad-reciente">
-                <p>✅ Conectado a Supabase</p>
-                <p>🔄 Cambios en tiempo real</p>
-                <p>🌐 Todos los dispositivos sincronizados</p>
+                <!-- Actividad se carga dinámicamente -->
             </div>
         </div>
 
         <!-- GESTIÓN DE STOCK -->
         <div id="stock-section" class="section">
             <h2>📦 GESTIÓN DE STOCK</h2>
-            <p>Gestiona el inventario de tus productos. Los cambios se guardan automáticamente.</p>
+            <p>Gestiona el inventario de tus productos. Actualiza stock y controla disponibilidad.</p>
             <div class="productos-grid" id="stock-grid">
                 <!-- Los productos se cargan dinámicamente -->
             </div>
@@ -339,21 +364,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label>URLs de Imágenes Adicionales (separadas por coma):</label>
-                    <textarea id="producto-imagenes-adicionales" rows="3" placeholder="https://imagen2.jpg, https://imagen3.jpg"></textarea>
-                    <small>Opcional: Agrega imágenes adicionales para el detalle del producto</small>
+                    <label>URLs de Imágenes Adicionales (separadas por coma, máximo 6):</label>
+                    <textarea id="producto-imagenes-adicionales" rows="3" placeholder="https://imagen2.jpg, https://imagen3.jpg, https://imagen4.jpg"></textarea>
+                    <small>Opcional: Agrega hasta 6 imágenes adicionales para mostrar en el detalle del producto</small>
                 </div>
                 
                 <div class="form-group">
                     <label>Colores (separados por coma):</label>
-                    <input type="text" id="producto-colores" required placeholder="Ej: Negro, Blanco, Verde Militar">
-                    <small>Ejemplo: Negro, Blanco, Verde Militar, Azul</small>
+                    <input type="text" id="producto-colores" required placeholder="Ej: Negro, Blanco, Gris Oscuro, Azul Marino">
+                    <small>Ejemplo: Negro, Blanco, Gris, Azul. Se generarán automáticamente los códigos de color</small>
                 </div>
                 
                 <div class="form-group">
                     <label>Talles (separados por coma):</label>
-                    <input type="text" id="producto-talles" required placeholder="Ej: S, M, L, XL">
-                    <small>Ejemplo: S, M, L, XL o 28, 30, 32 para pantalones</small>
+                    <input type="text" id="producto-talles" required placeholder="Ej: S, M, L, XL, XXL">
+                    <small>Ejemplo: S, M, L, XL o 28, 30, 32, 34 para pantalones</small>
                 </div>
                 
                 <div class="form-group">
@@ -361,71 +386,68 @@
                     <textarea id="producto-descripcion" rows="5" placeholder="Ej: Tejido de alta calidad&#10;Corte elegante&#10;Material transpirable"></textarea>
                 </div>
                 
-                <button type="button" class="btn btn-success" onclick="agregarProductoManual()">➕ AGREGAR PRODUCTO</button>
+                <button type="submit" class="btn btn-success">➕ AGREGAR PRODUCTO</button>
             </form>
+        </div>
+
+        <!-- REGISTRAR VENTAS -->
+        <div id="ventas-section" class="section">
+            <h2>💰 REGISTRAR VENTA</h2>
+            <div class="productos-grid" id="ventas-grid">
+                <!-- Productos para vender -->
+            </div>
+            <div id="carrito-venta" style="display: none;">
+                <h3>🛒 CARRITO DE VENTA</h3>
+                <div id="items-carrito"></div>
+                <div class="form-group">
+                    <label>Descuento (%):</label>
+                    <input type="number" id="descuento-venta" value="0" min="0" max="100" onchange="actualizarCarrito()">
+                </div>
+                <div class="form-group">
+                    <label>Total: <span id="total-venta">S/ 0</span></label>
+                </div>
+                <button class="btn btn-success" onclick="finalizarVenta()">✅ FINALIZAR VENTA</button>
+                <button class="btn btn-danger" onclick="cancelarVenta()">❌ CANCELAR VENTA</button>
+            </div>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div id="estadisticas-section" class="section">
+            <h2>📈 ESTADÍSTICAS Y MOVIMIENTOS</h2>
+            <div id="estadisticas-contenido">
+                <!-- Estadísticas se cargan dinámicamente -->
+            </div>
+        </div>
+
+        <!-- REPORTES -->
+        <div id="reportes-section" class="section">
+            <h2>📊 REPORTES Y EXPORTACIÓN</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>REPORTE MENSUAL</h3>
+                    <p>Genera reporte completo del mes actual</p>
+                    <button class="btn btn-info" onclick="generarReporteMensual()">📥 GENERAR REPORTE</button>
+                </div>
+                <div class="stat-card">
+                    <h3>EXPORTAR DATOS</h3>
+                    <p>Exporta datos a formato Excel</p>
+                    <button class="btn btn-info" onclick="exportarExcel()">📊 EXPORTAR EXCEL</button>
+                </div>
+            </div>
+            <div id="reporte-contenido"></div>
         </div>
     </div>
 
     <script>
-        // =============================================
-        // CONFIGURACIÓN - USAR VARIABLE GLOBAL DEL HEAD
-        // =============================================
-        console.log('🔄 Inicializando admin...');
-        
-        // Usar la variable global configurada en el HEAD
-        const supabase = window.supabase;
-        
-        if (!supabase) {
-            console.error('❌ ERROR: Supabase no está configurado');
-            alert('ERROR: No se pudo conectar a la base de datos');
-            throw new Error('Supabase no configurado');
-        }
-        
-        console.log('✅ Supabase listo:', typeof supabase);
-
-        // =============================================
         // VERIFICAR LOGIN
-        // =============================================
         if(localStorage.getItem('adminLoggedIn') !== 'true') {
             window.location.href = 'login.html';
         }
 
-        // =============================================
-        // VARIABLES GLOBALES
-        // =============================================
-        let productos = {};
-
-        // =============================================
-        // FUNCIONES PRINCIPALES
-        // =============================================
-
-        // CARGAR PRODUCTOS DESDE SUPABASE
-        async function cargarProductos() {
-            try {
-                console.log('📥 Cargando productos desde Supabase...');
-                const { data, error } = await supabase
-                    .from('productos')
-                    .select('*')
-                    .order('id', { ascending: true });
-                
-                if (error) {
-                    console.error('❌ Error cargando productos:', error);
-                    throw error;
-                }
-                
-                productos = {};
-                data.forEach(producto => {
-                    productos[producto.id] = producto;
-                });
-                
-                console.log('✅ Productos cargados:', Object.keys(productos).length);
-                return productos;
-            } catch (error) {
-                console.error('❌ Error cargando productos:', error);
-                productos = {};
-                return {};
-            }
-        }
+        // DATOS GLOBALES
+        let productos = JSON.parse(localStorage.getItem('productos')) || {};
+        let ventas = JSON.parse(localStorage.getItem('bauvareVentas')) || [];
+        let carritoVenta = [];
 
         // NAVEGACIÓN
         function showSection(sectionName) {
@@ -438,27 +460,65 @@
             document.getElementById(sectionName + '-section').classList.add('active');
             event.target.classList.add('active');
             
+            // Cargar datos específicos de cada sección
             if(sectionName === 'stock') cargarGestionStock();
+            if(sectionName === 'ventas') cargarVentas();
+            if(sectionName === 'estadisticas') cargarEstadisticas();
             if(sectionName === 'dashboard') cargarDashboard();
         }
 
         // CARGAR DASHBOARD
-        async function cargarDashboard() {
-            console.log('📊 Cargando dashboard...');
-            await cargarProductos();
+        function cargarDashboard() {
             const totalProducts = Object.values(productos).filter(p => p.activo).length;
+            const monthSales = ventas.filter(v => esVentaDelMes(v.fecha)).length;
+            const totalIncome = ventas.filter(v => esVentaDelMes(v.fecha)).reduce((sum, v) => sum + v.total, 0);
             const lowStock = Object.values(productos).filter(p => p.stock < 10 && p.stock > 0).length;
 
             document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('monthSales').textContent = monthSales;
+            document.getElementById('totalIncome').textContent = `S/ ${totalIncome.toFixed(2)}`;
             document.getElementById('lowStock').textContent = lowStock;
             
-            console.log('✅ Dashboard cargado');
+            // Cargar actividad reciente
+            cargarActividadReciente();
+        }
+
+        function esVentaDelMes(fecha) {
+            const ventaDate = new Date(fecha);
+            const now = new Date();
+            return ventaDate.getMonth() === now.getMonth() && 
+                   ventaDate.getFullYear() === now.getFullYear();
+        }
+
+        function cargarActividadReciente() {
+            const container = document.getElementById('actividad-reciente');
+            const ventasRecientes = ventas.slice(-5).reverse();
+            
+            if (ventasRecientes.length === 0) {
+                container.innerHTML = '<p>No hay actividad reciente</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <table>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                    </tr>
+                    ${ventasRecientes.map(venta => `
+                        <tr>
+                            <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                            <td>${venta.items.map(item => `${item.titulo} (x${item.cantidad})`).join(', ')}</td>
+                            <td>S/ ${venta.total.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
         }
 
         // CARGAR GESTIÓN DE STOCK
-        async function cargarGestionStock() {
-            console.log('📦 Cargando gestión de stock...');
-            await cargarProductos();
+        function cargarGestionStock() {
             const grid = document.getElementById('stock-grid');
             grid.innerHTML = '';
             
@@ -481,19 +541,14 @@
                     </div>
                     <div style="margin-top: 10px;">
                         <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
-                        <button class="btn" onclick="editarProducto(${producto.id})">✏️ Editar</button>
+                        ${!producto.activo ? `<button class="btn btn-success" onclick="activarProducto(${producto.id})">✅ Activar</button>` : ''}
                     </div>
                 `;
                 grid.appendChild(card);
             });
-            
-            console.log('✅ Gestión de stock cargada');
         }
 
-        // =============================================
         // FUNCIONES DE STOCK
-        // =============================================
-
         function cambiarStock(productoId, cambio) {
             const input = document.getElementById(`stock-${productoId}`);
             let nuevoStock = parseInt(input.value) + cambio;
@@ -501,141 +556,35 @@
             input.value = nuevoStock;
         }
 
-        async function actualizarStock(productoId) {
+        function actualizarStock(productoId) {
             const input = document.getElementById(`stock-${productoId}`);
-            const nuevoStock = parseInt(input.value);
-            
-            try {
-                console.log(`🔄 Actualizando stock producto ${productoId} a ${nuevoStock}`);
-                const { error } = await supabase
-                    .from('productos')
-                    .update({ stock: nuevoStock })
-                    .eq('id', productoId);
-                
-                if (error) throw error;
-                
-                productos[productoId].stock = nuevoStock;
-                alert('✅ Stock actualizado correctamente');
+            productos[productoId].stock = parseInt(input.value);
+            guardarProductos();
+            cargarGestionStock();
+            alert('✅ Stock actualizado correctamente');
+        }
+
+        function eliminarProducto(productoId) {
+            if(confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
+                productos[productoId].activo = false;
+                guardarProductos();
                 cargarGestionStock();
-            } catch (error) {
-                console.error('Error actualizando stock:', error);
-                alert('❌ Error actualizando stock: ' + error.message);
+                alert('✅ Producto eliminado correctamente');
             }
         }
 
-        async function eliminarProducto(productoId) {
-            if(confirm('¿Estás seguro de eliminar este producto?')) {
-                try {
-                    console.log(`🗑️ Eliminando producto ${productoId}`);
-                    const { error } = await supabase
-                        .from('productos')
-                        .update({ activo: false })
-                        .eq('id', productoId);
-                    
-                    if (error) throw error;
-                    
-                    productos[productoId].activo = false;
-                    alert('✅ Producto eliminado correctamente');
-                    cargarGestionStock();
-                } catch (error) {
-                    console.error('Error eliminando producto:', error);
-                    alert('❌ Error eliminando producto: ' + error.message);
-                }
-            }
+        function activarProducto(productoId) {
+            productos[productoId].activo = true;
+            guardarProductos();
+            cargarGestionStock();
+            alert('✅ Producto activado correctamente');
         }
 
-        function editarProducto(productoId) {
-            const producto = productos[productoId];
+        // AGREGAR NUEVO PRODUCTO
+        document.getElementById('form-agregar-producto').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Llenar el formulario con los datos del producto
-            document.getElementById('producto-nombre').value = producto.titulo;
-            document.getElementById('producto-categoria').value = producto.categoria;
-            document.getElementById('producto-precio').value = parseFloat(producto.precio.replace('S/', ''));
-            document.getElementById('producto-precio-anterior').value = producto.precioAnterior ? parseFloat(producto.precioAnterior.replace('S/', '')) : '';
-            document.getElementById('producto-stock').value = producto.stock;
-            document.getElementById('producto-imagen').value = producto.imagen;
-            document.getElementById('producto-imagenes-adicionales').value = producto.imagenes ? producto.imagenes.slice(1).join(', ') : '';
-            document.getElementById('producto-colores').value = producto.colores ? producto.colores.map(c => c.nombre).join(', ') : '';
-            document.getElementById('producto-talles').value = producto.talles ? producto.talles.join(', ') : '';
-            document.getElementById('producto-descripcion').value = producto.caracteristicas ? producto.caracteristicas.join('\n') : '';
-            
-            // Cambiar a la sección de agregar producto
-            showSection('agregar-producto');
-            
-            // Cambiar el botón a "Actualizar"
-            const submitBtn = document.querySelector('#agregar-producto-section .btn-success');
-            submitBtn.textContent = '🔄 ACTUALIZAR PRODUCTO';
-            submitBtn.onclick = function() {
-                actualizarProductoExistente(productoId);
-            };
-        }
-
-        // =============================================
-        // AGREGAR PRODUCTOS
-        // =============================================
-
-        // FUNCIÓN MANUAL PARA AGREGAR PRODUCTO
-        async function agregarProductoManual() {
-            console.log('🎯 BOTÓN PRESIONADO - Agregando producto manualmente');
-            
-            try {
-                const productoNuevo = await prepararDatosProducto();
-                console.log('📦 Producto a guardar:', productoNuevo);
-                
-                const { data, error } = await supabase
-                    .from('productos')
-                    .insert([productoNuevo])
-                    .select();
-                
-                if (error) {
-                    console.error('❌ ERROR SUPABASE:', error);
-                    alert('❌ Error: ' + error.message);
-                    return;
-                }
-                
-                console.log('✅ PRODUCTO AGREGADO:', data);
-                alert('✅ ¡PRODUCTO AGREGADO CORRECTAMENTE!');
-                document.getElementById('form-agregar-producto').reset();
-                await cargarProductos();
-                
-            } catch (error) {
-                console.error('💥 ERROR INESPERADO:', error);
-                alert('💥 Error inesperado: ' + error.toString());
-            }
-        }
-
-        // ACTUALIZAR PRODUCTO EXISTENTE
-        async function actualizarProductoExistente(productoId) {
-            const productoActualizado = await prepararDatosProducto();
-            
-            try {
-                console.log(`🔄 Actualizando producto ${productoId}`, productoActualizado);
-                const { error } = await supabase
-                    .from('productos')
-                    .update(productoActualizado)
-                    .eq('id', productoId);
-                
-                if (error) throw error;
-                
-                alert('✅ Producto actualizado correctamente');
-                
-                // Restaurar el formulario
-                document.getElementById('form-agregar-producto').reset();
-                const submitBtn = document.querySelector('#agregar-producto-section .btn-success');
-                submitBtn.textContent = '➕ AGREGAR PRODUCTO';
-                submitBtn.onclick = agregarProductoManual;
-                
-                // Recargar datos
-                await cargarProductos();
-                showSection('stock');
-            } catch (error) {
-                console.error('Error actualizando producto:', error);
-                alert('❌ Error actualizando producto: ' + error.message);
-            }
-        }
-
-        // PREPARAR DATOS DEL PRODUCTO
-        async function prepararDatosProducto() {
+            const nuevoId = Object.keys(productos).length > 0 ? Math.max(...Object.keys(productos).map(Number)) + 1 : 1;
             const caracteristicas = document.getElementById('producto-descripcion').value.split('\n').filter(line => line.trim());
             const colores = document.getElementById('producto-colores').value.split(',').map(color => color.trim()).filter(color => color);
             const talles = document.getElementById('producto-talles').value.split(',').map(talle => talle.trim()).filter(talle => talle);
@@ -644,11 +593,13 @@
                 .map(url => url.trim())
                 .filter(url => url);
             
+            // Combinar imagen principal con imágenes adicionales (máximo 7 imágenes en total)
             const todasLasImagenes = [
                 document.getElementById('producto-imagen').value, 
                 ...imagenesAdicionales
             ].slice(0, 7);
             
+            // Calcular descuento si se proporcionó
             const precioActual = parseFloat(document.getElementById('producto-precio').value);
             const precioAnterior = document.getElementById('producto-precio-anterior').value ? 
                 parseFloat(document.getElementById('producto-precio-anterior').value) : null;
@@ -660,7 +611,8 @@
                 descuentoTexto = `-${descuentoPorcentaje}%`;
             }
             
-            return {
+            const nuevoProducto = {
+                id: nuevoId,
                 titulo: document.getElementById('producto-nombre').value,
                 categoria: document.getElementById('producto-categoria').value,
                 precio: `S/${precioActual.toFixed(2)}`,
@@ -675,37 +627,358 @@
                 })),
                 talles: talles,
                 activo: true,
-                caracteristicas: caracteristicas,
-                created_at: new Date().toISOString()
+                caracteristicas: caracteristicas
             };
-        }
+            
+            productos[nuevoId] = nuevoProducto;
+            guardarProductos();
+            this.reset();
+            alert('✅ Producto agregado correctamente');
+            cargarGestionStock();
+        });
 
-        // =============================================
-        // FUNCIONES AUXILIARES
-        // =============================================
-
-        // FUNCIÓN PARA OBTENER CÓDIGOS DE COLOR
         function obtenerCodigoColor(nombreColor) {
             const colores = {
-                'blanco': '#FFFFFF',
                 'negro': '#000000',
-                'verde': '#00FF00',
-                'verde militar': '#78866B',
-                'beige': '#F5F5DC',
-                'mostaza': '#FFDB58',
-                'amarillo': '#FFFF00',
+                'blanco': '#FFFFFF',
+                'gris oscuro': '#2d3436',
+                'gris medio': '#636e72',
+                'gris claro': '#b2bec3',
+                'gris': '#808080',
                 'azul': '#0000FF',
-                'morado': '#800080',
+                'azul marino': '#000080',
+                'azul claro': '#87CEEB',
                 'rojo': '#FF0000',
+                'rojo oscuro': '#8B0000',
+                'verde': '#00FF00',
+                'verde oscuro': '#006400',
+                'amarillo': '#FFFF00',
                 'naranja': '#FFA500',
                 'rosa': '#FFC0CB',
+                'morado': '#800080',
                 'marron': '#8B4513',
-                'gris': '#808080',
-                'azul marino': '#000080',
-                'verde oscuro': '#006400',
-                'rojo oscuro': '#8B0000'
+                'beige': '#F5F5DC',
+                'camel': '#C19A6B',
+                'khaki': '#F0E68C'
             };
-            return colores[nombreColor.toLowerCase().trim()] || '#CCCCCC';
+            return colores[nombreColor.toLowerCase()] || '#CCCCCC';
+        }
+
+        // GUARDAR PRODUCTOS (SINCRONIZACIÓN CON PÁGINA PRINCIPAL)
+        function guardarProductos() {
+            localStorage.setItem('productos', JSON.stringify(productos));
+        }
+
+        // CARGAR VENTAS
+        function cargarVentas() {
+            const grid = document.getElementById('ventas-grid');
+            grid.innerHTML = '';
+            
+            Object.values(productos).forEach(producto => {
+                if(producto.activo) {
+                    const card = document.createElement('div');
+                    card.className = 'producto-admin-card';
+                    card.innerHTML = `
+                        <h4>${producto.titulo}</h4>
+                        <p><strong>Precio:</strong> ${producto.precio}</p>
+                        <p><strong>Stock:</strong> ${producto.stock} unidades</p>
+                        <button class="btn btn-success" onclick="agregarAlCarrito(${producto.id})" ${producto.stock === 0 ? 'disabled' : ''}>
+                            ${producto.stock === 0 ? 'AGOTADO' : '➕ Agregar a Venta'}
+                        </button>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        // FUNCIONES DE VENTAS
+        function agregarAlCarrito(productoId) {
+            const producto = productos[productoId];
+            const precioNumerico = parseFloat(producto.precio.replace('S/', ''));
+            
+            // Verificar si el producto ya está en el carrito
+            const itemExistente = carritoVenta.find(item => item.id === productoId);
+            if (itemExistente) {
+                if (itemExistente.cantidad < producto.stock) {
+                    itemExistente.cantidad++;
+                } else {
+                    alert('❌ No hay suficiente stock disponible');
+                    return;
+                }
+            } else {
+                carritoVenta.push({
+                    ...producto,
+                    precioNumerico: precioNumerico,
+                    cantidad: 1
+                });
+            }
+            
+            actualizarCarrito();
+            document.getElementById('carrito-venta').style.display = 'block';
+        }
+
+        function actualizarCarrito() {
+            const container = document.getElementById('items-carrito');
+            container.innerHTML = '';
+            
+            let total = 0;
+            carritoVenta.forEach((item, index) => {
+                const subtotal = item.precioNumerico * item.cantidad;
+                total += subtotal;
+                
+                const div = document.createElement('div');
+                div.className = 'carrito-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>${item.titulo}</strong><br>
+                        <small>${item.precio} x ${item.cantidad}</small>
+                    </div>
+                    <div>
+                        <strong>S/ ${subtotal.toFixed(2)}</strong>
+                        <button class="btn btn-warning" onclick="cambiarCantidad(${index}, -1)">-</button>
+                        <button class="btn btn-success" onclick="cambiarCantidad(${index}, 1)">+</button>
+                        <button class="btn btn-danger" onclick="removerDelCarrito(${index})">❌</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            
+            // Aplicar descuento
+            const descuento = parseInt(document.getElementById('descuento-venta').value) || 0;
+            total = total * (1 - descuento / 100);
+            
+            document.getElementById('total-venta').textContent = `S/ ${total.toFixed(2)}`;
+        }
+
+        function cambiarCantidad(index, cambio) {
+            const item = carritoVenta[index];
+            const nuevoStock = item.cantidad + cambio;
+            
+            if (nuevoStock < 1) {
+                removerDelCarrito(index);
+                return;
+            }
+            
+            if (nuevoStock > productos[item.id].stock) {
+                alert('❌ No hay suficiente stock disponible');
+                return;
+            }
+            
+            item.cantidad = nuevoStock;
+            actualizarCarrito();
+        }
+
+        function removerDelCarrito(index) {
+            carritoVenta.splice(index, 1);
+            actualizarCarrito();
+            if(carritoVenta.length === 0) {
+                document.getElementById('carrito-venta').style.display = 'none';
+            }
+        }
+
+        function cancelarVenta() {
+            if(confirm('¿Estás seguro de cancelar la venta?')) {
+                carritoVenta = [];
+                document.getElementById('carrito-venta').style.display = 'none';
+                document.getElementById('descuento-venta').value = 0;
+            }
+        }
+
+        function finalizarVenta() {
+            if(carritoVenta.length === 0) {
+                alert('❌ No hay productos en el carrito');
+                return;
+            }
+            
+            // Verificar stock antes de finalizar
+            for (let item of carritoVenta) {
+                if (item.cantidad > productos[item.id].stock) {
+                    alert(`❌ No hay suficiente stock de ${item.titulo}. Stock disponible: ${productos[item.id].stock}`);
+                    return;
+                }
+            }
+            
+            const descuento = parseInt(document.getElementById('descuento-venta').value) || 0;
+            let total = carritoVenta.reduce((sum, item) => sum + (item.precioNumerico * item.cantidad), 0);
+            total = total * (1 - descuento / 100);
+            
+            // Actualizar stock
+            carritoVenta.forEach(item => {
+                productos[item.id].stock -= item.cantidad;
+                if(productos[item.id].stock < 0) productos[item.id].stock = 0;
+            });
+            
+            // Registrar venta
+            const nuevaVenta = {
+                id: Date.now(),
+                fecha: new Date().toISOString(),
+                items: [...carritoVenta],
+                descuento: descuento,
+                total: total
+            };
+            
+            ventas.push(nuevaVenta);
+            localStorage.setItem('bauvareVentas', JSON.stringify(ventas));
+            guardarProductos();
+            
+            // Mostrar boleta
+            mostrarBoleta(nuevaVenta);
+            
+            // Limpiar carrito
+            carritoVenta = [];
+            document.getElementById('carrito-venta').style.display = 'none';
+            document.getElementById('descuento-venta').value = 0;
+            
+            alert('✅ Venta registrada correctamente');
+            cargarVentas();
+        }
+
+        function mostrarBoleta(venta) {
+            const boleta = `
+                <div class="boleta">
+                    <h3>🏪 BAUVARE</h3>
+                    <p><strong>COMPROBANTE DE VENTA</strong></p>
+                    <p>Fecha: ${new Date(venta.fecha).toLocaleDateString()}</p>
+                    <p>Hora: ${new Date(venta.fecha).toLocaleTimeString()}</p>
+                    <hr>
+                    ${venta.items.map(item => `
+                        <p>${item.titulo} x${item.cantidad} - S/ ${(item.precioNumerico * item.cantidad).toFixed(2)}</p>
+                    `).join('')}
+                    <hr>
+                    <p>Descuento: ${venta.descuento}%</p>
+                    <h3>TOTAL: S/ ${venta.total.toFixed(2)}</h3>
+                    <hr>
+                    <p>¡Gracias por su compra!</p>
+                    <p>📞 +51 926677046</p>
+                </div>
+            `;
+            
+            // En una implementación real, aquí generarías una imagen o PDF
+            alert('📄 Boleta generada (En producción se generaría como imagen/PDF)');
+            console.log('BOLETA:', boleta);
+        }
+
+        // CARGAR ESTADÍSTICAS
+        function cargarEstadisticas() {
+            const container = document.getElementById('estadisticas-contenido');
+            
+            const ventasMes = ventas.filter(v => esVentaDelMes(v.fecha));
+            const totalVentas = ventasMes.reduce((sum, v) => sum + v.total, 0);
+            const productoMasVendido = encontrarProductoMasVendido();
+            
+            container.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>VENTAS DEL MES</h3>
+                        <div class="stat-number">${ventasMes.length}</div>
+                        <p>transacciones</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>INGRESOS TOTALES</h3>
+                        <div class="stat-number">S/ ${totalVentas.toFixed(2)}</div>
+                        <p>acumulado</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>PRODUCTO MÁS VENDIDO</h3>
+                        <div class="stat-number" style="font-size: 24px;">${productoMasVendido.nombre || 'N/A'}</div>
+                        <p>${productoMasVendido.cantidad || 0} unidades</p>
+                    </div>
+                </div>
+                
+                <h3>📋 HISTORIAL DE VENTAS RECIENTES</h3>
+                ${ventasMes.length > 0 ? `
+                    <table>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Productos</th>
+                            <th>Descuento</th>
+                            <th>Total</th>
+                        </tr>
+                        ${ventasMes.slice(-10).reverse().map(venta => `
+                            <tr>
+                                <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                                <td>${venta.items.map(item => `${item.titulo} (x${item.cantidad})`).join(', ')}</td>
+                                <td>${venta.descuento}%</td>
+                                <td>S/ ${venta.total.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                ` : '<p>No hay ventas este mes</p>'}
+            `;
+        }
+
+        function encontrarProductoMasVendido() {
+            const ventasMes = ventas.filter(v => esVentaDelMes(v.fecha));
+            const productosVendidos = {};
+            
+            ventasMes.forEach(venta => {
+                venta.items.forEach(item => {
+                    productosVendidos[item.titulo] = (productosVendidos[item.titulo] || 0) + item.cantidad;
+                });
+            });
+            
+            const masVendido = Object.entries(productosVendidos).sort((a, b) => b[1] - a[1])[0];
+            return masVendido ? { nombre: masVendido[0], cantidad: masVendido[1] } : { nombre: '', cantidad: 0 };
+        }
+
+        // REPORTES
+        function generarReporteMensual() {
+            const ventasMes = ventas.filter(v => esVentaDelMes(v.fecha));
+            const totalIngresos = ventasMes.reduce((sum, v) => sum + v.total, 0);
+            const totalProductosVendidos = ventasMes.reduce((sum, v) => sum + v.items.reduce((itemSum, item) => itemSum + item.cantidad, 0), 0);
+            
+            const reporte = `
+                <h3>📋 REPORTE MENSUAL - ${new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>TOTAL VENTAS</h3>
+                        <div class="stat-number">${ventasMes.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>INGRESOS</h3>
+                        <div class="stat-number">S/ ${totalIngresos.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>PRODUCTOS VENDIDOS</h3>
+                        <div class="stat-number">${totalProductosVendidos}</div>
+                    </div>
+                </div>
+                
+                <h4>📊 DETALLE DE VENTAS</h4>
+                <table>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Productos</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </tr>
+                    ${ventasMes.map(venta => `
+                        <tr>
+                            <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                            <td>${venta.items.map(item => item.titulo).join(', ')}</td>
+                            <td>${venta.items.reduce((sum, item) => sum + item.cantidad, 0)}</td>
+                            <td>S/ ${venta.total.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+            
+            document.getElementById('reporte-contenido').innerHTML = reporte;
+            alert('✅ Reporte mensual generado');
+        }
+
+        function exportarExcel() {
+            // Simulación de exportación a Excel
+            const datosExportar = ventas.map(venta => ({
+                Fecha: new Date(venta.fecha).toLocaleDateString(),
+                Productos: venta.items.map(item => `${item.titulo} (x${item.cantidad})`).join('; '),
+                'Cantidad Total': venta.items.reduce((sum, item) => sum + item.cantidad, 0),
+                Descuento: `${venta.descuento}%`,
+                Total: `S/ ${venta.total.toFixed(2)}`
+            }));
+            
+            console.log('Datos para exportar a Excel:', datosExportar);
+            alert('📊 Datos preparados para exportar a Excel (En producción se descargaría un archivo .xlsx)');
         }
 
         // CERRAR SESIÓN
@@ -714,10 +987,7 @@
             window.location.href = 'login.html';
         });
 
-        // =============================================
-        // INICIALIZACIÓN
-        // =============================================
-        console.log('🚀 Admin inicializado correctamente');
+        // INICIALIZAR
         cargarDashboard();
     </script>
 </body>
