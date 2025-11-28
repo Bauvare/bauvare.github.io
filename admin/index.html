@@ -639,29 +639,29 @@
 
         function obtenerCodigoColor(nombreColor) {
             const colores = {
-                'negro': '#000000',
                 'blanco': '#FFFFFF',
-                'gris oscuro': '#2d3436',
-                'gris medio': '#636e72',
-                'gris claro': '#b2bec3',
-                'gris': '#808080',
-                'azul': '#0000FF',
-                'azul marino': '#000080',
-                'azul claro': '#87CEEB',
-                'rojo': '#FF0000',
-                'rojo oscuro': '#8B0000',
-                'verde': '#00FF00',
-                'verde oscuro': '#006400',
-                'amarillo': '#FFFF00',
-                'naranja': '#FFA500',
-                'rosa': '#FFC0CB',
-                'morado': '#800080',
-                'marron': '#8B4513',
-                'beige': '#F5F5DC',
-                'camel': '#C19A6B',
-                'khaki': '#F0E68C'
+        'negro': '#000000',
+        'verde': '#00FF00',
+        'verde militar': '#78866B',
+        'beige': '#F5F5DC',
+        'mostaza': '#FFDB58',
+        'amarillo': '#FFFF00',
+        'azul': '#0000FF',
+        'morado': '#800080',
+        
+        // Colores primarios adicionales:
+        'rojo': '#FF0000',
+        'naranja': '#FFA500',
+        'rosa': '#FFC0CB',
+        'marron': '#8B4513',
+        'gris': '#808080',
+        'azul marino': '#000080',
+        'verde oscuro': '#006400',
+        'rojo oscuro': '#8B0000'
             };
-            return colores[nombreColor.toLowerCase()] || '#CCCCCC';
+           // Convierte a minúsculas y elimina espacios extra
+    const colorKey = nombreColor.toLowerCase().trim();
+    return colores[colorKey] || '#CCCCCC';
         }
 
         // GUARDAR PRODUCTOS (SINCRONIZACIÓN CON PÁGINA PRINCIPAL)
