@@ -1,283 +1,753 @@
-function doGet() {
-  return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('Bauware Store')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
-}
-
-function testConnection() {
-  return { success: true, message: "✅ Conectado a Bauware", time: new Date() };
-}
-
-function getDashboard() {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const dashboard = ss.getSheetByName('📊 DASHBOARD');
-    
-    if (!dashboard) return { error: "No dashboard" };
-    
-    return {
-      ventasHoy: dashboard.getRange('B4').getValue() || 0,
-      ventasMes: dashboard.getRange('B5').getValue() || 0,
-      stockBajo: dashboard.getRange('B7').getValue() || 0,
-      valorInventario: dashboard.getRange('B8').getValue() || 0,
-      lotesActivos: dashboard.getRange('B6').getValue() || 0
-    };
-  } catch (e) {
-    return { error: e.toString() };
-  }
-}
-
-function getProductos() {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName('👗 CATALOGO');
-    
-    if (!sheet) return { productos: [] };
-    
-    const data = sheet.getDataRange().getValues();
-    const productos = [];
-    
-    for (let i = 1; i < data.length; i++) {
-      productos.push({
-        id: data[i][0] || '',
-        nombre: data[i][1] || '',
-        talla: data[i][3] || '',
-        color: data[i][4] || '',
-        precio: data[i][6] || 0,
-        stock: data[i][7] || 0
-      });
-    }
-    
-    return { productos: productos };
-  } catch (e) {
-    return { error: e.toString() };
-  }
-}
-// ============ FUNCIONES PARA VENDER ============
-
-function venderProducto(ventaData) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const ventasSheet = ss.getSheetByName('🛒 VENTAS');
-    
-    if (!ventasSheet) return { error: 'Hoja de ventas no encontrada' };
-    
-    // Generar ID
-    const lastRow = ventasSheet.getLastRow();
-    let nuevoId = 'V1010';
-    if (lastRow > 1) {
-      const lastId = ventasSheet.getRange(lastRow, 2).getValue();
-      if (lastId && lastId.toString().startsWith('V')) {
-        const num = parseInt(lastId.substring(1)) + 1;
-        nuevoId = 'V' + num;
-      }
-    }
-    
-    // Calcular total
-    const total = ventaData.cantidad * ventaData.precio;
-    
-    // Agregar fila a ventas
-    ventasSheet.appendRow([
-      new Date(),
-      nuevoId,
-      ventaData.productoNombre,
-      ventaData.talla,
-      ventaData.color,
-      ventaData.cantidad,
-      ventaData.precio,
-      total,
-      ventaData.metodoPago || 'EFECTIVO'
-    ]);
-    
-    // Actualizar stock en catálogo
-    const catalogoSheet = ss.getSheetByName('👗 CATALOGO');
-    if (catalogoSheet) {
-      const catalogoData = catalogoSheet.getDataRange().getValues();
-      
-      for (let i = 1; i < catalogoData.length; i++) {
-        if (catalogoData[i][1] === ventaData.productoNombre && 
-            catalogoData[i][3] === ventaData.talla && 
-            catalogoData[i][4] === ventaData.color) {
-          
-          const stockActual = Number(catalogoData[i][7]) || 0;
-          const nuevoStock = stockActual - ventaData.cantidad;
-          
-          if (nuevoStock >= 0) {
-            catalogoSheet.getRange(i + 1, 8).setValue(nuevoStock);
-            
-            // También actualizar inventario automáticamente
-            actualizarInventario();
-            
-            return {
-              success: true,
-              ventaId: nuevoId,
-              total: total,
-              nuevoStock: nuevoStock,
-              message: `✅ Venta ${nuevoId} registrada - Total: S/ ${total.toFixed(2)}`
-            };
-          } else {
-            return { error: '❌ Stock insuficiente' };
-          }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏪 Bauware Store</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
         }
-      }
-    }
-    
-    return {
-      success: true,
-      ventaId: nuevoId,
-      total: total,
-      message: `✅ Venta ${nuevoId} registrada - Total: S/ ${total.toFixed(2)}`
-    };
-    
-  } catch (error) {
-    return { error: error.toString() };
-  }
-}
-
-// Actualizar inventario automáticamente
-function actualizarInventario() {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const catalogoSheet = ss.getSheetByName('👗 CATALOGO');
-    const inventarioSheet = ss.getSheetByName('📦 INVENTARIO');
-    const ventasSheet = ss.getSheetByName('🛒 VENTAS');
-    
-    if (!catalogoSheet || !inventarioSheet || !ventasSheet) return;
-    
-    // Obtener ventas por producto
-    const ventasData = ventasSheet.getDataRange().getValues();
-    const ventasPorProducto = {};
-    
-    for (let i = 1; i < ventasData.length; i++) {
-      const producto = ventasData[i][2]; // Columna C
-      const talla = ventasData[i][3];    // Columna D
-      const color = ventasData[i][4];    // Columna E
-      const cantidad = Number(ventasData[i][5]) || 0; // Columna F
-      
-      const key = `${producto}|${talla}|${color}`;
-      ventasPorProducto[key] = (ventasPorProducto[key] || 0) + cantidad;
-    }
-    
-    // Obtener catálogo
-    const catalogoData = catalogoSheet.getDataRange().getValues();
-    
-    // Limpiar y actualizar inventario
-    inventarioSheet.clearContents();
-    
-    // Encabezados
-    inventarioSheet.getRange(1, 1, 1, 7).setValues([[
-      'PRODUCTO', 'TALLA', 'COLOR', 'STOCK_INICIAL', 'VENTAS', 'STOCK_ACTUAL', 'ALERTA'
-    ]]);
-    
-    let row = 2;
-    for (let i = 1; i < catalogoData.length; i++) {
-      const producto = catalogoData[i][1];
-      const talla = catalogoData[i][3];
-      const color = catalogoData[i][4];
-      const stockInicial = Number(catalogoData[i][7]) || 0;
-      
-      const key = `${producto}|${talla}|${color}`;
-      const ventas = ventasPorProducto[key] || 0;
-      const stockActual = stockInicial - ventas;
-      
-      let alerta = '✅ NORMAL';
-      if (stockActual < 5) {
-        alerta = '🔴 URGENTE';
-      } else if (stockActual < 10) {
-        alerta = '🟡 BAJO';
-      }
-      
-      inventarioSheet.getRange(row, 1, 1, 7).setValues([[
-        producto, talla, color, stockInicial, ventas, stockActual, alerta
-      ]]);
-      
-      row++;
-    }
-    
-    return { success: true, message: 'Inventario actualizado' };
-  } catch (error) {
-    return { error: error.toString() };
-  }
-}
-
-// ============ FUNCIONES PARA AGREGAR PRODUCTO ============
-
-function agregarProducto(productoData) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName('👗 CATALOGO');
-    
-    if (!sheet) return { error: 'Hoja de catálogo no encontrada' };
-    
-    // Generar ID
-    const lastRow = sheet.getLastRow();
-    let nuevoId = 'PROD-001';
-    if (lastRow > 1) {
-      const lastId = sheet.getRange(lastRow, 1).getValue();
-      if (lastId && lastId.includes('-')) {
-        const num = parseInt(lastId.split('-')[1]) + 1;
-        nuevoId = 'PROD-' + num.toString().padStart(3, '0');
-      }
-    }
-    
-    // Agregar fila
-    sheet.appendRow([
-      nuevoId,
-      productoData.nombre,
-      productoData.categoria || 'General',
-      productoData.talla,
-      productoData.color,
-      productoData.precioCompra || 0,
-      productoData.precioVenta || 0,
-      productoData.stock || 0,
-      productoData.stockMin || 10
-    ]);
-    
-    // Actualizar inventario
-    actualizarInventario();
-    
-    return {
-      success: true,
-      id: nuevoId,
-      message: '✅ Producto agregado exitosamente'
-    };
-    
-  } catch (error) {
-    return { error: error.toString() };
-  }
-}
-
-// ============ FUNCIONES PARA AJUSTAR STOCK ============
-
-function actualizarStock(productoId, nuevoStock, motivo) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName('👗 CATALOGO');
-    
-    if (!sheet) return { error: 'Hoja de catálogo no encontrada' };
-    
-    const data = sheet.getDataRange().getValues();
-    let productoNombre = '';
-    
-    for (let i = 1; i < data.length; i++) {
-      if (data[i][0] === productoId) {
-        productoNombre = data[i][1];
-        sheet.getRange(i + 1, 8).setValue(nuevoStock);
         
-        // Actualizar inventario
-        actualizarInventario();
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 30px;
+            border: 1px solid #333;
+        }
         
-        return {
-          success: true,
-          producto: productoNombre,
-          nuevoStock: nuevoStock,
-          message: `✅ Stock actualizado: ${productoNombre} = ${nuevoStock} unidades`
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 1.8rem;
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .status {
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .connected { background: #004400; color: #00ff00; }
+        .disconnected { background: #440000; color: #ff4444; }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .metric {
+            background: #222;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #00ffff;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+        
+        .metric-label {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0055aa;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #008844;
+            color: white;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        
+        .error {
+            background: #330000;
+            color: #ff6666;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏪</div>
+            <h1 class="title">BAUVARE STORE</h1>
+            <p class="subtitle">Gestor de Tienda de Ropa</p>
+            <div id="status" class="status disconnected">
+                🔴 Conectando...
+            </div>
+        </div>
+        
+        <div id="content">
+            <div class="loading">
+                <p>Cargando aplicación...</p>
+                <p id="debug"></p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; color: #666; font-size: 0.9rem;">
+            <p>Conectado a Google Sheets | Bauware Store v1.0</p>
+        </div>
+    </div>
+    
+    <script>
+        // ============================================
+        // CÓDIGO MÍNIMO FUNCIONAL
+        // ============================================
+        
+        console.log("🔧 Iniciando Bauware...");
+        document.getElementById('debug').textContent = "Script cargado";
+        
+        // Configurar Google Apps Script API
+        const API = google.script.run;
+        
+        // Función para mostrar contenido
+        function showContent(html) {
+            document.getElementById('content').innerHTML = html;
+        }
+        
+        // Función para mostrar error
+        function showError(message) {
+            showContent(`
+                <div class="error">
+                    <h3>❌ Error</h3>
+                    <p>${message}</p>
+                    <button class="btn btn-primary" onclick="initApp()" style="margin-top: 15px;">
+                        Reintentar
+                    </button>
+                </div>
+            `);
+        }
+        
+        // Iniciar aplicación
+        function initApp() {
+            console.log("🔄 Iniciando aplicación...");
+            
+            // Probar conexión primero
+            API.withSuccessHandler(function(response) {
+                console.log("✅ Conexión exitosa:", response);
+                
+                // Actualizar estado
+                document.getElementById('status').className = 'status connected';
+                document.getElementById('status').innerHTML = '✅ Conectado a Google Sheets';
+                
+                // Cargar dashboard
+                loadDashboard();
+                
+            }).withFailureHandler(function(error) {
+                console.error("❌ Error de conexión:", error);
+                document.getElementById('status').className = 'status disconnected';
+                document.getElementById('status').innerHTML = '❌ Error de conexión';
+                showError("No se pudo conectar: " + error);
+            }).testConnection();
+        }
+        
+        // Cargar dashboard
+        // Cargar dashboard (VERSIÓN COMPLETA CON 3 BOTONES)
+function loadDashboard() {
+  API.withSuccessHandler(function(data) {
+    console.log("📊 Datos recibidos:", data);
+    
+    if (data.error) {
+      showError("Error al cargar dashboard: " + data.error);
+      return;
+    }
+    
+    // Mostrar dashboard
+    showContent(`
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-value">S/ ${formatNumber(data.ventasHoy || 0)}</div>
+          <div class="metric-label">Ventas Hoy</div>
+        </div>
+        
+        <div class="metric">
+          <div class="metric-value">S/ ${formatNumber(data.ventasMes || 0)}</div>
+          <div class="metric-label">Ventas del Mes</div>
+        </div>
+        
+        <div class="metric">
+          <div class="metric-value">${data.stockBajo || 0}</div>
+          <div class="metric-label">Stock Bajo</div>
+        </div>
+        
+        <div class="metric">
+          <div class="metric-value">S/ ${formatNumber(data.valorInventario || 0)}</div>
+          <div class="metric-label">Valor Inventario</div>
+        </div>
+      </div>
+      
+      <!-- BOTONES ACTUALIZADOS CON 3 OPCIONES -->
+      <div class="buttons">
+        <button class="btn btn-primary" onclick="loadVentas()">
+          🛒 Vender Producto
+        </button>
+        <button class="btn btn-success" onclick="mostrarAgregarProducto()">
+          👕 Agregar Producto
+        </button>
+        <button class="btn" onclick="loadProductos()" style="background: #333; color: white;">
+          📋 Ver Catálogo
+        </button>
+      </div>
+      
+      <div style="text-align: center; color: #666; margin-top: 30px;">
+        Última actualización: ${new Date().toLocaleTimeString('es-PE')}
+      </div>
+    `);
+    
+  }).withFailureHandler(function(error) {
+    showError("Error cargando datos: " + error);
+  }).getDashboard();
+}
+        
+        // Cargar ventas
+        function loadVentas() {
+            API.withSuccessHandler(function(response) {
+                if (response.error || !response.productos) {
+                    showContent(`
+                        <div class="error">
+                            <h3>❌ No hay productos</h3>
+                            <p>No se encontraron productos en el catálogo</p>
+                            <button class="btn btn-primary" onclick="loadDashboard()">
+                                Volver al Dashboard
+                            </button>
+                        </div>
+                    `);
+                    return;
+                }
+                
+                const productos = response.productos.filter(p => p.stock > 0);
+                
+                if (productos.length === 0) {
+                    showContent(`
+                        <div>
+                            <h2 style="color: #00ffff; margin-bottom: 20px;">🛒 Vender Producto</h2>
+                            <div class="error">
+                                <p>No hay productos con stock disponible</p>
+                                <button class="btn btn-primary" onclick="loadDashboard()">
+                                    Volver
+                                </button>
+                            </div>
+                        </div>
+                    `);
+                    return;
+                }
+                
+                showContent(`
+                    <div>
+                        <h2 style="color: #00ffff; margin-bottom: 20px;">🛒 Vender Producto</h2>
+                        <p style="color: #888; margin-bottom: 30px;">Selecciona un producto para vender:</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                            ${productos.map(producto => `
+                                <div style="background: #222; padding: 20px; border-radius: 10px; border: 1px solid #333; cursor: pointer;"
+                                     onclick="seleccionarProducto('${producto.id}')">
+                                    <h3 style="color: white; margin-bottom: 10px;">${producto.nombre}</h3>
+                                    <p style="color: #aaa; margin-bottom: 10px;">${producto.talla} | ${producto.color}</p>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="color: #00ff00; font-size: 1.5rem; font-weight: bold;">
+                                            S/ ${formatNumber(producto.precio)}
+                                        </span>
+                                        <span style="color: #aaa;">
+                                            Stock: ${producto.stock}
+                                        </span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <button class="btn btn-primary" onclick="loadDashboard()">
+                                ← Volver al Dashboard
+                            </button>
+                        </div>
+                    </div>
+                `);
+                
+            }).withFailureHandler(function(error) {
+                showError("Error cargando productos: " + error);
+            }).getProductos();
+        }
+        
+        // Seleccionar producto para vender (VERSIÓN COMPLETA)
+function seleccionarProducto(productoId) {
+  API.withSuccessHandler(function(response) {
+    if (response.error || !response.productos) {
+      showError("Error cargando productos: " + (response.error || "Desconocido"));
+      return;
+    }
+    
+    const producto = response.productos.find(p => p.id === productoId);
+    if (!producto) {
+      showError("Producto no encontrado");
+      return;
+    }
+    
+    // Mostrar formulario de venta
+    showContent(`
+      <div>
+        <h2 style="color: #00ffff; margin-bottom: 20px;">🛒 Vender Producto</h2>
+        
+        <div style="background: #222; padding: 25px; border-radius: 10px; border: 1px solid #00ffff; margin-bottom: 30px;">
+          <h3 style="color: white; margin-bottom: 15px;">${producto.nombre}</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+            <div>
+              <div style="color: #aaa; font-size: 0.9rem;">Talla:</div>
+              <div style="color: white; font-size: 1.2rem;">${producto.talla}</div>
+            </div>
+            <div>
+              <div style="color: #aaa; font-size: 0.9rem;">Color:</div>
+              <div style="color: white; font-size: 1.2rem;">${producto.color}</div>
+            </div>
+            <div>
+              <div style="color: #aaa; font-size: 0.9rem;">Precio:</div>
+              <div style="color: #00ff00; font-size: 1.5rem; font-weight: bold;">S/ ${formatNumber(producto.precio)}</div>
+            </div>
+            <div>
+              <div style="color: #aaa; font-size: 0.9rem;">Stock disponible:</div>
+              <div style="color: ${producto.stock < 10 ? '#ff4444' : '#00ff00'}; font-size: 1.2rem; font-weight: bold;">
+                ${producto.stock} unidades
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="background: #222; padding: 25px; border-radius: 10px; margin-bottom: 30px;">
+          <h3 style="color: white; margin-bottom: 20px;">Detalles de la venta</h3>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            <div>
+              <label style="display: block; color: #aaa; margin-bottom: 10px;">Cantidad:</label>
+              <input type="number" id="ventaCantidad" 
+                     style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; font-size: 1.1rem;"
+                     value="1" min="1" max="${producto.stock}"
+                     onchange="calcularVentaTotal('${producto.precio}')">
+            </div>
+            
+            <div>
+              <label style="display: block; color: #aaa; margin-bottom: 10px;">Método de pago:</label>
+              <select id="ventaMetodoPago"
+                      style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; font-size: 1.1rem;">
+                <option value="EFECTIVO">EFECTIVO</option>
+                <option value="YAPE">YAPE</option>
+                <option value="TARJETA">TARJETA</option>
+                <option value="PLIN">PLIN</option>
+                <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+              </select>
+            </div>
+          </div>
+          
+          <div style="margin-top: 30px; background: #111; padding: 25px; border-radius: 10px; border: 1px solid #333;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="color: #aaa; font-size: 0.9rem;">Total a pagar:</div>
+                <div id="ventaTotal" style="color: #00ff00; font-size: 2.5rem; font-weight: bold;">
+                  S/ ${formatNumber(producto.precio)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+          <button class="btn btn-primary" onclick="confirmarVenta('${productoId}', '${producto.nombre}', '${producto.talla}', '${producto.color}', ${producto.precio})"
+                  style="flex: 1; padding: 20px; font-size: 1.2rem;">
+            ✅ CONFIRMAR VENTA
+          </button>
+          <button class="btn" onclick="loadVentas()"
+                  style="background: #333; color: white; padding: 20px; border-radius: 8px; border: none; cursor: pointer;">
+            ← Volver a productos
+          </button>
+        </div>
+      </div>
+    `);
+    
+  }).withFailureHandler(function(error) {
+    showError("Error: " + error);
+  }).getProductos();
+}
+
+// Calcular total de venta
+function calcularVentaTotal(precio) {
+  const cantidad = parseInt(document.getElementById('ventaCantidad').value) || 1;
+  const total = cantidad * precio;
+  document.getElementById('ventaTotal').innerHTML = `S/ ${formatNumber(total)}`;
+}
+
+// Confirmar venta
+function confirmarVenta(productoId, productoNombre, talla, color, precio) {
+  const cantidad = parseInt(document.getElementById('ventaCantidad').value) || 1;
+  const metodoPago = document.getElementById('ventaMetodoPago').value;
+  
+  // Validar cantidad
+  if (cantidad <= 0) {
+    alert("❌ La cantidad debe ser mayor a 0");
+    return;
+  }
+  
+  const ventaData = {
+    productoNombre: productoNombre,
+    talla: talla,
+    color: color,
+    cantidad: cantidad,
+    precio: precio,
+    metodoPago: metodoPago
+  };
+  
+  // Mostrar loading
+  showContent(`
+    <div style="text-align: center; padding: 60px;">
+      <div style="width: 50px; height: 50px; border: 3px solid #333; border-top: 3px solid #00ffff; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+      <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+      <p style="color: #aaa;">Registrando venta...</p>
+    </div>
+  `);
+  
+  API.withSuccessHandler(function(response) {
+    if (response.error) {
+      showError("❌ Error: " + response.error);
+    } else {
+      // Mostrar éxito
+      showContent(`
+        <div style="text-align: center; padding: 40px;">
+          <div style="font-size: 4rem; color: #00ff00; margin-bottom: 20px;">✅</div>
+          <h2 style="color: #00ffff; margin-bottom: 15px;">¡Venta Registrada!</h2>
+          <div style="background: #222; padding: 25px; border-radius: 10px; margin: 30px auto; max-width: 500px; border: 1px solid #00ff00;">
+            <div style="margin-bottom: 15px;">
+              <div style="color: #aaa; font-size: 0.9rem;">ID de venta:</div>
+              <div style="color: white; font-size: 1.5rem; font-weight: bold;">${response.ventaId}</div>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <div style="color: #aaa; font-size: 0.9rem;">Producto:</div>
+              <div style="color: white; font-size: 1.2rem;">${productoNombre}</div>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <div style="color: #aaa; font-size: 0.9rem;">Total:</div>
+              <div style="color: #00ff00; font-size: 2rem; font-weight: bold;">S/ ${formatNumber(response.total)}</div>
+            </div>
+            ${response.nuevoStock ? `
+              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
+                <div style="color: #aaa; font-size: 0.9rem;">Nuevo stock:</div>
+                <div style="color: ${response.nuevoStock < 10 ? '#ff4444' : '#00ff00'}; font-size: 1.2rem; font-weight: bold;">
+                  ${response.nuevoStock} unidades
+                </div>
+              </div>
+            ` : ''}
+          </div>
+          <div style="margin-top: 30px;">
+            <button class="btn btn-primary" onclick="loadDashboard()" style="margin-right: 10px;">
+              ← Volver al Dashboard
+            </button>
+            <button class="btn btn-success" onclick="loadVentas()">
+              🛒 Hacer otra venta
+            </button>
+          </div>
+        </div>
+      `);
+    }
+  }).withFailureHandler(function(error) {
+    showError("❌ Error al registrar venta: " + error);
+  }).venderProducto(ventaData);
+}
+        
+        // Cargar productos
+        function loadProductos() {
+            API.withSuccessHandler(function(response) {
+                const productos = response.productos || [];
+                
+                showContent(`
+                    <div>
+                        <h2 style="color: #00ffff; margin-bottom: 20px;">👕 Catálogo de Productos</h2>
+                        <p style="color: #888; margin-bottom: 30px;">${productos.length} productos encontrados</p>
+                        
+                        ${productos.length === 0 ? `
+                            <div class="error">
+                                <p>No hay productos en el catálogo</p>
+                            </div>
+                        ` : `
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: #222;">
+                                            <th style="padding: 15px; text-align: left; border-bottom: 2px solid #333;">Producto</th>
+                                            <th style="padding: 15px; text-align: left; border-bottom: 2px solid #333;">Talla</th>
+                                            <th style="padding: 15px; text-align: left; border-bottom: 2px solid #333;">Color</th>
+                                            <th style="padding: 15px; text-align: left; border-bottom: 2px solid #333;">Precio</th>
+                                            <th style="padding: 15px; text-align: left; border-bottom: 2px solid #333;">Stock</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${productos.map(p => `
+                                            <tr style="border-bottom: 1px solid #333;">
+                                                <td style="padding: 15px;">${p.nombre}</td>
+                                                <td style="padding: 15px;">${p.talla}</td>
+                                                <td style="padding: 15px;">${p.color}</td>
+                                                <td style="padding: 15px; color: #00ff00;">S/ ${formatNumber(p.precio)}</td>
+                                                <td style="padding: 15px; ${p.stock < 10 ? 'color: #ff4444;' : ''}">${p.stock}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `}
+                        
+                        <div style="margin-top: 30px;">
+                            <button class="btn btn-primary" onclick="loadDashboard()">
+                                ← Volver al Dashboard
+                            </button>
+                        </div>
+                    </div>
+                `);
+                
+            }).withFailureHandler(function(error) {
+                showError("Error cargando catálogo: " + error);
+            }).getProductos();
+        }
+        // Mostrar formulario para agregar producto
+function mostrarAgregarProducto() {
+  showContent(`
+    <div>
+      <h2 style="color: #00ffff; margin-bottom: 20px;">👕 Agregar Nuevo Producto</h2>
+      
+      <div style="background: #222; padding: 30px; border-radius: 10px; margin-bottom: 30px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;">
+          <div>
+            <label style="display: block; color: #aaa; margin-bottom: 10px;">Nombre del producto *</label>
+            <input type="text" id="nuevoProductoNombre" 
+                   style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white;"
+                   placeholder="Ej: Polo Básico">
+          </div>
+          
+          <div>
+            <label style="display: block; color: #aaa; margin-bottom: 10px;">Categoría *</label>
+            <select id="nuevoProductoCategoria"
+                    style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white;">
+              <option value="Polo">Polo</option>
+              <option value="Jean">Jean</option>
+              <option value="Short">Short</option>
+              <option value="Blusa">Blusa</option>
+              <option value="Chaqueta">Chaqueta</option>
+            </select>
+          </div>
+          
+          <div>
+            <label style="display: block; color: #aaa; margin-bottom: 10px;">Talla *</label>
+            <input type="text" id="nuevoProductoTalla" 
+                   style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white;"
+                   placeholder="Ej: M, L, 32">
+          </div>
+          
+          <div>
+            <label style="display: block; color: #aaa; margin-bottom: 10px;">Color *</label>
+            <input type="text" id="nuevoProductoColor" 
+                   style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white;"
+                   placeholder="Ej: Blanco, Negro">
+          </div>
+          
+          <div>
+            <label style="display: block; color: #aaa; margin-bottom: 10px;">Precio de compra (S/)</label>
+            <input type="number" id="nuevoProductoPrecioCompra" 
+                   style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white;"
+                   value="0" step="0.01">
+          </div>
+          
+          <div>
+            <label style="display: block; color: #aaa; margin-bottom: 10px;">Precio de venta (S/) *</label>
+            <input type="number" id="nuevoProductoPrecioVenta" 
+                   style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white;"
+                   value="0" step="0.01">
+          </div>
+          
+          <div>
+            <label style="display: block; color: #aaa; margin-bottom: 10px;">Stock inicial *</label>
+            <input type="number" id="nuevoProductoStock" 
+                   style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white;"
+                   value="0" min="0">
+          </div>
+          
+          <div>
+            <label style="display: block; color: #aaa; margin-bottom: 10px;">Stock mínimo (alerta)</label>
+            <input type="number" id="nuevoProductoStockMin" 
+                   style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white;"
+                   value="10" min="1">
+          </div>
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 15px; margin-top: 30px;">
+        <button class="btn btn-success" onclick="guardarNuevoProducto()" style="flex: 1; padding: 20px; font-size: 1.2rem;">
+          💾 GUARDAR PRODUCTO
+        </button>
+        <button class="btn" onclick="loadDashboard()"
+                style="background: #333; color: white; padding: 20px; border-radius: 8px; border: none; cursor: pointer;">
+          ← Cancelar
+        </button>
+      </div>
+    </div>
+  `);
+}
+
+// Guardar nuevo producto
+function guardarNuevoProducto() {
+  const productoData = {
+    nombre: document.getElementById('nuevoProductoNombre').value.trim(),
+    categoria: document.getElementById('nuevoProductoCategoria').value,
+    talla: document.getElementById('nuevoProductoTalla').value.trim(),
+    color: document.getElementById('nuevoProductoColor').value.trim(),
+    precioCompra: parseFloat(document.getElementById('nuevoProductoPrecioCompra').value) || 0,
+    precioVenta: parseFloat(document.getElementById('nuevoProductoPrecioVenta').value) || 0,
+    stock: parseInt(document.getElementById('nuevoProductoStock').value) || 0,
+    stockMin: parseInt(document.getElementById('nuevoProductoStockMin').value) || 10
+  };
+  
+  // Validar
+  if (!productoData.nombre || !productoData.talla || !productoData.color) {
+    alert("❌ Completa los campos obligatorios (Nombre, Talla, Color)");
+    return;
+  }
+  
+  if (productoData.precioVenta <= 0) {
+    alert("❌ El precio de venta debe ser mayor a 0");
+    return;
+  }
+  
+  // Mostrar loading
+  showContent(`
+    <div style="text-align: center; padding: 60px;">
+      <div style="width: 50px; height: 50px; border: 3px solid #333; border-top: 3px solid #00ffff; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+      <p style="color: #aaa;">Guardando producto...</p>
+    </div>
+  `);
+  
+  API.withSuccessHandler(function(response) {
+    if (response.error) {
+      showError("❌ Error: " + response.error);
+    } else {
+      // Mostrar éxito
+      showContent(`
+        <div style="text-align: center; padding: 40px;">
+          <div style="font-size: 4rem; color: #00ff00; margin-bottom: 20px;">✅</div>
+          <h2 style="color: #00ffff; margin-bottom: 15px;">¡Producto Agregado!</h2>
+          <div style="background: #222; padding: 25px; border-radius: 10px; margin: 30px auto; max-width: 500px; border: 1px solid #00ff00;">
+            <div style="margin-bottom: 15px;">
+              <div style="color: #aaa; font-size: 0.9rem;">ID del producto:</div>
+              <div style="color: white; font-size: 1.5rem; font-weight: bold;">${response.id}</div>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <div style="color: #aaa; font-size: 0.9rem;">Nombre:</div>
+              <div style="color: white; font-size: 1.2rem;">${productoData.nombre}</div>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <div style="color: #aaa; font-size: 0.9rem;">Precio de venta:</div>
+              <div style="color: #00ff00; font-size: 1.5rem; font-weight: bold;">S/ ${formatNumber(productoData.precioVenta)}</div>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <div style="color: #aaa; font-size: 0.9rem;">Stock inicial:</div>
+              <div style="color: ${productoData.stock < 10 ? '#ff4444' : '#00ff00'}; font-size: 1.2rem; font-weight: bold;">
+                ${productoData.stock} unidades
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 30px;">
+            <button class="btn btn-primary" onclick="loadDashboard()" style="margin-right: 10px;">
+              ← Volver al Dashboard
+            </button>
+            <button class="btn btn-success" onclick="loadProductos()">
+              👕 Ver Catálogo
+            </button>
+          </div>
+        </div>
+      `);
+    }
+  }).withFailureHandler(function(error) {
+    showError("❌ Error al guardar producto: " + error);
+  }).agregarProducto(productoData);
+}
+        // Formatear números
+        function formatNumber(num) {
+            return Number(num).toLocaleString('es-PE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        // Iniciar cuando cargue la página
+        window.onload = function() {
+            console.log("🚀 Página cargada, iniciando app...");
+            initApp();
         };
-      }
-    }
-    
-    return { error: 'Producto no encontrado' };
-  } catch (error) {
-    return { error: error.toString() };
-  }
-}
+        
+        // También intentar con DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("📄 DOM cargado");
+            document.getElementById('debug').textContent = "DOM cargado - Iniciando...";
+        });
+        
+        console.log("✅ Script listo");
+    </script>
+</body>
+</html>
