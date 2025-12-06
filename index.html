@@ -1,1191 +1,283 @@
-<!doctype html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* ESTILOS GENERALES */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: #000; /* FONDO NEGRO PARA TODA LA PÁGINA */
-        }
-        
-        .bauvare-container {
-            background: #1a1a1a;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        /* INTRODUCCIÓN BAUVARE */
-        .intro-bauvare {
-            padding: 60px 20px;
-            background: #2d2d2d;
-            color: white;
-            border-radius: 10px;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .contenedor-intro {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .logo-section {
-            flex: 1;
-            text-align: center;
-        }
-        
-        .logo-bauvare {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #333 0%, #555 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            padding: 15px;
-            border: 3px solid #555;
-        }
-        
-        .logo-bauvare img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 50%;
-        }
-
-        .imagen-tienda-section {
-            flex: 1.5;
-        }
-
-        .imagen-tienda {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-        
-        .intro-texto {
-            text-align: center;
-            margin-top: 40px;
-        }
-        
-        .intro-bauvare h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            color: white;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
-        
-        .intro-bauvare p {
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto 25px;
-            color: #ccc;
-            line-height: 1.6;
-        }
-        
-        .btn-descubrir {
-            display: inline-block;
-            padding: 12px 30px;
-            background: white;
-            color: #000;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-        
-        .btn-descubrir:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255,255,255,0.2);
-        }
-        
-        /* CATÁLOGO */
-        .seccion-catalogo {
-            padding-top: 40px;
-        }
-        
-        .titulo-catalogo {
-            text-align: center;
-            margin-bottom: 50px;
-            color: white;
-            font-size: 2.2rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
-        
-        /* FILTROS */
-        .filtros {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-        
-        .filtro-btn {
-            padding: 12px 25px;
-            background: #222;
-            border: 2px solid #444;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: white;
-        }
-        
-        .filtro-btn:hover, .filtro-btn.activo {
-            background: white;
-            color: #000;
-            border-color: white;
-        }
-        
-        /* GRID DE PRODUCTOS */
-        .productos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-        
-        .producto-card {
-            background: #222;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-        }
-        
-        .producto-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(255,255,255,0.1);
-        }
-        
-        .producto-imagen {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-            border-bottom: 1px solid #444;
-        }
-        
-        .producto-info {
-            padding: 25px;
-        }
-        
-        .producto-categoria {
-            color: #ccc;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
-        
-        .producto-titulo {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: white;
-            font-weight: 500;
-        }
-        
-        .producto-precio {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .precio-actual {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-        }
-        
-        .precio-anterior {
-            font-size: 1.1rem;
-            color: #999;
-            text-decoration: line-through;
-        }
-        
-        .descuento {
-            background: white;
-            color: #000;
-            padding: 4px 10px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .producto-colores {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .color-option {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s;
-        }
-        
-        .color-option:hover {
-            transform: scale(1.2);
-        }
-        
-        .color-option.seleccionado {
-            border-color: white;
-            transform: scale(1.2);
-        }
-        
-        .producto-talles {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .talle-option {
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #444;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #ccc;
-        }
-        
-        .talle-option:hover, .talle-option.seleccionado {
-            background: white;
-            color: #000;
-            border-color: white;
-        }
-        
-        .btn-ver-detalles {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background: white;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            text-align: center;
-            text-decoration: none;
-            letter-spacing: 1px;
-        }
-        
-        .btn-ver-detalles:hover {
-            background: #ddd;
-        }
-        
-        /* MODAL DE DETALLES */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            overflow-y: auto;
-            padding: 20px;
-        }
-        
-        .modal-contenido {
-            background: #2d2d2d;
-            max-width: 1000px;
-            margin: 40px auto;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 30px rgba(255,255,255,0.1);
-            animation: modalAppear 0.4s ease;
-        }
-        
-        @keyframes modalAppear {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .modal-cerrar {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            font-size: 2rem;
-            color: white;
-            cursor: pointer;
-            background: rgba(0,0,0,0.5);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-        }
-        
-        .modal-cuerpo {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        
-        .modal-imagenes {
-            flex: 1;
-            min-width: 300px;
-            padding: 30px;
-        }
-        
-        .imagen-principal {
-            width: 100%;
-            height: 400px; /* ALTURA FIJA */
-            object-fit: contain; /* MANTIENE PROPORCIONES */
-            border-radius: 10px;
-            margin-bottom: 15px;
-            background: #3d3d3d; /* FONDO PARA IMÁGENES PEQUEÑAS */
-        }
-        
-        .miniaturas {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .miniatura {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 5px;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        
-        .miniatura:hover, .miniatura.activa {
-            opacity: 1;
-            border-color: white;
-            transform: scale(1.05);
-        }
-        
-        .modal-info {
-            flex: 1;
-            min-width: 300px;
-            padding: 30px; /* MENOS PADDING */
-            background: #3d3d3d;
-        }
-        
-        .modal-titulo {
-            font-size: 1.8rem; /* MÁS PEQUEÑO */
-            margin-bottom: 10px; /* MENOS ESPACIO */
-            color: white;
-        }
-        
-        .modal-marca {
-            color: #ccc;
-            font-weight: 600;
-            margin-bottom: 15px; /* MENOS ESPACIO */
-            font-size: 1rem;
-        }
-        
-        .modal-precio {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px; /* MENOS ESPACIO */
-        }
-        
-        .modal-precio-actual {
-            font-size: 1.8rem; /* MÁS PEQUEÑO */
-            font-weight: 700;
-            color: white;
-        }
-        
-        .modal-precio-anterior {
-            font-size: 1.2rem; /* MÁS PEQUEÑO */
-            color: #999;
-            text-decoration: line-through;
-        }
-        
-        .modal-descuento {
-            background: white;
-            color: #000;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        
-        .modal-colores, .modal-talles {
-            margin-bottom: 20px; /* MENOS ESPACIO */
-        }
-        
-        .modal-colores h3, .modal-talles h3 {
-            margin-bottom: 10px; /* MENOS ESPACIO */
-            color: white;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-        
-        .seleccion-info {
-            margin-top: 8px;
-            font-size: 0.9rem;
-            color: #4fc3f7;
-            min-height: 20px;
-            font-weight: 500;
-        }
-        
-        .modal-detalles {
-            margin: 20px 0; /* MENOS ESPACIO */
-        }
-        
-        .modal-detalles h3 {
-            margin-bottom: 10px; /* MENOS ESPACIO */
-            color: white;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-        
-        .modal-detalles ul {
-            padding-left: 18px;
-            color: #ccc;
-        }
-        
-        .modal-detalles li {
-            margin-bottom: 6px; /* MENOS ESPACIO */
-            font-size: 0.9rem;
-            line-height: 1.3; /* MENOS ESPACIO ENTRE LÍNEAS */
-        }
-        
-        .botones-accion {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px; /* MENOS ESPACIO */
-        }
-        
-        .btn-whatsapp {
-            flex: 1;
-            padding: 15px;
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.3s;
-            text-decoration: none;
-            font-size: 1rem;
-        }
-        
-        .btn-whatsapp:hover {
-            background: #128C7E;
-        }
-
-        /* ESTILOS MEJORADOS PARA STOCK */
-        .stock-bajo {
-            color: #ffd54f;
-            font-weight: bold;
-            background: rgba(255, 213, 79, 0.1);
-            padding: 8px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .en-stock {
-            color: #81c784;
-            font-weight: bold;
-            background: rgba(129, 199, 132, 0.1);
-            padding: 8px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .sin-stock {
-            color: #e57373;
-            font-weight: bold;
-            background: rgba(229, 115, 115, 0.1);
-            padding: 8px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        
-        /* FOOTER */
-        .footer {
-            text-align: center;
-            padding: 40px;
-            margin-top: 50px;
-            background: #111;
-            color: white;
-            border-radius: 10px;
-        }
-        
-        .footer h3 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            font-weight: 400;
-        }
-        
-        .footer p {
-            margin-bottom: 25px;
-            color: #ccc;
-        }
-        
-        .contacto-info {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .contacto-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #ccc;
-        }
-        
-        /* RESPONSIVE - MEJORADO PARA MÓVILES */
-        @media (max-width: 768px) {
-            body {
-                font-size: 14px; /* Tamaño de fuente base más pequeño para móviles */
-            }
-            
-            .bauvare-container {
-                padding: 10px; /* Menos padding en móviles */
-            }
-            
-            .contenedor-intro {
-                flex-direction: column;
-                gap: 30px;
-            }
-
-            .logo-bauvare {
-                width: 150px;
-                height: 150px;
-            }
-
-            .imagen-tienda {
-                height: 250px;
-            }
-
-            .intro-bauvare h1 {
-                font-size: 1.8rem;
-            }
-            
-            .titulo-catalogo {
-                font-size: 1.6rem;
-                margin-bottom: 30px;
-            }
-            
-            .modal-cuerpo {
-                flex-direction: column;
-            }
-            
-            .imagen-principal {
-                height: 300px; /* MÁS PEQUEÑO EN MÓVIL */
-            }
-            
-            .botones-accion {
-                flex-direction: column;
-            }
-            
-            .productos-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 20px;
-            }
-            
-            .filtros {
-                gap: 10px;
-            }
-            
-            .filtro-btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-            
-            .producto-info {
-                padding: 20px;
-            }
-            
-            .producto-titulo {
-                font-size: 1.2rem;
-            }
-            
-            .precio-actual {
-                font-size: 1.3rem;
-            }
-            
-            .modal-contenido {
-                margin: 20px auto;
-            }
-            
-            .modal-imagenes, .modal-info {
-                padding: 20px;
-            }
-            
-            .modal-titulo {
-                font-size: 1.5rem;
-            }
-            
-            .modal-precio-actual {
-                font-size: 1.5rem;
-            }
-            
-            .miniaturas {
-                gap: 8px;
-            }
-            
-            .miniatura {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .footer {
-                padding: 30px 20px;
-            }
-            
-            .contacto-info {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .filtros {
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-            }
-            
-            .filtro-btn {
-                width: 90%;
-                padding: 12px;
-            }
-            
-            .productos-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .intro-bauvare {
-                padding: 30px 15px;
-            }
-
-            .logo-bauvare {
-                width: 130px;
-                height: 130px;
-            }
-
-            .imagen-tienda {
-                height: 200px;
-            }
-
-            .intro-bauvare h1 {
-                font-size: 1.6rem;
-            }
-            
-            .intro-bauvare p {
-                font-size: 1rem;
-            }
-            
-            .imagen-principal {
-                height: 250px; /* MÁS PEQUEÑO EN MÓVILES PEQUEÑOS */
-            }
-            
-            .modal-info {
-                padding: 15px;
-            }
-            
-            .modal-titulo {
-                font-size: 1.3rem;
-            }
-            
-            .modal-precio-actual {
-                font-size: 1.3rem;
-            }
-            
-            .producto-imagen {
-                height: 300px;
-            }
-            
-            .btn-ver-detalles, .btn-whatsapp {
-                padding: 12px;
-                font-size: 0.9rem;
-            }
-            
-            .miniaturas {
-                gap: 5px;
-            }
-            
-            .miniatura {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .seleccion-info {
-                font-size: 0.8rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="bauvare-container">
-        <!-- INTRODUCCIÓN -->
-        <section class="intro-bauvare">
-            <div class="contenedor-intro">
-                <div class="logo-section">
-                    <div class="logo-bauvare">
-                        <img src="https://i.postimg.cc/8CYHTt97/BAUVAREHD.jpg" alt="Bauvare Logo" />
-                    </div>
-                </div>
-
-                <div class="imagen-tienda-section">
-                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tienda Bauvare" class="imagen-tienda" />
-                </div>
-            </div>
-
-            <div class="intro-texto">
-                <p>Calidad excepcional a precios increíbles. Demostramos que la buena confección no tiene que costar fortunas. Ofrecemos prendas bien elaboradas con materiales duraderos, costuras reforzadas y acabados premium, todo a precios que respetan tu bolsillo</p>
-                <p>Calidad que se ve, precios que se agradecen</p>
-                <a href="#catalogo" class="btn-descubrir">DESCUBRIR COLECCIÓN</a>
-            </div>
-        </section>
-        
-        <!-- CATÁLOGO -->
-        <section class="seccion-catalogo" id="catalogo">
-            <h2 class="titulo-catalogo">COLECCIÓN PRINCIPAL</h2>
-            
-            <!-- FILTROS -->
-            <div class="filtros">
-                <button class="filtro-btn activo" data-categoria="todos">TODOS</button>
-                <button class="filtro-btn" data-categoria="camisetas">POLOS</button>
-                <button class="filtro-btn" data-categoria="pantalones">PANTALONES</button>
-                <button class="filtro-btn" data-categoria="abrigos">ABRIGOS</button>
-            </div>
-            
-            <!-- PRODUCTOS -->
-            <div class="productos-grid" id="productos-container">
-                <!-- Los productos se cargan automáticamente -->
-            </div>
-        </section>
-        
-        <!-- FOOTER -->
-        <footer class="footer">
-            <h3>BAUVARE</h3>
-            <p>Elegancia atemporal en cada prenda. Descubre el estilo que perdura.</p>
-            <div class="contacto-info">
-                <div class="contacto-item">
-                    <span>🇵🇪</span>
-                    <span>Marca 100% Peruana</span>
-                </div>
-                <div class="contacto-item">
-                    <span>📱</span>
-                    <span>+51 926677046</span>
-                </div>
-                <div class="contacto-item">
-                    <span>📍</span>
-                    <span>Gamarra La Trece Aveniu 2do piso galeria 110</span>
-                </div>
-            </div>
-        </footer>
-    </div>
-    
-    <!-- MODAL -->
-    <div id="modal-detalles" class="modal">
-        <div class="modal-contenido">
-            <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
-            <div class="modal-cuerpo">
-                <div class="modal-imagenes">
-                    <img src="" alt="" class="imagen-principal" id="modal-imagen" />
-                    <div class="miniaturas" id="modal-miniaturas">
-                        <!-- Miniaturas se cargan dinámicamente -->
-                        </div>
-                </div>
-                <div class="modal-info">
-                    <h2 class="modal-titulo" id="modal-titulo"></h2>
-                    <div class="modal-marca">BAUVARE</div>
-                    <div class="modal-precio">
-                        <span class="modal-precio-actual" id="modal-precio"></span>
-                        <span class="modal-precio-anterior" id="modal-precio-ant"></span>
-                        <span class="descuento" id="modal-descuento"></span>
-                    </div>
-                    <!-- SELECTOR DE COLOR -->
-                    <div class="modal-colores">
-                        <h3>🎨 SELECCIONA COLOR:</h3>
-                        <div class="producto-colores" id="modal-colores">
-                            <!-- Colores se cargan dinámicamente -->
-                        </div>
-                        <div class="seleccion-info" id="color-seleccionado"></div>
-                    </div>
-                    <!-- SELECTOR DE TALLE -->
-                    <div class="modal-talles">
-                        <h3>📏 SELECCIONA TALLE:</h3>
-                        <div class="producto-talles" id="modal-talles">
-                            <!-- Talles se cargan dinámicamente -->
-                        </div>
-                        <div class="seleccion-info" id="talle-seleccionado"></div>
-                    </div>
-                    <div class="modal-detalles">
-                        <h3>⭐ DETALLES DEL PRODUCTO:</h3>
-                        <ul id="modal-descripcion">
-                            <!-- Características se cargan dinámicamente -->
-                        </ul>
-                    </div>
-                    <div id="modal-stock"></div>
-                    
-                    <a href="#" class="btn-whatsapp" id="btn-whatsapp" target="_blank">
-                        💬 CONSULTAR POR WHATSAPP
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-       // URL de tu archivo JSON en GitHub
-const JSON_URL = 'https://raw.githubusercontent.com/bauvare/bauvare.github.io/main/data/productos.json';
-
-// Variable global para productos
-let productos = {};
-
-// CARGAR PRODUCTOS DESDE JSON
-async function cargarProductosDesdeJSON() {
-    try {
-        console.log('🔄 Cargando productos desde JSON...');
-        const response = await fetch(JSON_URL + '?t=' + new Date().getTime());
-        if (!response.ok) throw new Error('Error cargando productos');
-        productos = await response.json();
-        console.log('✅ Productos cargados:', Object.keys(productos).length);
-        return productos;
-    } catch (error) {
-        console.error('❌ Error cargando JSON:', error);
-        // Si hay error, cargar datos de respaldo
-        return cargarProductosRespaldo();
-    }
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile('Index')
+    .setTitle('Bauware Store')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
 }
 
-// DATOS DE RESPALDO (por si falla la carga)
-function cargarProductosRespaldo() {
-    console.log('⚠️ Cargando datos de respaldo...');
+function testConnection() {
+  return { success: true, message: "✅ Conectado a Bauware", time: new Date() };
+}
+
+function getDashboard() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const dashboard = ss.getSheetByName('📊 DASHBOARD');
+    
+    if (!dashboard) return { error: "No dashboard" };
+    
     return {
-        "1": {
-            "id": 1,
-            "titulo": "Polo Negro Elegante",
-            "precio": "S/25.00",
-            "precioAnterior": "S/30.00",
-            "descuento": "-15%",
-            "categoria": "camisetas",
-            "imagen": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "imagenes": [
-                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            ],
-            "colores": [
-                {"nombre": "Negro", "codigo": "#000000"},
-                {"nombre": "Blanco", "codigo": "#FFFFFF"},
-                {"nombre": "Gris", "codigo": "#808080"}
-            ],
-            "talles": ["S", "M", "L", "XL"],
-            "stock": 50,
-            "activo": true,
-            "caracteristicas": [
-                "Tejido de alta calidad",
-                "Corte elegante", 
-                "Material transpirable",
-                "Costuras reforzadas"
-            ]
-        }
+      ventasHoy: dashboard.getRange('B4').getValue() || 0,
+      ventasMes: dashboard.getRange('B5').getValue() || 0,
+      stockBajo: dashboard.getRange('B7').getValue() || 0,
+      valorInventario: dashboard.getRange('B8').getValue() || 0,
+      lotesActivos: dashboard.getRange('B6').getValue() || 0
     };
+  } catch (e) {
+    return { error: e.toString() };
+  }
 }
 
-// CARGAR PRODUCTOS EN LA PÁGINA
-async function cargarProductos() {
-    await cargarProductosDesdeJSON();
-    const container = document.getElementById('productos-container');
-    container.innerHTML = '';
+function getProductos() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('👗 CATALOGO');
     
-    Object.values(productos).forEach(producto => {
-        if (producto.activo !== false) {
-            const stockText = producto.stock === 0 ? 
-                '<div class="sin-stock">AGOTADO</div>' : 
-                `<div class="stock-info">Stock: ${producto.stock}</div>`;
+    if (!sheet) return { productos: [] };
+    
+    const data = sheet.getDataRange().getValues();
+    const productos = [];
+    
+    for (let i = 1; i < data.length; i++) {
+      productos.push({
+        id: data[i][0] || '',
+        nombre: data[i][1] || '',
+        talla: data[i][3] || '',
+        color: data[i][4] || '',
+        precio: data[i][6] || 0,
+        stock: data[i][7] || 0
+      });
+    }
+    
+    return { productos: productos };
+  } catch (e) {
+    return { error: e.toString() };
+  }
+}
+// ============ FUNCIONES PARA VENDER ============
+
+function venderProducto(ventaData) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ventasSheet = ss.getSheetByName('🛒 VENTAS');
+    
+    if (!ventasSheet) return { error: 'Hoja de ventas no encontrada' };
+    
+    // Generar ID
+    const lastRow = ventasSheet.getLastRow();
+    let nuevoId = 'V1010';
+    if (lastRow > 1) {
+      const lastId = ventasSheet.getRange(lastRow, 2).getValue();
+      if (lastId && lastId.toString().startsWith('V')) {
+        const num = parseInt(lastId.substring(1)) + 1;
+        nuevoId = 'V' + num;
+      }
+    }
+    
+    // Calcular total
+    const total = ventaData.cantidad * ventaData.precio;
+    
+    // Agregar fila a ventas
+    ventasSheet.appendRow([
+      new Date(),
+      nuevoId,
+      ventaData.productoNombre,
+      ventaData.talla,
+      ventaData.color,
+      ventaData.cantidad,
+      ventaData.precio,
+      total,
+      ventaData.metodoPago || 'EFECTIVO'
+    ]);
+    
+    // Actualizar stock en catálogo
+    const catalogoSheet = ss.getSheetByName('👗 CATALOGO');
+    if (catalogoSheet) {
+      const catalogoData = catalogoSheet.getDataRange().getValues();
+      
+      for (let i = 1; i < catalogoData.length; i++) {
+        if (catalogoData[i][1] === ventaData.productoNombre && 
+            catalogoData[i][3] === ventaData.talla && 
+            catalogoData[i][4] === ventaData.color) {
+          
+          const stockActual = Number(catalogoData[i][7]) || 0;
+          const nuevoStock = stockActual - ventaData.cantidad;
+          
+          if (nuevoStock >= 0) {
+            catalogoSheet.getRange(i + 1, 8).setValue(nuevoStock);
             
-            const card = document.createElement('div');
-            card.className = 'producto-card';
-            card.setAttribute('data-categoria', producto.categoria);
-            card.innerHTML = `
-                <img src="${producto.imagen}" alt="${producto.titulo}" class="producto-imagen" />
-                <div class="producto-info">
-                    <div class="producto-categoria">${producto.categoria.toUpperCase()}</div>
-                    <h3 class="producto-titulo">${producto.titulo}</h3>
-                    ${stockText}
-                    <div class="producto-precio">
-                        <span class="precio-actual">${producto.precio}</span>
-                        ${producto.precioAnterior ? `<span class="precio-anterior">${producto.precioAnterior}</span>` : ''}
-                        ${producto.descuento ? `<span class="descuento">${producto.descuento}</span>` : ''}
-                    </div>
-                    <button class="btn-ver-detalles" onclick="mostrarDetalles(${producto.id})" ${producto.stock === 0 ? 'disabled style="opacity:0.5"' : ''}>
-                        ${producto.stock === 0 ? 'AGOTADO' : 'VER DETALLES'}
-                    </button>
-                </div>
-            `;
-            container.appendChild(card);
+            // También actualizar inventario automáticamente
+            actualizarInventario();
+            
+            return {
+              success: true,
+              ventaId: nuevoId,
+              total: total,
+              nuevoStock: nuevoStock,
+              message: `✅ Venta ${nuevoId} registrada - Total: S/ ${total.toFixed(2)}`
+            };
+          } else {
+            return { error: '❌ Stock insuficiente' };
+          }
         }
-    });
+      }
+    }
+    
+    return {
+      success: true,
+      ventaId: nuevoId,
+      total: total,
+      message: `✅ Venta ${nuevoId} registrada - Total: S/ ${total.toFixed(2)}`
+    };
+    
+  } catch (error) {
+    return { error: error.toString() };
+  }
 }
 
-// EL RESTO DE TUS FUNCIONES SE MANTIENEN IGUAL
-// FILTRAR PRODUCTOS
-document.querySelectorAll('.filtro-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.filtro-btn').forEach(b => {
-            b.classList.remove('activo');
-        });
-        this.classList.add('activo');
-        
-        const categoria = this.getAttribute('data-categoria');
-        const productos = document.querySelectorAll('.producto-card');
-        
-        productos.forEach(producto => {
-            if (categoria === 'todos' || producto.getAttribute('data-categoria') === categoria) {
-                producto.style.display = 'block';
-            } else {
-                producto.style.display = 'none';
-            }
-        });
-    });
-});
+// Actualizar inventario automáticamente
+function actualizarInventario() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const catalogoSheet = ss.getSheetByName('👗 CATALOGO');
+    const inventarioSheet = ss.getSheetByName('📦 INVENTARIO');
+    const ventasSheet = ss.getSheetByName('🛒 VENTAS');
+    
+    if (!catalogoSheet || !inventarioSheet || !ventasSheet) return;
+    
+    // Obtener ventas por producto
+    const ventasData = ventasSheet.getDataRange().getValues();
+    const ventasPorProducto = {};
+    
+    for (let i = 1; i < ventasData.length; i++) {
+      const producto = ventasData[i][2]; // Columna C
+      const talla = ventasData[i][3];    // Columna D
+      const color = ventasData[i][4];    // Columna E
+      const cantidad = Number(ventasData[i][5]) || 0; // Columna F
+      
+      const key = `${producto}|${talla}|${color}`;
+      ventasPorProducto[key] = (ventasPorProducto[key] || 0) + cantidad;
+    }
+    
+    // Obtener catálogo
+    const catalogoData = catalogoSheet.getDataRange().getValues();
+    
+    // Limpiar y actualizar inventario
+    inventarioSheet.clearContents();
+    
+    // Encabezados
+    inventarioSheet.getRange(1, 1, 1, 7).setValues([[
+      'PRODUCTO', 'TALLA', 'COLOR', 'STOCK_INICIAL', 'VENTAS', 'STOCK_ACTUAL', 'ALERTA'
+    ]]);
+    
+    let row = 2;
+    for (let i = 1; i < catalogoData.length; i++) {
+      const producto = catalogoData[i][1];
+      const talla = catalogoData[i][3];
+      const color = catalogoData[i][4];
+      const stockInicial = Number(catalogoData[i][7]) || 0;
+      
+      const key = `${producto}|${talla}|${color}`;
+      const ventas = ventasPorProducto[key] || 0;
+      const stockActual = stockInicial - ventas;
+      
+      let alerta = '✅ NORMAL';
+      if (stockActual < 5) {
+        alerta = '🔴 URGENTE';
+      } else if (stockActual < 10) {
+        alerta = '🟡 BAJO';
+      }
+      
+      inventarioSheet.getRange(row, 1, 1, 7).setValues([[
+        producto, talla, color, stockInicial, ventas, stockActual, alerta
+      ]]);
+      
+      row++;
+    }
+    
+    return { success: true, message: 'Inventario actualizado' };
+  } catch (error) {
+    return { error: error.toString() };
+  }
+}
 
-// MOSTRAR DETALLES DEL PRODUCTO
-function mostrarDetalles(productoId) {
-    const producto = productos[productoId];
+// ============ FUNCIONES PARA AGREGAR PRODUCTO ============
+
+function agregarProducto(productoData) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('👗 CATALOGO');
     
-    if (!producto) {
-        console.error('❌ Producto no encontrado:', productoId);
-        return;
+    if (!sheet) return { error: 'Hoja de catálogo no encontrada' };
+    
+    // Generar ID
+    const lastRow = sheet.getLastRow();
+    let nuevoId = 'PROD-001';
+    if (lastRow > 1) {
+      const lastId = sheet.getRange(lastRow, 1).getValue();
+      if (lastId && lastId.includes('-')) {
+        const num = parseInt(lastId.split('-')[1]) + 1;
+        nuevoId = 'PROD-' + num.toString().padStart(3, '0');
+      }
     }
     
-    // Información básica
-    document.getElementById('modal-titulo').textContent = producto.titulo;
-    document.getElementById('modal-precio').textContent = producto.precio;
-    document.getElementById('modal-precio-ant').textContent = producto.precioAnterior || '';
-    document.getElementById('modal-descuento').textContent = producto.descuento || '';
+    // Agregar fila
+    sheet.appendRow([
+      nuevoId,
+      productoData.nombre,
+      productoData.categoria || 'General',
+      productoData.talla,
+      productoData.color,
+      productoData.precioCompra || 0,
+      productoData.precioVenta || 0,
+      productoData.stock || 0,
+      productoData.stockMin || 10
+    ]);
     
-    // IMÁGENES
-    const imagenPrincipal = document.getElementById('modal-imagen');
-    const contenedorMiniaturas = document.getElementById('modal-miniaturas');
+    // Actualizar inventario
+    actualizarInventario();
     
-    const imagenes = producto.imagenes || [producto.imagen];
-    imagenPrincipal.src = imagenes[0];
+    return {
+      success: true,
+      id: nuevoId,
+      message: '✅ Producto agregado exitosamente'
+    };
     
-    contenedorMiniaturas.innerHTML = '';
-    imagenes.forEach((imagen, index) => {
-        const miniatura = document.createElement('img');
-        miniatura.src = imagen;
-        miniatura.alt = `${producto.titulo} - Vista ${index + 1}`;
-        miniatura.className = 'miniatura' + (index === 0 ? ' activa' : '');
-        miniatura.onclick = () => cambiarImagenPrincipal(imagen, index);
-        contenedorMiniaturas.appendChild(miniatura);
-    });
+  } catch (error) {
+    return { error: error.toString() };
+  }
+}
+
+// ============ FUNCIONES PARA AJUSTAR STOCK ============
+
+function actualizarStock(productoId, nuevoStock, motivo) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('👗 CATALOGO');
     
-    // SELECTOR DE COLORES
-    const contenedorColores = document.getElementById('modal-colores');
-    contenedorColores.innerHTML = '';
+    if (!sheet) return { error: 'Hoja de catálogo no encontrada' };
     
-    if (producto.colores && producto.colores.length > 0) {
-        producto.colores.forEach((color, index) => {
-            const colorDiv = document.createElement('div');
-            colorDiv.className = 'color-option' + (index === 0 ? ' seleccionado' : '');
-            colorDiv.style.backgroundColor = color.codigo;
-            colorDiv.title = color.nombre;
-            colorDiv.onclick = () => seleccionarColor(color.nombre, index);
-            contenedorColores.appendChild(colorDiv);
-        });
-        document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${producto.colores[0].nombre}`;
-    } else {
-        document.getElementById('color-seleccionado').textContent = 'Sin colores disponibles';
-    }
+    const data = sheet.getDataRange().getValues();
+    let productoNombre = '';
     
-    // SELECTOR DE TALLES
-    const contenedorTalles = document.getElementById('modal-talles');
-    contenedorTalles.innerHTML = '';
-    
-    if (producto.talles && producto.talles.length > 0) {
-        producto.talles.forEach((talle, index) => {
-            const talleDiv = document.createElement('div');
-            talleDiv.className = 'talle-option' + (index === 0 ? ' seleccionado' : '');
-            talleDiv.textContent = talle;
-            talleDiv.onclick = () => seleccionarTalle(talle, index);
-            contenedorTalles.appendChild(talleDiv);
-        });
-        document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${producto.talles[0]}`;
-    } else {
-        document.getElementById('talle-seleccionado').textContent = 'Sin talles disponibles';
-    }
-    
-    // DESCRIPCIÓN
-    const descripcion = document.getElementById('modal-descripcion');
-    descripcion.innerHTML = '';
-    
-    if (producto.caracteristicas && producto.caracteristicas.length > 0) {
-        producto.caracteristicas.forEach(caract => {
-            const li = document.createElement('li');
-            li.textContent = caract;
-            descripcion.appendChild(li);
-        });
-    } else {
-        descripcion.innerHTML = '<li>No hay descripción disponible</li>';
-    }
-    
-    // STOCK
-    const stockInfo = document.getElementById('modal-stock');
-    if (producto.stock === 0) {
-        stockInfo.innerHTML = '<div class="sin-stock">🔴 PRODUCTO AGOTADO</div>';
-    } else if (producto.stock < 10) {
-        stockInfo.innerHTML = `<div class="stock-bajo">🟡 Stock bajo: ${producto.stock} unidades</div>`;
-    } else {
-        stockInfo.innerHTML = `<div class="en-stock">🟢 En stock: ${producto.stock} unidades</div>`;
-    }
-    
-    // WHATSAPP
-    const btnWhatsApp = document.getElementById('btn-whatsapp');
-    const colorSeleccionado = producto.colores && producto.colores[0] ? producto.colores[0].nombre : 'No especificado';
-    const talleSeleccionado = producto.talles && producto.talles[0] ? producto.talles[0] : 'No especificado';
-    
-    let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
-    mensaje += `Precio: ${producto.precio}%0A`;
-    mensaje += `Color: ${colorSeleccionado}%0A`;
-    mensaje += `Talle: ${talleSeleccionado}%0A`;
-    mensaje += `%0A¿Podrían ayudarme con más información?`;
-    
-    btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
-    
-    if (producto.stock === 0) {
-        btnWhatsApp.style.opacity = '0.5';
-        btnWhatsApp.style.cursor = 'not-allowed';
-        btnWhatsApp.onclick = (e) => {
-            e.preventDefault();
-            alert('Producto agotado');
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === productoId) {
+        productoNombre = data[i][1];
+        sheet.getRange(i + 1, 8).setValue(nuevoStock);
+        
+        // Actualizar inventario
+        actualizarInventario();
+        
+        return {
+          success: true,
+          producto: productoNombre,
+          nuevoStock: nuevoStock,
+          message: `✅ Stock actualizado: ${productoNombre} = ${nuevoStock} unidades`
         };
-    } else {
-        btnWhatsApp.style.opacity = '1';
-        btnWhatsApp.style.cursor = 'pointer';
-        btnWhatsApp.onclick = null;
+      }
     }
     
-    // Mostrar modal
-    document.getElementById('modal-detalles').style.display = 'block';
+    return { error: 'Producto no encontrado' };
+  } catch (error) {
+    return { error: error.toString() };
+  }
 }
-
-// FUNCIONES AUXILIARES
-function cambiarImagenPrincipal(imagenSrc, index) {
-    document.getElementById('modal-imagen').src = imagenSrc;
-    document.querySelectorAll('.miniatura').forEach((miniatura, i) => {
-        miniatura.classList.toggle('activa', i === index);
-    });
-}
-
-function seleccionarColor(nombreColor, index) {
-    document.querySelectorAll('.color-option').forEach((color, i) => {
-        color.classList.toggle('seleccionado', i === index);
-    });
-    document.getElementById('color-seleccionado').textContent = `Color seleccionado: ${nombreColor}`;
-    actualizarEnlaceWhatsApp();
-}
-
-function seleccionarTalle(talle, index) {
-    document.querySelectorAll('.talle-option').forEach((talleOpt, i) => {
-        talleOpt.classList.toggle('seleccionado', i === index);
-    });
-    document.getElementById('talle-seleccionado').textContent = `Talle seleccionado: ${talle}`;
-    actualizarEnlaceWhatsApp();
-}
-
-function actualizarEnlaceWhatsApp() {
-    const btnWhatsApp = document.getElementById('btn-whatsapp');
-    const productoTitulo = document.getElementById('modal-titulo').textContent;
-    const productoId = Object.keys(productos).find(id => productos[id].titulo === productoTitulo);
-    const producto = productos[productoId];
-    
-    if (!producto) return;
-    
-    const colorSeleccionado = document.querySelector('.color-option.seleccionado')?.title || 
-                             (producto.colores && producto.colores[0] ? producto.colores[0].nombre : 'No especificado');
-    const talleSeleccionado = document.querySelector('.talle-option.seleccionado')?.textContent || 
-                             (producto.talles && producto.talles[0] ? producto.talles[0] : 'No especificado');
-    
-    let mensaje = `Hola! Me interesa el producto: ${producto.titulo}%0A`;
-    mensaje += `Precio: ${producto.precio}%0A`;
-    mensaje += `Color: ${colorSeleccionado}%0A`;
-    mensaje += `Talle: ${talleSeleccionado}%0A`;
-    mensaje += `%0A¿Podrían ayudarme con más información?`;
-    
-    btnWhatsApp.href = `https://wa.me/51926677046?text=${mensaje}`;
-}
-
-// CERRAR MODAL
-function cerrarModal() {
-    document.getElementById('modal-detalles').style.display = 'none';
-}
-
-// CERRAR MODAL AL HACER CLIC FUERA
-window.onclick = function(event) {
-    const modal = document.getElementById('modal-detalles');
-    if (event.target === modal) {
-        cerrarModal();
-    }
-}
-
-// SCROLL SUAVE
-document.querySelector('.btn-descubrir').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.querySelector('#catalogo').scrollIntoView({
-        behavior: 'smooth'
-    });
-});
-
-// INICIALIZAR
-cargarProductos();
-
-// ACTUALIZAR CADA 30 SEGUNDOS (opcional)
-setInterval(cargarProductos, 30000);
-    </script>
-</body>
-</html>
